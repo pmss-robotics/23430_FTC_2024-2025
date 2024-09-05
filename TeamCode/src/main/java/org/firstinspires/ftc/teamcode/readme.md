@@ -1,3 +1,9 @@
+## PMSS robotics specific information
+For this season (2024 - 2025), this repository will serve as an initial template for our in season codebases.
+Besides the FTC SDK, the following third party libraries are currently being used:
+* [RoadRunner 1.0](https://rr.brott.dev/docs)
+* [FTClib V2.10](https://docs.ftclib.org/ftclib)
+
 ## TeamCode Module
 
 Welcome!
