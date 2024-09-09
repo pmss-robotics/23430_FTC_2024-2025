@@ -13,6 +13,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.ActionCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.ArmCommand;
@@ -34,6 +35,8 @@ public class Blue_Red_TeleOp extends CommandOpMode {
         // data sent to telemetry shows up on dashboard and driver station
         // data sent to the telemetry packet only shows up on the dashboard
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.NEWEST_FIRST);
+        telemetry.log().setCapacity(8);
         // GamepadEx wraps gamepad 1 or 2 for easier implementations of more complex key bindings
         GamepadEx gamepadEx = new GamepadEx(gamepad1);
         // The driveSubsystem wraps Roadrunner's MecanumDrive to combine with Commands.
