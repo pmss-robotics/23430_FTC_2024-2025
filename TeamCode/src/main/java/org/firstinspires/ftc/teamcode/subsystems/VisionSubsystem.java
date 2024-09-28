@@ -3,14 +3,12 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import static java.lang.Thread.sleep;
 
 import android.graphics.Bitmap;
-import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -22,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.Exposur
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.teamcode.SampleVisionProcessor;
+import org.firstinspires.ftc.teamcode.vision.SampleVisionProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
@@ -32,7 +30,7 @@ import org.opencv.core.Mat;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Stream;
+
 @Config
 public class VisionSubsystem extends SubsystemBase {
 
@@ -75,7 +73,6 @@ public class VisionSubsystem extends SubsystemBase {
             cameraState = visionPortal.getCameraState();
         }
         telemetry.log().add("Time from build to streaming " + elapsedTime.milliseconds() + "ms");
-
         if (visionPortal.getCameraState() == VisionPortal.CameraState.STREAMING) {
             ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
             if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
