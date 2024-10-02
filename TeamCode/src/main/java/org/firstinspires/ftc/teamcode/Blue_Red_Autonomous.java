@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 
 @Config
-@Autonomous(name="SAMPLE", group="Auto")
+@Autonomous(name="aUTO", group="Auto")
 public class Blue_Red_Autonomous extends CommandOpMode {
     @Override
     public void initialize() {
