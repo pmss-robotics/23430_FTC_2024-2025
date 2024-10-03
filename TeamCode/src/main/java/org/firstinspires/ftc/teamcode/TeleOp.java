@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
+import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
@@ -27,10 +28,10 @@ import org.firstinspires.ftc.teamcode.subsystems.GenericPositionServoSubsystem;
 @Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOP", group = "TeleOp")
 public class TeleOp extends CommandOpMode {
-    public static double servoIncrement = 0.002;
+    public static double servoIncrement = 0.004;
     public static double servoSpeed = 1;
     public static double wristStart = 0.5;
-    public static double bucketStart = 0.5;
+    public static double bucketStart = 0.636;
     @Override
     public void initialize() {
         // data sent to telemetry shows up on dashboard and driverGamepad station
@@ -48,61 +49,69 @@ public class TeleOp extends CommandOpMode {
         // disturbing the structure of the CommandOpMode. The aim is to define bindings in this
         // initialize() method through Commands and these will be looped and acted in the (hidden)
         // run() loop.
+
+        // macros to bring thing up and down
+        // intake extenstion
+        // outtake macro positions
         DriveCommand driveCommand = new DriveCommand(drive,
                 () -> -driver.getLeftX(),
                 () -> -driver.getLeftY(),
                 () -> -driver.getRightX(),
-                true);
+                false);
 
         GenericMotorSubsystem intakeSlides = new GenericMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
-        new Trigger(()-> tools.getRightY() != 0).whenActive(new InstantCommand(
-                () -> intakeSlides.setPower(tools::getRightY),
+        intakeSlides.setDefaultCommand(new RunCommand(
+                () -> intakeSlides.setPower(tools.getRightY()),
                 intakeSlides
         ));
 
         GenericMotorSubsystem elevator = new GenericMotorSubsystem(hardwareMap, telemetry, "elevatorMotor");
-        new Trigger(()-> tools.getLeftY() != 0).whenActive(new InstantCommand(
-                () -> elevator.setPower(tools::getLeftY),
+        elevator.setDefaultCommand(new RunCommand(
+                () -> elevator.setPower(tools.getLeftY()),
                 elevator
         ));
 
         GenericPositionServoSubsystem wrist = new GenericPositionServoSubsystem(hardwareMap, telemetry, "wrist", wristStart);
-        wrist.setDefaultCommand(new RunCommand(
-                        () -> wrist.setPosition(wrist.position)
-        ));
+        wrist.setDefaultCommand(new RunCommand(() -> wrist.setPosition(wrist.position), wrist));
         new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
-                .whenActive(new InstantCommand(
+                .whileHeld(new InstantCommand(
                         () -> wrist.incrementPosition(-servoIncrement),
                         wrist
                 ));
         new GamepadButton(tools, GamepadKeys.Button.RIGHT_BUMPER)
-                .whenActive(new InstantCommand(
+                .whileHeld(new InstantCommand(
                         () -> wrist.incrementPosition(servoIncrement),
                         wrist
                 ));
 
         GenericPositionServoSubsystem bucket = new GenericPositionServoSubsystem(hardwareMap, telemetry, "bucket", bucketStart);
         bucket.setDefaultCommand(new RunCommand(
-                () -> bucket.setPosition(bucket.position)
+                () -> bucket.setPosition(bucket.position),
+                bucket
         ));
+
         new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER)
-                .whenActive(new InstantCommand(
-                        () -> wrist.incrementPosition(-servoIncrement),
+                .whileHeld(new InstantCommand(
+                        () -> bucket.incrementPosition(-servoIncrement),
                         bucket
                 ));
         new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER)
-                .whenActive(new InstantCommand(
-                        () -> wrist.incrementPosition(servoIncrement),
+                .whileHeld(new InstantCommand(
+                        () -> bucket.incrementPosition(servoIncrement),
                         bucket
                 ));
 
 
         GenericContinuousServoSubsystem spinner = new GenericContinuousServoSubsystem(hardwareMap, telemetry, "spinner");
         // to trigger you can do something similar to whats done in genericMotorSubsystem or...
-        new GamepadButton(tools, GamepadKeys.Button.A).toggleWhenPressed(new InstantCommand(
-                () -> spinner.setPower(servoSpeed)));
-        new GamepadButton(tools, GamepadKeys.Button.B).toggleWhenPressed(new InstantCommand(
-                () -> spinner.setPower(-servoSpeed)));
+        new GamepadButton(tools, GamepadKeys.Button.A).toggleWhenPressed(
+                new InstantCommand(() -> spinner.setPower(servoSpeed)),
+                new InstantCommand(() -> spinner.setPower(0.5))
+                );
+        new GamepadButton(tools, GamepadKeys.Button.B).toggleWhenPressed(
+                new InstantCommand(() -> spinner.setPower(-servoSpeed)),
+                new InstantCommand(() -> spinner.setPower(0.5))
+        );
 
 
         schedule(new RunCommand(() -> {

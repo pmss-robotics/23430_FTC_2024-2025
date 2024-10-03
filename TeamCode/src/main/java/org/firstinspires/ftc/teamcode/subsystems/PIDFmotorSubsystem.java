@@ -30,7 +30,6 @@ public class PIDFmotorSubsystem extends SubsystemBase {
     public void periodic() {
         telemetry.addData("Motor Target: ", target);
         telemetry.addData("Motor Pos: ", motor.getCurrentPosition());
-        telemetry.update();
     }
 
     public void holdPosition() {

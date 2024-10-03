@@ -25,7 +25,10 @@ public class DriveCommand extends CommandBase {
     }
     @Override
     public void execute() {
-        if(isFieldCentric) drive.fieldCentric(lx.getAsDouble(), ly.getAsDouble(), rx.getAsDouble());
-        else drive.robotCentric(lx.getAsDouble(), ly.getAsDouble(), rx.getAsDouble());
+        if(isFieldCentric) {
+            drive.fieldCentric(lx.getAsDouble(), ly.getAsDouble(), rx.getAsDouble());
+        } else {
+            drive.robotCentric(lx.getAsDouble(), ly.getAsDouble(), rx.getAsDouble());
+        }
     }
 }
