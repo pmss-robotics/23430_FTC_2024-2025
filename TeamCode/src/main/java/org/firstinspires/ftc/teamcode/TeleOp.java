@@ -105,12 +105,12 @@ public class TeleOp extends CommandOpMode {
         GenericContinuousServoSubsystem spinner = new GenericContinuousServoSubsystem(hardwareMap, telemetry, "spinner");
         // to trigger you can do something similar to whats done in genericMotorSubsystem or...
         new GamepadButton(tools, GamepadKeys.Button.A).toggleWhenPressed(
-                new InstantCommand(() -> spinner.setPower(servoSpeed)),
-                new InstantCommand(() -> spinner.setPower(0.5))
-                );
+                new InstantCommand(() -> spinner.setPower(0.5+servoSpeed), spinner),
+                new InstantCommand(() -> spinner.setPower(0.5), spinner)
+        );
         new GamepadButton(tools, GamepadKeys.Button.B).toggleWhenPressed(
-                new InstantCommand(() -> spinner.setPower(-servoSpeed)),
-                new InstantCommand(() -> spinner.setPower(0.5))
+                new InstantCommand(() -> spinner.setPower(0.5-servoSpeed), spinner),
+                new InstantCommand(() -> spinner.setPower(0.5), spinner)
         );
 
 
