@@ -5,12 +5,15 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.SelectCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
-import com.arcrobotics.ftclib.gamepad.ButtonReader;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
@@ -20,10 +23,8 @@ import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.drive.Drawing;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.GenericContinuousServoSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.GenericMotorSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.GenericPositionServoSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.*;
+import org.firstinspires.ftc.teamcode.util.States;
 
 //hello
 @Config
@@ -33,6 +34,13 @@ public class TeleOp extends CommandOpMode {
     public static double servoSpeed = 1;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
+    States.Global currentState = States.Global.home;
+
+    GamepadEx driver, tools;
+    DriveSubsystem drive;
+    OuttakeSlidesSubsystem outtakeSlides;
+    IntakeSlidesSubsystem intakeSlides;
+    VisionSubsystem vision;
     @Override
     public void initialize() {
         // data sent to telemetry shows up on dashboard and driverGamepad station
@@ -60,11 +68,22 @@ public class TeleOp extends CommandOpMode {
                 () -> -driver.getRightX(),
                 false);
 
-        GenericMotorSubsystem outtakeSlides = new GenericMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
-        outtakeSlides.setDefaultCommand(new RunCommand(
-                () -> outtakeSlides.setPower(tools.getRightY()),
-                outtakeSlides
-        ));
+        outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
+        outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition));
+
+        intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
+        try {
+            vision = new VisionSubsystem(hardwareMap, telemetry);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        SequentialCommandGroup returnHome = new SequentialCommandGroup(
+                new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.home), intakeSlides),
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home), outtakeSlides),
+                swapState(States.Global.home)
+        );
+
 
         GenericMotorSubsystem elevator = new GenericMotorSubsystem(hardwareMap, telemetry, "elevatorMotor");
         elevator.setDefaultCommand(new RunCommand(
@@ -128,6 +147,10 @@ public class TeleOp extends CommandOpMode {
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }));
         schedule(driveCommand);
+    }
+
+    public InstantCommand swapState(States.Global state) {
+        return new InstantCommand(() -> currentState = state);
     }
 
 
