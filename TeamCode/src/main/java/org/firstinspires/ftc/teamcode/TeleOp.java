@@ -60,10 +60,10 @@ public class TeleOp extends CommandOpMode {
                 () -> -driver.getRightX(),
                 false);
 
-        GenericMotorSubsystem intakeSlides = new GenericMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
-        intakeSlides.setDefaultCommand(new RunCommand(
-                () -> intakeSlides.setPower(tools.getRightY()),
-                intakeSlides
+        GenericMotorSubsystem outtakeSlides = new GenericMotorSubsystem(hardwareMap, telemetry, "intakeMotor");
+        outtakeSlides.setDefaultCommand(new RunCommand(
+                () -> outtakeSlides.setPower(tools.getRightY()),
+                outtakeSlides
         ));
 
         GenericMotorSubsystem elevator = new GenericMotorSubsystem(hardwareMap, telemetry, "elevatorMotor");
