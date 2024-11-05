@@ -36,6 +36,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public static int pHome = 0, pStart = 0, pBucket = 0; // in degrees
     public static int wMin = 0, wMax = 0;
+    public long dropTime = 0;
 
     public OuttakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
@@ -89,6 +90,11 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         position = MathUtils.clamp(position + increment, wMin, wMax);
         wrist.setPosition(scale(position));
+    }
+
+    public void setPosition(double position) {
+        wrist.setPosition(position);
+        IntakeSubsystem.position = position;
     }
 
     @Override

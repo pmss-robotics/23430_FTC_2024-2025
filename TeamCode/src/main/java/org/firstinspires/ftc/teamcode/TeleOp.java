@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -30,6 +31,7 @@ import org.firstinspires.ftc.teamcode.util.States;
 @Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOP", group = "TeleOp")
 public class TeleOp extends CommandOpMode {
+    // probably need to change later.
     public static double servoIncrement = 0.004;
     public static double servoSpeed = 1;
     public static double wristStart = 0.5;
@@ -79,16 +81,19 @@ public class TeleOp extends CommandOpMode {
         }
 
         IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, telemetry);
-        intake.setDefaultCommand(new RunCommand(() -> intake.setPosition(intake.position), intake));
+        intake.setDefaultCommand(new RunCommand(() -> intake.setPosition(wristStart), intake));
 
-        // reset everything
-        SequentialCommandGroup returnHome = new SequentialCommandGroup(
+        OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
+        outtake.setDefaultCommand(new RunCommand(() -> outtake.setPosition(bucketStart), outtake));
+
+        // reset everything, probably unnecessary
+/*      SequentialCommandGroup returnHome = new SequentialCommandGroup(
                 new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.home), intakeSlides),
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home), outtakeSlides),
                 new InstantCommand(() -> intake.setWristState(States.Intake.home), intake),
                 swapState(States.Global.home)
         );
-
+*/
         // intake rotation
         new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(
@@ -118,10 +123,19 @@ public class TeleOp extends CommandOpMode {
 
         // toggle outtake system
         new GamepadButton(tools, GamepadKeys.Button.Y).whenPressed(
-                new InstantCommand(() -> outtakeSlides.toggleState())
-                // change to rotate/toggle outtake bucket as well.
+                new ConditionalCommand(
+                        new InstantCommand(() -> outtakeSlides.toggleState()),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
+                                new WaitCommand(outtake.dropTime),
+                                new InstantCommand(() -> outtake.toggleWristState()),
+                                new InstantCommand(() -> outtakeSlides.toggleState())
+                        ),
+                        () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
+                )
         );
 
+        // change to rotate/toggle outtake bucket as well.
 
         schedule(new RunCommand(() -> {
             TelemetryPacket packet = new TelemetryPacket();

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.util;
 
 public class States {
 
-    // related to each gamepad mapping
+    // global states might be nothing
     public enum Global {
         home,
         intake_far,
