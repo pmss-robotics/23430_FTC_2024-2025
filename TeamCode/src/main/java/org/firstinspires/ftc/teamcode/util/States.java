@@ -11,30 +11,34 @@ public class States {
         specimen,
     }
 
-    // Arm Enums
+    // Intake Enums
     public enum IntakeExtension {
         start,
         home,
         intake
     }
 
-    public enum OuttakeExtension {
-        start,
-        home,
-        intake, // is a free value, arm should extend to this but not hold it so driver can adjust
-        bucket,
-        specimen,
-    }
-
-    // Claw Enums
-    // Claw merges both wrist and hand states
     public enum Intake {
         start,
         home,
         intake,
+        transfer
+    }
+
+    // Outtake Enums
+    public enum OuttakeExtension {
+        start,
+        home,
+        bucket,
         specimen,
+    }
+
+    public enum Outtake {
+        start,
+        home,
         bucket
     }
+
 
 
 }

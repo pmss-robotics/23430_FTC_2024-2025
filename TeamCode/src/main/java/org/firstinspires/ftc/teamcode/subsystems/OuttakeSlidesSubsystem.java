@@ -78,6 +78,20 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
         return currentState;
     }
 
+    public void toggleState() {
+        switch (currentState) {
+            case home:
+                moveTo(pBucket);
+                currentState = States.OuttakeExtension.bucket;
+                break;
+            case specimen:
+            case bucket:
+                moveTo(pHome);
+                currentState = States.OuttakeExtension.home;
+                break;
+        }
+    }
+
     public void setState(States.OuttakeExtension state) {
         currentState = state;
         switch (currentState) {

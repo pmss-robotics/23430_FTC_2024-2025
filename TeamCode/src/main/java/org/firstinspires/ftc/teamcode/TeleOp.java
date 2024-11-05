@@ -78,59 +78,48 @@ public class TeleOp extends CommandOpMode {
             throw new RuntimeException(e);
         }
 
+        IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, telemetry);
+        intake.setDefaultCommand(new RunCommand(() -> intake.setPosition(intake.position), intake));
+
+        // reset everything
         SequentialCommandGroup returnHome = new SequentialCommandGroup(
                 new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.home), intakeSlides),
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home), outtakeSlides),
+                new InstantCommand(() -> intake.setWristState(States.Intake.home), intake),
                 swapState(States.Global.home)
         );
 
-
-        GenericMotorSubsystem elevator = new GenericMotorSubsystem(hardwareMap, telemetry, "elevatorMotor");
-        elevator.setDefaultCommand(new RunCommand(
-                () -> elevator.setPower(tools.getLeftY()),
-                elevator
-        ));
-
-        GenericPositionServoSubsystem wrist = new GenericPositionServoSubsystem(hardwareMap, telemetry, "wrist", wristStart);
-        wrist.setDefaultCommand(new RunCommand(() -> wrist.setPosition(wrist.position), wrist));
+        // intake rotation
         new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(
-                        () -> wrist.incrementPosition(-servoIncrement),
-                        wrist
+                        () -> intake.incrementPosition(-servoIncrement),
+                        intake
                 ));
         new GamepadButton(tools, GamepadKeys.Button.RIGHT_BUMPER)
                 .whileHeld(new InstantCommand(
-                        () -> wrist.incrementPosition(servoIncrement),
-                        wrist
+                        () -> intake.incrementPosition(servoIncrement),
+                        intake
                 ));
 
-        GenericPositionServoSubsystem bucket = new GenericPositionServoSubsystem(hardwareMap, telemetry, "bucket", bucketStart);
-        bucket.setDefaultCommand(new RunCommand(
-                () -> bucket.setPosition(bucket.position),
-                bucket
-        ));
-
-        new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER)
-                .whileHeld(new InstantCommand(
-                        () -> bucket.incrementPosition(-servoIncrement),
-                        bucket
-                ));
-        new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER)
-                .whileHeld(new InstantCommand(
-                        () -> bucket.incrementPosition(servoIncrement),
-                        bucket
-                ));
-
-
-        GenericContinuousServoSubsystem spinner = new GenericContinuousServoSubsystem(hardwareMap, telemetry, "spinner");
-        // to trigger you can do something similar to whats done in genericMotorSubsystem or...
+        // roller intake rotation
         new GamepadButton(tools, GamepadKeys.Button.A).toggleWhenPressed(
-                new InstantCommand(() -> spinner.setPower(0.5+servoSpeed), spinner),
-                new InstantCommand(() -> spinner.setPower(0.5), spinner)
+                new InstantCommand(() -> intake.setPower(0.5+servoSpeed), intake),
+                new InstantCommand(() -> intake.setPower(0.5), intake)
         );
         new GamepadButton(tools, GamepadKeys.Button.B).toggleWhenPressed(
-                new InstantCommand(() -> spinner.setPower(0.5-servoSpeed), spinner),
-                new InstantCommand(() -> spinner.setPower(0.5), spinner)
+                new InstantCommand(() -> intake.setPower(0.5-servoSpeed), intake),
+                new InstantCommand(() -> intake.setPower(0.5), intake)
+        );
+
+        // toggle intake slides
+        new GamepadButton(tools, GamepadKeys.Button.X).whenPressed(
+                new InstantCommand(() -> intakeSlides.toggleIntakeSlidesState())
+        );
+
+        // toggle outtake system
+        new GamepadButton(tools, GamepadKeys.Button.Y).whenPressed(
+                new InstantCommand(() -> outtakeSlides.toggleState())
+                // change to rotate/toggle outtake bucket as well.
         );
 
 
