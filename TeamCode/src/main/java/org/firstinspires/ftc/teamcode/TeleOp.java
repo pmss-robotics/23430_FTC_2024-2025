@@ -74,17 +74,15 @@ public class TeleOp extends CommandOpMode {
         outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition));
 
         intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
-        try {
+/*      try {
             vision = new VisionSubsystem(hardwareMap, telemetry);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
+*/
         IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, telemetry);
-        intake.setDefaultCommand(new RunCommand(() -> intake.setPosition(wristStart), intake));
 
         OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
-        outtake.setDefaultCommand(new RunCommand(() -> outtake.setPosition(bucketStart), outtake));
 
         // reset everything, probably unnecessary
 /*      SequentialCommandGroup returnHome = new SequentialCommandGroup(
@@ -127,7 +125,7 @@ public class TeleOp extends CommandOpMode {
                         new InstantCommand(() -> outtakeSlides.toggleState()),
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
-                                new WaitCommand(outtake.dropTime),
+                                new WaitCommand(OuttakeSubsystem.dropTime),
                                 new InstantCommand(() -> outtake.toggleWristState()),
                                 new InstantCommand(() -> outtakeSlides.toggleState())
                         ),
@@ -135,7 +133,7 @@ public class TeleOp extends CommandOpMode {
                 )
         );
 
-        // change to rotate/toggle outtake bucket as well.
+        // TODO transfer system
 
         schedule(new RunCommand(() -> {
             TelemetryPacket packet = new TelemetryPacket();

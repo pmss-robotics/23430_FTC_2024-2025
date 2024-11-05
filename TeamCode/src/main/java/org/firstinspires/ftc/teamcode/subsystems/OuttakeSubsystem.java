@@ -36,7 +36,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public static int pHome = 0, pStart = 0, pBucket = 0; // in degrees
     public static int wMin = 0, wMax = 0;
-    public long dropTime = 0;
+    public static long dropTime = 0;
 
     public OuttakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
