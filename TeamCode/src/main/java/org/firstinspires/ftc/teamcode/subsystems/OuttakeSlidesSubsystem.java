@@ -21,7 +21,8 @@ import java.util.Objects;
 @Config
 public class OuttakeSlidesSubsystem extends SubsystemBase {
 
-    private DcMotorEx extensions;
+    private DcMotorEx leftExtension;
+    private DcMotorEx rightExtension;
     private Telemetry telemetry;
     public static double P = 0, I = 0, D = 0;
     public static double kSpring = 0;
@@ -36,11 +37,9 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
         currentState = States.OuttakeExtension.home;
 
 //        MotorEx leftExtension = new MotorEx(hardwareMap, "slideLeft");
-        extensions = hardwareMap.get(DcMotorEx.class, "slideLeft");
+        leftExtension = hardwareMap.get(DcMotorEx.class, "slideLeft");
 //        MotorEx rightExtension = new MotorEx(hardwareMap, "slideRight");
-        DcMotorEx rightExtension = hardwareMap.get(DcMotorEx.class, "slideRight");
-
-//        rightExtension.setInverted(true);
+        rightExtension = hardwareMap.get(DcMotorEx.class, "slideRight");
 //        leftExtension.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        rightExtension.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        extensions = new MotorGroup(rightExtension, leftExtension);
@@ -54,15 +53,16 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     }
     @Override
     public void periodic() {
-        if (Objects.nonNull(extensions.getCurrentPosition())) {
+        if (Objects.nonNull(leftExtension.getCurrentPosition())) {
             telemetry.addData("Extension Target: ", target);
-            telemetry.addData("Extension Pos: ", extensions.getCurrentPosition());
+            telemetry.addData("Extension Pos: ", leftExtension.getCurrentPosition());
             telemetry.update();
         }
     }
 
     public void holdPosition() {
-        extensions.setPower(calculate());
+        leftExtension.setPower(calculate());
+        rightExtension.setPower(-calculate());
     }
 
     public void moveTo(int target) {
@@ -71,13 +71,13 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     }
 
     public void manual(double power) {
-        extensions.setPower(calculate() + power);
-        target = extensions.getCurrentPosition();
+        leftExtension.setPower(calculate() + power);
+        target = leftExtension.getCurrentPosition();
     }
 
     private double calculate() {
         pidController.setPID(P,I,D);
-        int current = extensions.getCurrentPosition();
+        int current = leftExtension.getCurrentPosition();
 
         double power = kSpring - pidController.calculate(current, target);
         // we are subtracting the PID since the springs are constantly trying to extend the arm
