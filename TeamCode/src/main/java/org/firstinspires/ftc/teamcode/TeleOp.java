@@ -66,12 +66,12 @@ public class TeleOp extends CommandOpMode {
         // outtake macro positions
         DriveCommand driveCommand = new DriveCommand(drive,
                 () -> -driver.getLeftX(),
-                () -> -driver.getLeftY(),
+                () -> driver.getLeftY(),
                 () -> -driver.getRightX(),
                 false);
 
         outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
-        outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition));
+        outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
 
         intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
 /*      try {

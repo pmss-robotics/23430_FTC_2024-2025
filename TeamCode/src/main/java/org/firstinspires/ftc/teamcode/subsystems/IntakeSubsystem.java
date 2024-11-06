@@ -41,9 +41,9 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
-        wrist = hardwareMap.get(ServoImplEx.class, "intake wrist");
-        spinnerL = hardwareMap.get(ServoImplEx.class, "left spinner");
-        spinnerR = hardwareMap.get(ServoImplEx.class, "right spinner");
+        wrist = hardwareMap.get(ServoImplEx.class, "wrist");
+        spinnerL = hardwareMap.get(ServoImplEx.class, "spinnerL");
+        spinnerR = hardwareMap.get(ServoImplEx.class, "spinnerR");
 
         // expand the range of the servo beyond the default for control/expansion hubs
         // test

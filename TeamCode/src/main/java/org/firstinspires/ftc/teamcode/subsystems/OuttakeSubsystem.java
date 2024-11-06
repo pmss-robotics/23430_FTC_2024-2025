@@ -41,7 +41,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public OuttakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
-        wrist = hardwareMap.get(ServoImplEx.class, "outtake wrist");
+        wrist = hardwareMap.get(ServoImplEx.class, "bucket");
 
         // expand the range of the servo beyond the default for control/expansion hubs
         // test
