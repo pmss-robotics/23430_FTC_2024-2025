@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -40,6 +41,9 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
         leftExtension = hardwareMap.get(DcMotorEx.class, "slideLeft");
 //        MotorEx rightExtension = new MotorEx(hardwareMap, "slideRight");
         rightExtension = hardwareMap.get(DcMotorEx.class, "slideRight");
+        rightExtension.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        leftExtension.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        rightExtension.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        extensions = new MotorGroup(rightExtension, leftExtension);
@@ -62,7 +66,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
 
     public void holdPosition() {
         leftExtension.setPower(calculate());
-        rightExtension.setPower(-calculate());
+        rightExtension.setPower(calculate());
     }
 
     public void moveTo(int target) {
@@ -72,6 +76,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
 
     public void manual(double power) {
         leftExtension.setPower(calculate() + power);
+        rightExtension.setPower(calculate() + power);
         target = leftExtension.getCurrentPosition();
     }
 
