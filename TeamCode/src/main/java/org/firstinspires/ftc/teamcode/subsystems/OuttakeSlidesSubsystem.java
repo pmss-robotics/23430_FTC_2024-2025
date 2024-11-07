@@ -60,6 +60,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
         if (Objects.nonNull(leftExtension.getCurrentPosition())) {
             telemetry.addData("Extension Target: ", target);
             telemetry.addData("Extension Pos: ", leftExtension.getCurrentPosition());
+            telemetry.addData("Extension state: ", currentState);
             telemetry.update();
         }
     }
@@ -84,8 +85,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
         pidController.setPID(P,I,D);
         int current = leftExtension.getCurrentPosition();
 
-        double power = kSpring - pidController.calculate(current, target);
-        // we are subtracting the PID since the springs are constantly trying to extend the arm
+        double power = pidController.calculate(current, target)+kSpring;
         power /= voltageSensor.getVoltage();
 
         telemetry.addData("Extension Power:", power);

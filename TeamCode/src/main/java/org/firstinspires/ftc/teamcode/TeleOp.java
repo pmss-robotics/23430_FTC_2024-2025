@@ -32,7 +32,7 @@ import org.firstinspires.ftc.teamcode.util.States;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOP", group = "TeleOp")
 public class TeleOp extends CommandOpMode {
     // probably need to change later.
-    public static double servoIncrement = 0.004;
+    public static double servoIncrement = 7;
     public static double servoSpeed = 1;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;

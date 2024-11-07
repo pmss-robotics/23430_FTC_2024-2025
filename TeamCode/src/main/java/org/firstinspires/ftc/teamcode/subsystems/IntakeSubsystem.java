@@ -36,7 +36,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private States.Intake currentIntakeState;
 
     public static int pHome = 0, pStart = 0, pIntake = 0, pTransfer = 0; // in degrees
-    public static int wMin = 0, wMax = 0;
+    public static int wMin = 25, wMax = 210;
 
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
