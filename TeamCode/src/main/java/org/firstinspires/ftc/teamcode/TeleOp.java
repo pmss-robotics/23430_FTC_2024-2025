@@ -84,7 +84,7 @@ public class TeleOp extends CommandOpMode {
 */
         IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, telemetry);
 
-        //OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
+        OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
 
         // reset everything, probably unnecessary
 /*      SequentialCommandGroup returnHome = new SequentialCommandGroup(
@@ -126,9 +126,9 @@ public class TeleOp extends CommandOpMode {
                 new ConditionalCommand(
                         new InstantCommand(() -> outtakeSlides.toggleState()),
                         new SequentialCommandGroup(
-                                //new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
+                                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
                                 new WaitCommand(OuttakeSubsystem.dropTime),
-                                //new InstantCommand(() -> outtake.toggleWristState()),
+                                new InstantCommand(() -> outtake.toggleWristState()),
                                 new InstantCommand(() -> outtakeSlides.toggleState())
                         ),
                         () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
