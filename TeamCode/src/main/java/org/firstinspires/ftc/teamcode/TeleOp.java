@@ -34,6 +34,8 @@ public class TeleOp extends CommandOpMode {
     // probably need to change later.
     public static double servoIncrement = 7;
     public static double servoSpeed = 1;
+    public static double driveSpeed = 0.2;
+    public static double rotationSpeed = 0.2;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
     States.Global currentState = States.Global.home;
@@ -65,9 +67,9 @@ public class TeleOp extends CommandOpMode {
         // intake extenstion
         // outtake macro positions
         DriveCommand driveCommand = new DriveCommand(drive,
-                () -> -driver.getLeftX(),
-                () -> driver.getLeftY(),
-                () -> -driver.getRightX(),
+                () -> -driver.getLeftX()*driveSpeed,
+                () -> driver.getLeftY()*driveSpeed,
+                () -> -driver.getRightX()*rotationSpeed,
                 false);
 
         outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
@@ -82,7 +84,7 @@ public class TeleOp extends CommandOpMode {
 */
         IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, telemetry);
 
-        OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
+        //OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
 
         // reset everything, probably unnecessary
 /*      SequentialCommandGroup returnHome = new SequentialCommandGroup(
@@ -124,9 +126,9 @@ public class TeleOp extends CommandOpMode {
                 new ConditionalCommand(
                         new InstantCommand(() -> outtakeSlides.toggleState()),
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
+                                //new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
                                 new WaitCommand(OuttakeSubsystem.dropTime),
-                                new InstantCommand(() -> outtake.toggleWristState()),
+                                //new InstantCommand(() -> outtake.toggleWristState()),
                                 new InstantCommand(() -> outtakeSlides.toggleState())
                         ),
                         () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
