@@ -72,17 +72,17 @@ public class TeleOp extends CommandOpMode {
                 () -> -driver.getRightX()*rotationSpeed,
                 false);
 
-        outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
-        outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
+//        outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
+//        outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
 
-        intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
+//        intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
 /*      try {
             vision = new VisionSubsystem(hardwareMap, telemetry);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 */
-        IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, telemetry);
+//        IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, telemetry);
 
         //OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
 
@@ -95,7 +95,7 @@ public class TeleOp extends CommandOpMode {
         );
 */
         // intake rotation
-        new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
+/*        new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(
                         () -> intake.incrementPosition(-servoIncrement),
                         intake
@@ -134,7 +134,7 @@ public class TeleOp extends CommandOpMode {
                         () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
                 )
         );
-
+*/
         // TODO transfer system
 
         schedule(new RunCommand(() -> {
