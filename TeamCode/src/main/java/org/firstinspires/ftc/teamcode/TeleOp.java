@@ -42,9 +42,9 @@ public class TeleOp extends CommandOpMode {
 
     GamepadEx driver, tools;
     DriveSubsystem drive;
-    OuttakeSlidesSubsystem outtakeSlides;
+/*    OuttakeSlidesSubsystem outtakeSlides;
     IntakeSlidesSubsystem intakeSlides;
-    VisionSubsystem vision;
+    VisionSubsystem vision; */
     @Override
     public void initialize() {
         // data sent to telemetry shows up on dashboard and driverGamepad station
