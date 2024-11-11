@@ -67,9 +67,9 @@ public class TeleOp extends CommandOpMode {
         // intake extenstion
         // outtake macro positions
         DriveCommand driveCommand = new DriveCommand(drive,
-                () -> -driver.getLeftX()*driveSpeed,
-                () -> driver.getLeftY()*driveSpeed,
-                () -> -driver.getRightX()*rotationSpeed,
+                () -> -driver.getLeftX()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
+                () -> driver.getLeftY()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
+                () -> -driver.getRightX()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
                 false);
 
         outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);

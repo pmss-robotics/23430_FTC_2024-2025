@@ -37,19 +37,16 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
         this.telemetry = telemetry;
         currentState = States.OuttakeExtension.home;
 
-//        MotorEx leftExtension = new MotorEx(hardwareMap, "slideLeft");
         leftExtension = hardwareMap.get(DcMotorEx.class, "slideLeft");
-//        MotorEx rightExtension = new MotorEx(hardwareMap, "slideRight");
         rightExtension = hardwareMap.get(DcMotorEx.class, "slideRight");
         rightExtension.setDirection(DcMotorSimple.Direction.REVERSE);
         leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        leftExtension.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        rightExtension.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        extensions = new MotorGroup(rightExtension, leftExtension);
-//        extensions.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-//        extensions.stopAndResetEncoder();
 
 
         pidController = new PIDController(P, I, D);
