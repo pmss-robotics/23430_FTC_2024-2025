@@ -25,9 +25,9 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     private DcMotorEx leftExtension;
     private DcMotorEx rightExtension;
     private Telemetry telemetry;
-    public static double P = 0, I = 0, D = 0;
-    public static double kSpring = 0;
-    public static int pHome = 0, pSpecimen = 0, pBucket = 0, pStart = 0;
+    public static double P = 0.005, I = 0, D = 0;
+    public static double kSpring = 0.02;
+    public static int pHome = 0, pSpecimen = 0, pBucket = 4200, pStart = 0;
     public static int target = 0;
     public PIDController pidController;
     private VoltageSensor voltageSensor;
@@ -39,7 +39,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
 
         leftExtension = hardwareMap.get(DcMotorEx.class, "slideLeft");
         rightExtension = hardwareMap.get(DcMotorEx.class, "slideRight");
-        rightExtension.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftExtension.setDirection(DcMotorSimple.Direction.REVERSE);
         leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
