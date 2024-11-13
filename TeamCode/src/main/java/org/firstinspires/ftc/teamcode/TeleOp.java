@@ -38,6 +38,7 @@ public class TeleOp extends CommandOpMode {
     public static double rotationSpeed = 1;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
+
     States.Global currentState = States.Global.home;
 
     GamepadEx driver, tools;
@@ -112,7 +113,7 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
         new GamepadButton(tools, GamepadKeys.Button.B).toggleWhenPressed(
-                new InstantCommand(() -> intake.setPower(0.5-servoSpeed), intake),
+                new InstantCommand(() -> intake.setPower(1-servoSpeed), intake),
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
 
@@ -120,6 +121,17 @@ public class TeleOp extends CommandOpMode {
         new GamepadButton(tools, GamepadKeys.Button.X).whenPressed(
                 new InstantCommand(() -> intakeSlides.toggleIntakeSlidesState())
         );
+
+        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.2)
+                .whileActiveContinuous(new InstantCommand(
+                        () -> intakeSlides.incrementPosition(-servoIncrement),
+                        intakeSlides
+                ));
+        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2)
+                .whileActiveContinuous(new InstantCommand(
+                        () -> intakeSlides.incrementPosition(servoIncrement),
+                        intakeSlides
+                ));
 
         // toggle outtake system
         new GamepadButton(tools, GamepadKeys.Button.Y).whenPressed(

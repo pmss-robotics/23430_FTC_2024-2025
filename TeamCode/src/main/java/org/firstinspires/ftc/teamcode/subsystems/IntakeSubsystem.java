@@ -32,7 +32,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public static double W_target = 0; // in degrees
     public static double position = 0;
-
     private States.Intake currentIntakeState;
 
     public static int pHome = 0, pStart = 0, pIntake = 0, pTransfer = 0; // in degrees
@@ -97,7 +96,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void incrementPosition(double increment) {
-
         position = MathUtils.clamp(position + increment, wMin, wMax);
         wrist.setPosition(scale(position));
     }

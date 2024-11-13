@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.util.InterpLUT;
+import com.arcrobotics.ftclib.util.MathUtils;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -30,9 +31,11 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     // wrist moves hand and finger along an axis, wrist just moves fingers, etc.
 
     public static double F_target = 0; // in degrees
+    public static double position = 0;
 
     private States.IntakeExtension currentSlidesState;
-    public static int pIntake, pHome = 0;
+    public static int pIntake = 36;
+    public static int pHome = 0;
 
     public IntakeSlidesSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
@@ -59,6 +62,12 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
 
     public boolean isExtended() {
         return currentSlidesState == States.IntakeExtension.intake;
+    }
+
+    public void incrementPosition(double increment) {
+        position = MathUtils.clamp(position + increment, pHome, pIntake);
+        intakeSlideL.setPosition(scale(position));
+        intakeSlideR.setPosition(scale(position));
     }
 
     public void toggleIntakeSlidesState() {
