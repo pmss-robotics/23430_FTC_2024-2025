@@ -29,23 +29,22 @@ import org.firstinspires.ftc.teamcode.util.States;
 
 //hello
 @Config
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOP", group = "TeleOp")
-public class TeleOp extends CommandOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "DriveOP", group = "TeleOp")
+public class DriveOp extends CommandOpMode {
     // probably need to change later.
     public static double servoIncrement = 7;
     public static double servoSpeed = 1;
-    public static double driveSpeed = 1;
-    public static double rotationSpeed = 1;
+    public static double driveSpeed = 0.2;
+    public static double rotationSpeed = 0.2;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
-
     States.Global currentState = States.Global.home;
 
     GamepadEx driver, tools;
     DriveSubsystem drive;
-    OuttakeSlidesSubsystem outtakeSlides;
-    IntakeSlidesSubsystem intakeSlides;
-    VisionSubsystem vision;
+    /*    OuttakeSlidesSubsystem outtakeSlides;
+        IntakeSlidesSubsystem intakeSlides;
+        VisionSubsystem vision; */
     @Override
     public void initialize() {
         // data sent to telemetry shows up on dashboard and driverGamepad station
@@ -68,24 +67,24 @@ public class TeleOp extends CommandOpMode {
         // intake extenstion
         // outtake macro positions
         DriveCommand driveCommand = new DriveCommand(drive,
-                () -> -driver.getLeftX()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
-                () -> driver.getLeftY()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
-                () -> -driver.getRightX()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
+                () -> -driver.getLeftX()*driveSpeed,
+                () -> driver.getLeftY()*driveSpeed,
+                () -> -driver.getRightX()*rotationSpeed,
                 false);
 
-        outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
-        outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
+//        outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
+//        outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
 
-        intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
+//        intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
 /*      try {
             vision = new VisionSubsystem(hardwareMap, telemetry);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 */
-        IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, telemetry);
+//        IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, telemetry);
 
-        OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
+        //OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
 
         // reset everything, probably unnecessary
 /*      SequentialCommandGroup returnHome = new SequentialCommandGroup(
@@ -96,7 +95,7 @@ public class TeleOp extends CommandOpMode {
         );
 */
         // intake rotation
-        new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
+/*        new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(
                         () -> intake.incrementPosition(-servoIncrement),
                         intake
@@ -113,7 +112,7 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
         new GamepadButton(tools, GamepadKeys.Button.B).toggleWhenPressed(
-                new InstantCommand(() -> intake.setPower(1-servoSpeed), intake),
+                new InstantCommand(() -> intake.setPower(0.5-servoSpeed), intake),
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
 
@@ -122,31 +121,20 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> intakeSlides.toggleIntakeSlidesState())
         );
 
-        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.2)
-                .whileActiveContinuous(new InstantCommand(
-                        () -> intakeSlides.incrementPosition(-servoIncrement),
-                        intakeSlides
-                ));
-        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2)
-                .whileActiveContinuous(new InstantCommand(
-                        () -> intakeSlides.incrementPosition(servoIncrement),
-                        intakeSlides
-                ));
-
         // toggle outtake system
         new GamepadButton(tools, GamepadKeys.Button.Y).whenPressed(
                 new ConditionalCommand(
                         new InstantCommand(() -> outtakeSlides.toggleState()),
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
+                                //new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
                                 new WaitCommand(OuttakeSubsystem.dropTime),
-                                new InstantCommand(() -> outtake.toggleWristState()),
+                                //new InstantCommand(() -> outtake.toggleWristState()),
                                 new InstantCommand(() -> outtakeSlides.toggleState())
                         ),
                         () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
                 )
         );
-
+*/
         // TODO transfer system
 
         schedule(new RunCommand(() -> {

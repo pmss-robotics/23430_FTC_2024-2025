@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.util.InterpLUT;
+import com.arcrobotics.ftclib.util.MathUtils;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -30,21 +31,23 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     // wrist moves hand and finger along an axis, wrist just moves fingers, etc.
 
     public static double F_target = 0; // in degrees
+    public static double position = 0;
 
     private States.IntakeExtension currentSlidesState;
-    public static int pIntake, pHome = 0;
+    public static int pIntake = 36;
+    public static int pHome = 0;
 
     public IntakeSlidesSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
-        intakeSlideL = hardwareMap.get(ServoImplEx.class, "intake slide left");
+        intakeSlideL = hardwareMap.get(ServoImplEx.class, "intakeSlideL");
 
         // expand the range of the servo beyond the default for control/expansion hubs
         // test
         intakeSlideL.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeSlideL.setPosition(scale(F_target));
 
-        intakeSlideR = hardwareMap.get(ServoImplEx.class, "intake slide right");
+        intakeSlideR = hardwareMap.get(ServoImplEx.class, "intakeSlideR");
         intakeSlideR.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeSlideR.setDirection(Servo.Direction.REVERSE);
         intakeSlideR.setPosition(scale(F_target));
@@ -61,6 +64,12 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         return currentSlidesState == States.IntakeExtension.intake;
     }
 
+    public void incrementPosition(double increment) {
+        position = MathUtils.clamp(position + increment, pHome, pIntake);
+        intakeSlideL.setPosition(scale(position));
+        intakeSlideR.setPosition(scale(position));
+    }
+
     public void toggleIntakeSlidesState() {
         switch (currentSlidesState) {
             case intake:
@@ -69,8 +78,8 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
                 currentSlidesState = States.IntakeExtension.home;
                 break;
             case home:
-                intakeSlideL.setPosition(pIntake);
-                intakeSlideR.setPosition(pIntake);
+                intakeSlideL.setPosition(scale(pIntake));
+                intakeSlideR.setPosition(scale(pIntake));
                 currentSlidesState = States.IntakeExtension.intake;
                 break;
         }
@@ -84,8 +93,8 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
                 intakeSlideR.setPosition(pHome);
                 break;
             case intake:
-                intakeSlideL.setPosition(pIntake);
-                intakeSlideR.setPosition(pIntake);
+                intakeSlideL.setPosition(scale(pIntake));
+                intakeSlideR.setPosition(scale(pIntake));
                 break;
         }
     }

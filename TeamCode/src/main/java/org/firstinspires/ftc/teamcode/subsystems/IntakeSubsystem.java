@@ -32,18 +32,17 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public static double W_target = 0; // in degrees
     public static double position = 0;
-
     private States.Intake currentIntakeState;
 
     public static int pHome = 0, pStart = 0, pIntake = 0, pTransfer = 0; // in degrees
-    public static int wMin = 0, wMax = 0;
+    public static int wMin = 25, wMax = 210;
 
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
-        wrist = hardwareMap.get(ServoImplEx.class, "intake wrist");
-        spinnerL = hardwareMap.get(ServoImplEx.class, "left spinner");
-        spinnerR = hardwareMap.get(ServoImplEx.class, "right spinner");
+        wrist = hardwareMap.get(ServoImplEx.class, "wrist");
+        spinnerL = hardwareMap.get(ServoImplEx.class, "spinnerL");
+        spinnerR = hardwareMap.get(ServoImplEx.class, "spinnerR");
 
         // expand the range of the servo beyond the default for control/expansion hubs
         // test
@@ -97,7 +96,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void incrementPosition(double increment) {
-
         position = MathUtils.clamp(position + increment, wMin, wMax);
         wrist.setPosition(scale(position));
     }

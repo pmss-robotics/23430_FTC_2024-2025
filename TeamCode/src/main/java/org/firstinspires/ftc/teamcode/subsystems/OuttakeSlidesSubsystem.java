@@ -6,6 +6,9 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -13,15 +16,18 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.States;
 
+import java.util.Objects;
+
 // tuning guide: https://docs.google.com/document/d/1tyWrXDfMidwYyP_5H4mZyVgaEswhOC35gvdmP-V-5hA/edit#heading=h.61g9ixenznbx
 @Config
 public class OuttakeSlidesSubsystem extends SubsystemBase {
 
-    private MotorGroup extensions;
+    private DcMotorEx leftExtension;
+    private DcMotorEx rightExtension;
     private Telemetry telemetry;
-    public static double P = 0, I = 0, D = 0;
-    public static double kSpring = 0;
-    public static int pHome = 0, pSpecimen = 0, pBucket = 0, pStart = 0;
+    public static double P = 0.005, I = 0, D = 0;
+    public static double kSpring = 0.02;
+    public static int pHome = 0, pSpecimen = 0, pBucket = 4200, pStart = 0;
     public static int target = 0;
     public PIDController pidController;
     private VoltageSensor voltageSensor;
@@ -31,25 +37,34 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
         this.telemetry = telemetry;
         currentState = States.OuttakeExtension.home;
 
-        MotorEx leftExtension = new MotorEx(hardwareMap, "outtake left");
-        MotorEx rightExtension = new MotorEx(hardwareMap, "outtake right");
-        rightExtension.setInverted(true);
-        extensions = new MotorGroup(leftExtension, rightExtension);
-        extensions.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        extensions.stopAndResetEncoder();
+        leftExtension = hardwareMap.get(DcMotorEx.class, "slideLeft");
+        rightExtension = hardwareMap.get(DcMotorEx.class, "slideRight");
+        leftExtension.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
 
         pidController = new PIDController(P, I, D);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
     }
     @Override
     public void periodic() {
-        telemetry.addData("Extension Target: ", target);
-        telemetry.addData("Extension Pos: ", extensions.getCurrentPosition());
-        telemetry.update();
+        if (Objects.nonNull(leftExtension.getCurrentPosition())) {
+            telemetry.addData("Extension Target: ", target);
+            telemetry.addData("Extension Pos: ", leftExtension.getCurrentPosition());
+            telemetry.addData("Extension state: ", currentState);
+            telemetry.update();
+        }
     }
 
     public void holdPosition() {
-        extensions.set(calculate());
+        leftExtension.setPower(calculate());
+        rightExtension.setPower(calculate());
     }
 
     public void moveTo(int target) {
@@ -58,16 +73,16 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     }
 
     public void manual(double power) {
-        extensions.set(calculate() + power);
-        target = extensions.getCurrentPosition();
+        leftExtension.setPower(calculate() + power);
+        rightExtension.setPower(calculate() + power);
+        target = leftExtension.getCurrentPosition();
     }
 
     private double calculate() {
         pidController.setPID(P,I,D);
-        int current = extensions.getCurrentPosition();
+        int current = leftExtension.getCurrentPosition();
 
-        double power = kSpring - pidController.calculate(current, target);
-        // we are subtracting the PID since the springs are constantly trying to extend the arm
+        double power = pidController.calculate(current, target)+kSpring;
         power /= voltageSensor.getVoltage();
 
         telemetry.addData("Extension Power:", power);
