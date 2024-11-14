@@ -50,7 +50,7 @@ public class Blue_Bucket_Autonomous extends CommandOpMode {
                 .strafeToLinearHeading(new Vector2d(54.5, 54.5), Math.PI/4)
                 .waitSeconds(3)
                 .strafeToLinearHeading(new Vector2d(34, 10), 0)
-//                .strafeToLinearHeading(new Vector2d(35, -60), Math.PI)
+//                .strafeToLinearHeading(new Vector2d(-35, 60), 0)
                 .build();
         Command trajectory = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
