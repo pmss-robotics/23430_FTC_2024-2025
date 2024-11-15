@@ -34,9 +34,9 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     private States.Outtake currentOuttakeState;
 
-    public static int pHome = 280, pStart = 0, pBucket = 160; // in degrees
+    public static int pHome = 280, pStart = 0, pBucket = 170; // in degrees
     public static int wMin = 0, wMax = 0;
-    public static int dropTime = 800;
+    public static int dropTime = 1000;
 
     public OuttakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters

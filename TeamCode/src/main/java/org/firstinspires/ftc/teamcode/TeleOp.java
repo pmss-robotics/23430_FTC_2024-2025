@@ -32,7 +32,7 @@ import org.firstinspires.ftc.teamcode.util.States;
 public class TeleOp extends CommandOpMode {
     // probably need to change later.
     public static double servoIncrement = 7;
-    public static double intakeSlideIncrement = 0.1;
+    public static double intakeSlideIncrement = 2;
     public static double servoSpeed = 1;
     public static double driveSpeed = 1;
     public static double rotationSpeed = 1;
@@ -122,12 +122,12 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> intakeSlides.toggleIntakeSlidesState())
         );
 
-        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.2)
+        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand(
                         () -> intakeSlides.incrementPosition(-intakeSlideIncrement),
                         intakeSlides
                 ));
-        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2)
+        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand(
                         () -> intakeSlides.incrementPosition(intakeSlideIncrement),
                         intakeSlides
