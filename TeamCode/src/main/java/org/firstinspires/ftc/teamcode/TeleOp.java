@@ -32,6 +32,7 @@ import org.firstinspires.ftc.teamcode.util.States;
 public class TeleOp extends CommandOpMode {
     // probably need to change later.
     public static double servoIncrement = 7;
+    public static double intakeSlideIncrement = 0.1;
     public static double servoSpeed = 1;
     public static double driveSpeed = 1;
     public static double rotationSpeed = 1;
@@ -67,10 +68,10 @@ public class TeleOp extends CommandOpMode {
         // intake extenstion
         // outtake macro positions
         DriveCommand driveCommand = new DriveCommand(drive,
-                () -> -driver.getLeftX()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
-                () -> driver.getLeftY()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
-                () -> -driver.getRightX()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
-                false);
+                () -> -driver.getLeftX(),
+                () -> driver.getLeftY(),
+                () -> -driver.getRightX(),
+                true);
 
         outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
         outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
@@ -123,12 +124,12 @@ public class TeleOp extends CommandOpMode {
 
         new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.2)
                 .whileActiveContinuous(new InstantCommand(
-                        () -> intakeSlides.incrementPosition(-servoIncrement),
+                        () -> intakeSlides.incrementPosition(-intakeSlideIncrement),
                         intakeSlides
                 ));
         new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2)
                 .whileActiveContinuous(new InstantCommand(
-                        () -> intakeSlides.incrementPosition(servoIncrement),
+                        () -> intakeSlides.incrementPosition(intakeSlideIncrement),
                         intakeSlides
                 ));
 
