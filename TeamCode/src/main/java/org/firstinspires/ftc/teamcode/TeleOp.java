@@ -38,7 +38,7 @@ public class TeleOp extends CommandOpMode {
     public static double rotationSpeed = 1;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
-    public static double outtakeResetPower = 0;
+    public static double outtakeResetPower = 0.4;
 
     States.Global currentState = States.Global.home;
 
@@ -78,7 +78,7 @@ public class TeleOp extends CommandOpMode {
         outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
 
         intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
-        intakeSlides.setDefaultCommand(new RunCommand(() -> intakeSlides.holdPosition()));
+        intakeSlides.setDefaultCommand(new RunCommand(() -> intakeSlides.holdPosition(), intakeSlides));
 /*      try {
             vision = new VisionSubsystem(hardwareMap, telemetry);
         } catch (InterruptedException e) {
@@ -137,7 +137,7 @@ public class TeleOp extends CommandOpMode {
 
         new Trigger(()-> tools.getLeftY() > 0.1 || tools.getLeftY() < -0.1)
                 .whileActiveContinuous(new InstantCommand (
-                        () -> outtakeSlides.manual(tools.getLeftY()),
+                        () -> outtakeSlides.manual(tools.getLeftY()*outtakeResetPower),
                         outtakeSlides
                 ));
 
