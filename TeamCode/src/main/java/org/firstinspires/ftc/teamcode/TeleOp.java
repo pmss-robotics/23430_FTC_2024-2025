@@ -35,6 +35,8 @@ public class TeleOp extends CommandOpMode {
     public static double intakeSlideIncrement = 2;
     public static double servoSpeed = 1;
     public static double driveSpeed = 1;
+    public static double fast = 1;
+    public static double slow = 0.5;
     public static double rotationSpeed = 1;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
@@ -64,7 +66,7 @@ public class TeleOp extends CommandOpMode {
         // disturbing the structure of the CommandOpMode. The aim is to define bindings in this
         // initialize() method through Commands and these will be looped and acted in the (hidden)
         // run() loop.
-        driveSpeed = 1;
+        driveSpeed = fast;
         // macros to bring thing up and down
         // intake extenstion
         // outtake macro positions
@@ -104,8 +106,8 @@ public class TeleOp extends CommandOpMode {
 
         //slower driving
         new GamepadButton(driver, GamepadKeys.Button.B).toggleWhenPressed(
-                () -> driveSpeed = 0.5,
-                () -> driveSpeed = 1
+                () -> driveSpeed = slow,
+                () -> driveSpeed = fast
         );
 
         // intake rotation
