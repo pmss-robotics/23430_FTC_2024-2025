@@ -135,7 +135,7 @@ public class TeleOp extends CommandOpMode {
                         intakeSlides
                 ));
 
-        new Trigger(()-> tools.getLeftY() < -0.1)
+        new Trigger(()-> tools.getLeftY() > 0.1 || tools.getLeftY() < -0.1)
                 .whileActiveContinuous(new InstantCommand (
                         () -> outtakeSlides.manual(tools.getLeftY()),
                         outtakeSlides
