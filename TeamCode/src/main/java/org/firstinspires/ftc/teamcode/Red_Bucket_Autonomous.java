@@ -102,6 +102,7 @@ public class Red_Bucket_Autonomous extends CommandOpMode {
                                 new ParallelCommandGroup(
                                         new SequentialCommandGroup(new WaitCommand(11600), sample),
                                         new SequentialCommandGroup(new WaitCommand(14300), bucket)
+                                        //TODO level 1 ascent
                                 )
                         )
                 )
