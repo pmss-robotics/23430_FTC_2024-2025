@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
 
 @Config
 public class DriveSubsystem extends SubsystemBase {
-    private final PinpointDrive drive;
+    public final PinpointDrive drive;
     private Telemetry telemetry;
     public DriveSubsystem(PinpointDrive drive, Telemetry telemetry) {
         this.drive = drive;

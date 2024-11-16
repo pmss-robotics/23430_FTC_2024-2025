@@ -97,6 +97,11 @@ public class TeleOp extends CommandOpMode {
                 swapState(States.Global.home)
         );
 */
+        // IMU reset
+        new GamepadButton(driver, GamepadKeys.Button.X).whenPressed(
+                new InstantCommand(() -> drive.drive.pinpoint.recalibrateIMU())
+        );
+
         // intake rotation
         new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(

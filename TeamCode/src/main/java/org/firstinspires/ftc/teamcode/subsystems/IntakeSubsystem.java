@@ -31,11 +31,11 @@ public class IntakeSubsystem extends SubsystemBase {
     // wrist rotates intake and spinners are rollers
 
     public static double W_target = 40; // in degrees
-    public static double position = 0;
+    public static double position = 60;
     private States.Intake currentIntakeState;
 
     public static int pHome = 0, pStart = 0, pIntake = 0, pTransfer = 0; // in degrees
-    public static int wMin = 0, wMax = 180;
+    public static int wMin = 40, wMax = 190;
 
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
