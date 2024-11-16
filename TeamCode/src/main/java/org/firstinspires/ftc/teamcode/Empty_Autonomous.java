@@ -36,7 +36,7 @@ public class Empty_Autonomous extends CommandOpMode {
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(38, 61.5,-Math.PI/2)), telemetry);
+        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0,0,0)), telemetry);
 
         // TODO: create wrappers for trajectory following maybe possibly
         // this RunCommand Loop might be useless
