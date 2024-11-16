@@ -25,10 +25,11 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     private DcMotorEx leftExtension;
     private DcMotorEx rightExtension;
     private Telemetry telemetry;
-    public static double P = 0.005, I = 0, D = 0;
+    public static double P = 0.005, I = 0, D = 0; // p: 0.021, i: 0.003
     public static double kSpring = 0;
     public static int pHome = 0, pSpecimen = 0, pBucket = 4200, pStart = 0;
     public static int target = 0;
+//    public static double resetPower = 0;
     public PIDController pidController;
     private VoltageSensor voltageSensor;
     private States.OuttakeExtension currentState;
@@ -105,6 +106,14 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
                 currentState = States.OuttakeExtension.home;
                 break;
         }
+    }
+
+
+    public void resetEncoder () {
+        leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setState(States.OuttakeExtension state) {

@@ -38,6 +38,7 @@ public class TeleOp extends CommandOpMode {
     public static double rotationSpeed = 1;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
+    public static double outtakeResetPower = 0;
 
     States.Global currentState = States.Global.home;
 
@@ -133,6 +134,16 @@ public class TeleOp extends CommandOpMode {
                         () -> intakeSlides.incrementPosition(intakeSlideIncrement),
                         intakeSlides
                 ));
+
+        new Trigger(()-> tools.getLeftY() < -0.1)
+                .whileActiveContinuous(new InstantCommand (
+                        () -> outtakeSlides.manual(tools.getLeftY()),
+                        outtakeSlides
+                ));
+
+        new GamepadButton(tools, GamepadKeys.Button.DPAD_DOWN).whenPressed(
+                new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides)
+        );
 
         // toggle outtake system
         new GamepadButton(tools, GamepadKeys.Button.Y).whenPressed(
