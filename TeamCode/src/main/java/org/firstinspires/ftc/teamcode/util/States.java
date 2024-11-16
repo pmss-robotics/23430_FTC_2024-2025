@@ -15,7 +15,8 @@ public class States {
     public enum IntakeExtension {
         start,
         home,
-        intake
+        intake,
+        middle
     }
 
     public enum Intake {

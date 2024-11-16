@@ -26,7 +26,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     private DcMotorEx rightExtension;
     private Telemetry telemetry;
     public static double P = 0.005, I = 0, D = 0;
-    public static double kSpring = 0.02;
+    public static double kSpring = 0;
     public static int pHome = 0, pSpecimen = 0, pBucket = 4200, pStart = 0;
     public static int target = 0;
     public PIDController pidController;

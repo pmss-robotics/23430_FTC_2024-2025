@@ -77,6 +77,7 @@ public class TeleOp extends CommandOpMode {
         outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
 
         intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
+        intakeSlides.setDefaultCommand(new RunCommand(() -> intakeSlides.holdPosition()));
 /*      try {
             vision = new VisionSubsystem(hardwareMap, telemetry);
         } catch (InterruptedException e) {

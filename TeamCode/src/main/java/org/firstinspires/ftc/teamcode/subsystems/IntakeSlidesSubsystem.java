@@ -68,10 +68,12 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         position = MathUtils.clamp(position + increment, pHome, pIntake);
         intakeSlideL.setPosition(scale(position));
         intakeSlideR.setPosition(scale(position));
+        currentSlidesState = States.IntakeExtension.middle;
     }
 
     public void toggleIntakeSlidesState() {
         switch (currentSlidesState) {
+            case middle:
             case intake:
                 intakeSlideL.setPosition(pHome);
                 intakeSlideR.setPosition(pHome);
@@ -83,6 +85,11 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
                 currentSlidesState = States.IntakeExtension.intake;
                 break;
         }
+    }
+
+    public void holdPosition () {
+        intakeSlideL.setPosition(scale(position));
+        intakeSlideR.setPosition(scale(position));
     }
 
     public void setIntakeSlidesState(States.IntakeExtension state) {
