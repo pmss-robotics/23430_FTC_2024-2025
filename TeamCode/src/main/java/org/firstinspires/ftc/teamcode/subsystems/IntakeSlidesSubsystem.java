@@ -34,8 +34,8 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     public static double position = 0;
 
     private States.IntakeExtension currentSlidesState;
-    public static int pIntake = 40;
-    public static int pHome = 0;
+    public static int pIntake = 130;
+    public static int pHome = 76;
 
     public IntakeSlidesSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters

@@ -41,7 +41,7 @@ public class Red_Bucket_Autonomous extends CommandOpMode {
         Action trajectoryAction = drive.actionBuilder(drive.getPose())
                 .splineTo(new Vector2d(-54.5, -54.5), 5*Math.PI/4)
                 .waitSeconds(3)
-                .strafeToLinearHeading(new Vector2d(-58, -45), -Math.PI/2)
+/*                .strafeToLinearHeading(new Vector2d(-58, -45), -Math.PI/2)
                 .waitSeconds(2)
                 .strafeToLinearHeading(new Vector2d(-54.5, -54.5), 5*Math.PI/4)
                 .waitSeconds(3)
@@ -49,7 +49,7 @@ public class Red_Bucket_Autonomous extends CommandOpMode {
                 .waitSeconds(2)
                 .strafeToLinearHeading(new Vector2d(-54.5, -54.5), 5*Math.PI/4)
                 .waitSeconds(3)
-                .strafeToLinearHeading(new Vector2d(-34, -10), Math.PI)
+                .strafeToLinearHeading(new Vector2d(-34, -10), Math.PI) */
 //                .strafeToLinearHeading(new Vector2d(35, -60), Math.PI)
                 .build();
         Command trajectory = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
@@ -69,11 +69,12 @@ public class Red_Bucket_Autonomous extends CommandOpMode {
         OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
 
         Command bucket = new SequentialCommandGroup(
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
-                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
+                new InstantCommand(() -> intake.setPosition(60), intake),
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket), outtakeSlides),
+                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket), outtake),
                 new WaitCommand(OuttakeSubsystem.dropTime),
-                new InstantCommand(() -> outtake.toggleWristState()),
-                new InstantCommand(() -> outtakeSlides.toggleState())
+                new InstantCommand(() -> outtake.toggleWristState(), outtake),
+                new InstantCommand(() -> outtakeSlides.toggleState(), outtakeSlides)
         );
 
         Command sample = new SequentialCommandGroup(
@@ -94,8 +95,8 @@ public class Red_Bucket_Autonomous extends CommandOpMode {
         );
 
         Command auto = new ParallelCommandGroup(
-                new SequentialCommandGroup(new WaitCommand(1050), bucket),
-                new ParallelCommandGroup(
+                new SequentialCommandGroup(new WaitCommand(1050), bucket)
+/*                new ParallelCommandGroup(
                         new SequentialCommandGroup(new WaitCommand(5050), sample),
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(new WaitCommand(7700), bucket),
@@ -105,7 +106,7 @@ public class Red_Bucket_Autonomous extends CommandOpMode {
                                         //TODO level 1 ascent
                                 )
                         )
-                )
+                )*/
         );
         schedule(new ParallelCommandGroup(trajectory,auto));
         // TODO: create wrappers for trajectory following maybe possibly
