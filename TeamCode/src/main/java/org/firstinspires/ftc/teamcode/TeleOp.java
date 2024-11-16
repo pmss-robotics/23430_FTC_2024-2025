@@ -64,14 +64,14 @@ public class TeleOp extends CommandOpMode {
         // disturbing the structure of the CommandOpMode. The aim is to define bindings in this
         // initialize() method through Commands and these will be looped and acted in the (hidden)
         // run() loop.
-
+        driveSpeed = 1;
         // macros to bring thing up and down
         // intake extenstion
         // outtake macro positions
         DriveCommand driveCommand = new DriveCommand(drive,
-                () -> -driver.getLeftX(),
-                () -> driver.getLeftY(),
-                () -> -driver.getRightX(),
+                () -> -driver.getLeftX()*driveSpeed,
+                () -> driver.getLeftY()*driveSpeed,
+                () -> -driver.getRightX()*driveSpeed,
                 true);
 
         outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
@@ -100,6 +100,12 @@ public class TeleOp extends CommandOpMode {
         // IMU reset
         new GamepadButton(driver, GamepadKeys.Button.X).whenPressed(
                 new InstantCommand(() -> drive.drive.pinpoint.recalibrateIMU())
+        );
+
+        //slower driving
+        new GamepadButton(driver, GamepadKeys.Button.B).toggleWhenPressed(
+                () -> driveSpeed = 0.5,
+                () -> driveSpeed = 1
         );
 
         // intake rotation
