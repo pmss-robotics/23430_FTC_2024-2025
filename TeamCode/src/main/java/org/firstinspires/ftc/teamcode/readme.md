@@ -1,11 +1,11 @@
-## PMSS robotics specific information
+## Port Moody Robotics Specific Information
 Besides the FTC SDK, the following third party libraries currently being used:
 I've linked the docs for further reading.
 * [RoadRunner 1.0](https://rr.brott.dev/docs)
 * [FTClib V2.10](https://docs.ftclib.org/ftclib)
 
 ### Connectivity / Telemetry
-* [FTC dashboard](https://acmerobotics.github.io/ftc-dashboard/)
+* [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard/)
 
 For debugging and tuning, the driver hub provides telemetry that can receive data from the robot
 in the form of logs and more 'stationary' key & value updates (for example: "Time: ", 00:12:01").
@@ -13,7 +13,7 @@ in the form of logs and more 'stationary' key & value updates (for example: "Tim
 FTC dashboard extends this functionality onto a web app. It allows for realtime variable updates,
 graphing of telemetry data, and camera streams. You can read more about it in their docs.
 
-To use it, got to this url `192.168.43.1:8080/dash` while connected to the robot's wifi network.
+To use it, got to this url `192.168.43.1:8080/dash` while connected to the robot's Wi-Fi network.
 
 
 ### Structure
@@ -43,7 +43,7 @@ process for adding OpModes is straightforward.
 
 The easiest way to create your own OpMode is to copy a Sample OpMode and make it your own.
 
-Sample opmodes exist in the FtcRobotController module.
+Sample OpModes exist in the FtcRobotController module.
 To locate these samples, find the FtcRobotController module in the "Project/Android" tab.
 
 Expand the following tree elements:
