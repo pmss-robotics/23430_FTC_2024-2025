@@ -32,11 +32,15 @@ import org.firstinspires.ftc.teamcode.util.States;
 public class TeleOp extends CommandOpMode {
     // probably need to change later.
     public static double servoIncrement = 7;
+    public static double intakeSlideIncrement = 2;
     public static double servoSpeed = 1;
     public static double driveSpeed = 1;
+    public static double fast = 1;
+    public static double slow = 0.5;
     public static double rotationSpeed = 1;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
+    public static double outtakeResetPower = 0.4;
 
     States.Global currentState = States.Global.home;
 
@@ -62,20 +66,21 @@ public class TeleOp extends CommandOpMode {
         // disturbing the structure of the CommandOpMode. The aim is to define bindings in this
         // initialize() method through Commands and these will be looped and acted in the (hidden)
         // run() loop.
-
+        driveSpeed = fast;
         // macros to bring thing up and down
         // intake extenstion
         // outtake macro positions
         DriveCommand driveCommand = new DriveCommand(drive,
-                () -> -driver.getLeftX()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
-                () -> driver.getLeftY()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
-                () -> -driver.getRightX()*driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
-                false);
+                () -> -driver.getLeftX()*driveSpeed,
+                () -> driver.getLeftY()*driveSpeed,
+                () -> -driver.getRightX()*driveSpeed,
+                true);
 
         outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
         outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
 
         intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
+        intakeSlides.setDefaultCommand(new RunCommand(() -> intakeSlides.holdPosition(), intakeSlides));
 /*      try {
             vision = new VisionSubsystem(hardwareMap, telemetry);
         } catch (InterruptedException e) {
@@ -94,6 +99,17 @@ public class TeleOp extends CommandOpMode {
                 swapState(States.Global.home)
         );
 */
+        // IMU reset
+        new GamepadButton(driver, GamepadKeys.Button.X).whenPressed(
+                new InstantCommand(() -> drive.drive.pinpoint.recalibrateIMU())
+        );
+
+        //slower driving
+        new GamepadButton(driver, GamepadKeys.Button.B).toggleWhenPressed(
+                () -> driveSpeed = slow,
+                () -> driveSpeed = fast
+        );
+
         // intake rotation
         new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(
@@ -121,16 +137,26 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> intakeSlides.toggleIntakeSlidesState())
         );
 
-        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.2)
+        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand(
-                        () -> intakeSlides.incrementPosition(-servoIncrement),
+                        () -> intakeSlides.incrementPosition(-intakeSlideIncrement),
                         intakeSlides
                 ));
-        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.2)
+        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand(
-                        () -> intakeSlides.incrementPosition(servoIncrement),
+                        () -> intakeSlides.incrementPosition(intakeSlideIncrement),
                         intakeSlides
                 ));
+
+        new Trigger(()-> tools.getLeftY() > 0.1 || tools.getLeftY() < -0.1)
+                .whileActiveContinuous(new InstantCommand (
+                        () -> outtakeSlides.manual(tools.getLeftY()*outtakeResetPower),
+                        outtakeSlides
+                ));
+
+        new GamepadButton(tools, GamepadKeys.Button.DPAD_DOWN).whenPressed(
+                new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides)
+        );
 
         // toggle outtake system
         new GamepadButton(tools, GamepadKeys.Button.Y).whenPressed(

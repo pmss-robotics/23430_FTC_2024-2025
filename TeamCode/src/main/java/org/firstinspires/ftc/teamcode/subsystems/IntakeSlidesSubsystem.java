@@ -34,8 +34,8 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     public static double position = 0;
 
     private States.IntakeExtension currentSlidesState;
-    public static int pIntake = 36;
-    public static int pHome = 0;
+    public static int pIntake = 130;
+    public static int pHome = 76;
 
     public IntakeSlidesSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
@@ -68,10 +68,12 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         position = MathUtils.clamp(position + increment, pHome, pIntake);
         intakeSlideL.setPosition(scale(position));
         intakeSlideR.setPosition(scale(position));
+        currentSlidesState = States.IntakeExtension.middle;
     }
 
     public void toggleIntakeSlidesState() {
         switch (currentSlidesState) {
+            case middle:
             case intake:
                 intakeSlideL.setPosition(pHome);
                 intakeSlideR.setPosition(pHome);
@@ -83,6 +85,11 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
                 currentSlidesState = States.IntakeExtension.intake;
                 break;
         }
+    }
+
+    public void holdPosition () {
+        intakeSlideL.setPosition(scale(position));
+        intakeSlideR.setPosition(scale(position));
     }
 
     public void setIntakeSlidesState(States.IntakeExtension state) {
