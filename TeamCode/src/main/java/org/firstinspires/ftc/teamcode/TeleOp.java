@@ -41,6 +41,7 @@ public class TeleOp extends CommandOpMode {
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
     public static double outtakeResetPower = 0.4;
+    public static double ascentTiltPower = 0.2;
 
     States.Global currentState = States.Global.home;
 
@@ -48,6 +49,7 @@ public class TeleOp extends CommandOpMode {
     DriveSubsystem drive;
     OuttakeSlidesSubsystem outtakeSlides;
     IntakeSlidesSubsystem intakeSlides;
+    AscentSubsystem ascent;
     VisionSubsystem vision;
     @Override
     public void initialize() {
@@ -91,6 +93,9 @@ public class TeleOp extends CommandOpMode {
 
         OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
 
+        ascent = new AscentSubsystem(hardwareMap, telemetry);
+        ascent.setDefaultCommand(new RunCommand(ascent::holdPosition, ascent));
+
         // reset everything, probably unnecessary
 /*      SequentialCommandGroup returnHome = new SequentialCommandGroup(
                 new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.home), intakeSlides),
@@ -104,7 +109,7 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> drive.drive.pinpoint.recalibrateIMU())
         );
 
-        //slower driving
+        // slower driving
         new GamepadButton(driver, GamepadKeys.Button.B).toggleWhenPressed(
                 () -> driveSpeed = slow,
                 () -> driveSpeed = fast
@@ -172,7 +177,12 @@ public class TeleOp extends CommandOpMode {
                 )
         );
 
-        // TODO transfer system
+        // ascent tilt
+        new Trigger(()-> tools.getRightY() > 0.1 || tools.getRightY() < -0.1)
+                .whileActiveContinuous(new InstantCommand (
+                        () -> ascent.manual(tools.getRightY()*ascentTiltPower),
+                        ascent
+                ));
 
         schedule(new RunCommand(() -> {
             TelemetryPacket packet = new TelemetryPacket();

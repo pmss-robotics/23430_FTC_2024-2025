@@ -40,6 +40,12 @@ public class States {
         bucket
     }
 
+    public enum Ascent {
+        start,
+        home,
+        ascent
+    }
+
 
 
 }
