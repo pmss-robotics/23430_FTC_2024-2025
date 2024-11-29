@@ -137,11 +137,6 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
 
-        // toggle intake slides
-        new GamepadButton(tools, GamepadKeys.Button.X).whenPressed(
-                new InstantCommand(() -> intakeSlides.toggleIntakeSlidesState())
-        );
-
         new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand(
                         () -> intakeSlides.incrementPosition(-intakeSlideIncrement),
@@ -164,17 +159,8 @@ public class TeleOp extends CommandOpMode {
         );
 
         // toggle outtake system
-        new GamepadButton(tools, GamepadKeys.Button.Y).whenPressed(
-                new ConditionalCommand(
-                        new InstantCommand(() -> outtakeSlides.toggleState()),
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
-                                new WaitCommand(OuttakeSubsystem.dropTime),
-                                new InstantCommand(() -> outtake.toggleWristState()),
-                                new InstantCommand(() -> outtakeSlides.toggleState())
-                        ),
-                        () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
-                )
+        new GamepadButton(tools, GamepadKeys.Button.X).whenPressed(
+                new InstantCommand(() -> outtake.toggleSpecimenOutput())
         );
 
         // ascent tilt

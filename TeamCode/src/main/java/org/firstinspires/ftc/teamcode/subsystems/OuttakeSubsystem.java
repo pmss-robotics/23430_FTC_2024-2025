@@ -34,7 +34,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     private States.Outtake currentOuttakeState;
 
-    public static int pHome = 280, pStart = 0, pBucket = 170; // in degrees
+    public static int pHome = 280, pStart = 0, pBucket = 170, pSpecimen = 200; // in degrees
     public static int wMin = 0, wMax = 0;
     public static int dropTime = 1000;
 
@@ -65,6 +65,21 @@ public class OuttakeSubsystem extends SubsystemBase {
                 currentOuttakeState = States.Outtake.bucket;
                 break;
             case bucket:
+                wrist.setPosition(scale(pHome));
+                position = pHome;
+                currentOuttakeState = States.Outtake.home;
+                break;
+        }
+    }
+
+    public void toggleSpecimenOutput() {
+        switch (currentOuttakeState) {
+            case home:
+                wrist.setPosition(scale(pSpecimen));
+                position = pSpecimen;
+                currentOuttakeState = States.Outtake.specimen;
+                break;
+            case specimen:
                 wrist.setPosition(scale(pHome));
                 position = pHome;
                 currentOuttakeState = States.Outtake.home;

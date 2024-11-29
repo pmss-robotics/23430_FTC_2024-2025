@@ -37,7 +37,8 @@ public class States {
     public enum Outtake {
         start,
         home,
-        bucket
+        bucket,
+        specimen
     }
 
     public enum Ascent {
