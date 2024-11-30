@@ -40,7 +40,7 @@ public class TeleOp extends CommandOpMode {
     public static double rotationSpeed = 1;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
-    public static double outtakeResetPower = 0.4;
+    public static double outtakeResetPower = 0.6;
     public static double ascentTiltPower = 0.2;
 
     States.Global currentState = States.Global.home;

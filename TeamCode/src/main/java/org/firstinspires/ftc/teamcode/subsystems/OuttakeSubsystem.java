@@ -34,7 +34,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     private States.Outtake currentOuttakeState;
 
-    public static int pHome = 280, pStart = 0, pBucket = 170, pSpecimen = 200; // in degrees
+    public static int pHome = 280, pStart = 0, pBucket = 170, pSpecimen = 190; // in degrees
     public static int wMin = 0, wMax = 0;
     public static int dropTime = 1000;
 
