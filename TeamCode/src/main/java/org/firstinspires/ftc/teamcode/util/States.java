@@ -31,7 +31,9 @@ public class States {
         start,
         home,
         bucket,
+        specimen0,
         specimen,
+        player,
         ascent0,
         ascent
     }
