@@ -3,9 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -27,7 +24,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     private Telemetry telemetry;
     public static double P = 0.01, I = 0, D = 0; // p: 0.021, i: 0.003
     public static double kSpring = 0;
-    public static int pHome = 0, pSpecimen0 = 0, pSpecimen = 0, pPlayer = 0, pBucket = 4200, pStart = 0, pAscent0 = 0, pAscent = 0;
+    public static int pHome = 0, pSpecimen0 = 0, pSpecimen1 = 0, pSpecimen = 0, pPlayer = 0, pBucket = 4200, pStart = 0, pAscent0 = 0, pAscent = 0;
     public static int target = 0;
     // public static double resetPower = 0;
     public PIDController pidController;
@@ -100,8 +97,32 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
                 moveTo(pBucket);
                 currentState = States.OuttakeExtension.bucket;
                 break;
-            case specimen:
             case bucket:
+                moveTo(pHome);
+                currentState = States.OuttakeExtension.home;
+                break;
+        }
+    }
+
+    public void toggleSpecimen() {
+        switch (currentState) {
+            case home:
+                moveTo(pPlayer);
+                currentState = States.OuttakeExtension.player;
+                break;
+            case player:
+                moveTo(pSpecimen0);
+                currentState = States.OuttakeExtension.specimen0;
+                break;
+            case specimen0:
+                moveTo(pSpecimen1);
+                currentState = States.OuttakeExtension.specimen1;
+                break;
+            case specimen1:
+                moveTo(pSpecimen);
+                currentState = States.OuttakeExtension.specimen;
+                break;
+            case specimen:
                 moveTo(pHome);
                 currentState = States.OuttakeExtension.home;
                 break;
@@ -124,7 +145,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
                 moveTo(pBucket);
                 break;
             case specimen: //maybe change later so it works
-                moveTo(pSpecimen);
+                moveTo(pSpecimen1);
                 break;
             case home:
                 moveTo(pHome);
