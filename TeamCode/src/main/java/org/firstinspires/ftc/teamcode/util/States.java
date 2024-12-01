@@ -32,13 +32,16 @@ public class States {
         home,
         bucket,
         specimen,
+        ascent0,
+        ascent
     }
 
     public enum Outtake {
         start,
         home,
         bucket,
-        specimen
+        specimen,
+        ascent
     }
 
     public enum Ascent {

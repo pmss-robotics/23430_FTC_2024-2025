@@ -159,16 +159,31 @@ public class TeleOp extends CommandOpMode {
         );
 
         // toggle outtake system
+        new GamepadButton(tools, GamepadKeys.Button.Y).whenPressed(
+                new ConditionalCommand(
+                        new InstantCommand(() -> outtakeSlides.toggleState()),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
+                                new WaitCommand(OuttakeSubsystem.dropTime),
+                                new InstantCommand(() -> outtake.toggleWristState()),
+                                new InstantCommand(() -> outtakeSlides.toggleState())
+                        ),
+                        () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
+                )
+        );
         new GamepadButton(tools, GamepadKeys.Button.X).whenPressed(
                 new InstantCommand(() -> outtake.toggleSpecimenOutput())
         );
 
-        // ascent tilt
+        // ascent
         new Trigger(()-> tools.getRightY() > 0.1 || tools.getRightY() < -0.1)
                 .whileActiveContinuous(new InstantCommand (
                         () -> ascent.manual(tools.getRightY()*ascentTiltPower),
                         ascent
                 ));
+        new GamepadButton(tools, GamepadKeys.Button.DPAD_UP).whenPressed(
+                new InstantCommand(() -> outtake.toggleAscentPos())
+        );
 
         schedule(new RunCommand(() -> {
             TelemetryPacket packet = new TelemetryPacket();
