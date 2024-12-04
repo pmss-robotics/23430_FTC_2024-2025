@@ -30,12 +30,12 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     ServoImplEx intakeSlideR;
     // wrist moves hand and finger along an axis, wrist just moves fingers, etc.
 
-    public static double F_target = 0; // in degrees
-    public static double position = 0;
+    public static double F_target = 110; // in degrees
+    public static double position = 110;
 
     private States.IntakeExtension currentSlidesState;
-    public static int pIntake = 130;
-    public static int pHome = 76;
+    public static int pIntake = 200;
+    public static int pHome = 105;
 
     public IntakeSlidesSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
