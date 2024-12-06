@@ -73,7 +73,7 @@ public class Blue_Bucket_Autonomous extends CommandOpMode {
                 new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
                 new WaitCommand(OuttakeSubsystem.dropTime),
                 new InstantCommand(() -> outtake.toggleWristState()),
-                new InstantCommand(() -> outtakeSlides.toggleState())
+                new InstantCommand(() -> outtakeSlides.toggleBucket())
         );
 
         Command sample = new SequentialCommandGroup(

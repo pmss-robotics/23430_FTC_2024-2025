@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -74,7 +73,7 @@ public class Red_Bucket_Autonomous extends CommandOpMode {
                 new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket), outtake),
                 new WaitCommand(OuttakeSubsystem.dropTime),
                 new InstantCommand(() -> outtake.toggleWristState(), outtake),
-                new InstantCommand(() -> outtakeSlides.toggleState(), outtakeSlides)
+                new InstantCommand(() -> outtakeSlides.toggleBucket(), outtakeSlides)
         );
 
         Command sample = new SequentialCommandGroup(

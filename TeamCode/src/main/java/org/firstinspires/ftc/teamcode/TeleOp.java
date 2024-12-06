@@ -5,12 +5,10 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
-import com.arcrobotics.ftclib.command.SelectCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
@@ -19,10 +17,8 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.ActionCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.drive.Drawing;
-import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystems.*;
 import org.firstinspires.ftc.teamcode.util.States;
@@ -161,12 +157,14 @@ public class TeleOp extends CommandOpMode {
         // toggle outtake system
         new GamepadButton(tools, GamepadKeys.Button.Y).whenPressed(
                 new ConditionalCommand(
-                        new InstantCommand(() -> outtakeSlides.toggleState()),
+                        new InstantCommand(() -> outtakeSlides.toggleBucket()),
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
                                 new WaitCommand(OuttakeSubsystem.dropTime),
                                 new InstantCommand(() -> outtake.toggleWristState()),
-                                new InstantCommand(() -> outtakeSlides.toggleState())
+                                new InstantCommand(() -> outtakeSlides.toggleBucket()),
+                                new WaitCommand(OuttakeSlidesSubsystem.resetWait),
+                                new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides)
                         ),
                         () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
                 )

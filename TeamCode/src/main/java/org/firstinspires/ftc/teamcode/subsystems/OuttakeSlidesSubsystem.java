@@ -30,6 +30,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     public PIDController pidController;
     private VoltageSensor voltageSensor;
     private States.OuttakeExtension currentState;
+    public static int resetWait = 5000;
 
     public OuttakeSlidesSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -91,7 +92,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
         return currentState;
     }
 
-    public void toggleState() {
+    public void toggleBucket() {
         switch (currentState) {
             case home:
                 moveTo(pBucket);
