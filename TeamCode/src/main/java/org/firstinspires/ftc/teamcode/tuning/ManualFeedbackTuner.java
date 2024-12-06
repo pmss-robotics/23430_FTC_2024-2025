@@ -20,8 +20,8 @@ public final class ManualFeedbackTuner extends LinearOpMode {
             while (opModeIsActive()) {
                 Actions.runBlocking(
                         drive.actionBuilder(new Pose2d(0, 0, 0))
-                                .strafeTo( new Vector2d(0, DISTANCE)) //change back to lineToX for forwards and backwards
-                                .strafeTo(new Vector2d(0,0))
+                                .lineToX(DISTANCE) //change back to lineToX for forwards and backwards
+                                .lineToX(0)
                                 .build());
             }
         } else if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
