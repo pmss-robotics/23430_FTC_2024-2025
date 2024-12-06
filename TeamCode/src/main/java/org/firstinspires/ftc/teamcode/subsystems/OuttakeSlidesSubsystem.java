@@ -131,7 +131,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     }
 
 
-    public void resetEncoder () {
+    public void resetEncoder() {
         leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
