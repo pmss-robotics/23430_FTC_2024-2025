@@ -94,7 +94,7 @@ public class Red_Bucket_Autonomous extends CommandOpMode {
         );
 
         Command auto = new ParallelCommandGroup(
-                new SequentialCommandGroup(new WaitCommand(1050), bucket)
+//                new SequentialCommandGroup(new WaitCommand(1050), bucket)
 /*                new ParallelCommandGroup(
                         new SequentialCommandGroup(new WaitCommand(5050), sample),
                         new ParallelCommandGroup(
