@@ -162,27 +162,13 @@ public class TeleOp extends CommandOpMode {
                                 new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
                                 new WaitCommand(OuttakeSubsystem.dropTime),
                                 new InstantCommand(() -> outtake.toggleWristState()),
-                                new InstantCommand(() -> outtakeSlides.toggleBucket()),
-                                new WaitCommand(OuttakeSlidesSubsystem.resetWait),
-                                new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides),
-                                new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides),
-                                new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides)
+                                new InstantCommand(() -> outtakeSlides.toggleBucket())
                         ),
                         () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
                 )
         );
         new GamepadButton(tools, GamepadKeys.Button.X).whenPressed(
-                new InstantCommand(() -> {
-                    outtakeSlides.toggleSpecimen();
-                    if (outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home) {
-                        new SequentialCommandGroup(
-                                new WaitCommand(OuttakeSlidesSubsystem.resetWait),
-                                new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides),
-                                new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides),
-                                new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides)
-                        ).schedule();
-                    }
-                })
+                new InstantCommand(() -> outtakeSlides.toggleSpecimen())
         );
         new GamepadButton(tools, GamepadKeys.Button.DPAD_UP).whenPressed(
                 new InstantCommand(() -> outtake.toggleSpecimenOutput())
