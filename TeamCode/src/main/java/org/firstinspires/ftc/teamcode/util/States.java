@@ -34,6 +34,7 @@ public class States {
         specimen0,
         specimen1,
         specimen,
+        post_specimen,
         player,
         ascent0,
         ascent

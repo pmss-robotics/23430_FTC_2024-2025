@@ -118,12 +118,12 @@ public class TeleOp extends CommandOpMode {
         // intake rotation
         new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(
-                        () -> intake.incrementPosition(-servoIncrement),
+                        () -> intake.incrementPosition(servoIncrement),
                         intake
                 ));
         new GamepadButton(tools, GamepadKeys.Button.RIGHT_BUMPER)
                 .whileHeld(new InstantCommand(
-                        () -> intake.incrementPosition(servoIncrement),
+                        () -> intake.incrementPosition(-servoIncrement),
                         intake
                 ));
 
@@ -172,6 +172,9 @@ public class TeleOp extends CommandOpMode {
                 )
         );
         new GamepadButton(tools, GamepadKeys.Button.X).whenPressed(
+                new InstantCommand(() -> outtakeSlides.toggleSpecimen())
+        );
+        new GamepadButton(tools, GamepadKeys.Button.DPAD_UP).whenPressed(
                 new InstantCommand(() -> outtake.toggleSpecimenOutput())
         );
 
@@ -181,9 +184,6 @@ public class TeleOp extends CommandOpMode {
                         () -> ascent.manual(tools.getRightY()*ascentTiltPower),
                         ascent
                 ));
-        new GamepadButton(tools, GamepadKeys.Button.DPAD_UP).whenPressed(
-                new InstantCommand(() -> outtake.toggleAscentPos())
-        );
 
         schedule(new RunCommand(() -> {
             TelemetryPacket packet = new TelemetryPacket();

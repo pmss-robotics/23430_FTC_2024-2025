@@ -39,7 +39,7 @@ public class Red_Bucket_Autonomous extends CommandOpMode {
         DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(-38, -61.5,Math.PI/2)), telemetry);
 
         Action trajectoryAction = drive.actionBuilder(drive.getPose())
-                .splineTo(new Vector2d(-54.5, -54.5), 5*Math.PI/4)
+                .lineToYLinearHeading(-35, Math.PI*1.5)
                 .waitSeconds(3)
 /*                .strafeToLinearHeading(new Vector2d(-58, -45), -Math.PI/2)
                 .waitSeconds(2)

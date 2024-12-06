@@ -24,7 +24,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     private Telemetry telemetry;
     public static double P = 0.01, I = 0, D = 0; // p: 0.021, i: 0.003
     public static double kSpring = 0;
-    public static int pHome = 0, pSpecimen0 = 0, pSpecimen1 = 0, pSpecimen = 0, pPlayer = 0, pBucket = 4200, pStart = 0, pAscent0 = 0, pAscent = 0;
+    public static int pHome = 0, pSpecimen0 = 1100, pSpecimen = 2700, pPostSpecimen = 1300, pPlayer = 600, pBucket = 4200, pStart = 0, pAscent0 = 0, pAscent = 0;
     public static int target = 0;
     // public static double resetPower = 0;
     public PIDController pidController;
@@ -115,14 +115,14 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
                 currentState = States.OuttakeExtension.specimen0;
                 break;
             case specimen0:
-                moveTo(pSpecimen1);
-                currentState = States.OuttakeExtension.specimen1;
-                break;
-            case specimen1:
                 moveTo(pSpecimen);
                 currentState = States.OuttakeExtension.specimen;
                 break;
             case specimen:
+                moveTo(pPostSpecimen);
+                currentState = States.OuttakeExtension.post_specimen;
+                break;
+            case post_specimen:
                 moveTo(pHome);
                 currentState = States.OuttakeExtension.home;
                 break;
@@ -143,9 +143,6 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
         switch (currentState) {
             case bucket:
                 moveTo(pBucket);
-                break;
-            case specimen: //maybe change later so it works
-                moveTo(pSpecimen1);
                 break;
             case home:
                 moveTo(pHome);
