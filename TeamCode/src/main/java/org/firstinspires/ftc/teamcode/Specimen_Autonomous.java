@@ -54,7 +54,6 @@ public class Specimen_Autonomous extends CommandOpMode {
         Command trajectory = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
         OuttakeSlidesSubsystem outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
-        outtakeSlides.setState(States.OuttakeExtension.home);
         outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
 
         IntakeSlidesSubsystem intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
@@ -93,11 +92,14 @@ public class Specimen_Autonomous extends CommandOpMode {
                 new WaitCommand(800),
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
-
-        Command auto = new ParallelCommandGroup(
+        waitForStart();
+        Command auto =
                   new SequentialCommandGroup(
                           new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
-                          new InstantCommand(() -> outtake.toggleSpecimenOutput()))
+                          new InstantCommand(() -> outtake.toggleSpecimenOutput()),
+                          new WaitCommand(2000),
+                          new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen))
+
 /*                new ParallelCommandGroup(
                         new SequentialCommandGroup(new WaitCommand(5050), sample),
                         new ParallelCommandGroup(
