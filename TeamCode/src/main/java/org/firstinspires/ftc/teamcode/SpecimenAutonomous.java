@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -31,26 +30,26 @@ import java.util.stream.Stream;
 
 
 @Config
-@Autonomous(name="Blue_Bucket_Auto", group="Auto")
-public class Blue_Bucket_Autonomous extends CommandOpMode {
+@Autonomous(name="SpecimenAuto", group="Auto")
+public class SpecimenAutonomous extends CommandOpMode {
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(38, 61.5,-Math.PI/2)), telemetry);
+        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(-38, -61.5,Math.PI/2)), telemetry);
 
         Action trajectoryAction = drive.actionBuilder(drive.getPose())
-                .splineTo(new Vector2d(54.5, 54.5), Math.PI/4)
+                .lineToYLinearHeading(-35, Math.PI*1.5)
                 .waitSeconds(3)
-                .strafeToLinearHeading(new Vector2d(58, 45), Math.PI/2)
+/*                .strafeToLinearHeading(new Vector2d(-58, -45), -Math.PI/2)
                 .waitSeconds(2)
-                .strafeToLinearHeading(new Vector2d(54.5, 54.5), Math.PI/4)
+                .strafeToLinearHeading(new Vector2d(-54.5, -54.5), 5*Math.PI/4)
                 .waitSeconds(3)
-                .strafeToLinearHeading(new Vector2d(52, 45), Math.toRadians(75))
+                .strafeToLinearHeading(new Vector2d(-52, -45), Math.toRadians(255))
                 .waitSeconds(2)
-                .strafeToLinearHeading(new Vector2d(54.5, 54.5), Math.PI/4)
+                .strafeToLinearHeading(new Vector2d(-54.5, -54.5), 5*Math.PI/4)
                 .waitSeconds(3)
-                .strafeToLinearHeading(new Vector2d(34, 10), 0)
-//                .strafeToLinearHeading(new Vector2d(-35, 60), 0)
+                .strafeToLinearHeading(new Vector2d(-34, -10), Math.PI) */
+//                .strafeToLinearHeading(new Vector2d(35, -60), Math.PI)
                 .build();
         Command trajectory = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -69,11 +68,12 @@ public class Blue_Bucket_Autonomous extends CommandOpMode {
         OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
 
         Command bucket = new SequentialCommandGroup(
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
-                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
+                new InstantCommand(() -> intake.setPosition(60), intake),
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket), outtakeSlides),
+                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket), outtake),
                 new WaitCommand(OuttakeSubsystem.dropTime),
-                new InstantCommand(() -> outtake.toggleWristState()),
-                new InstantCommand(() -> outtakeSlides.toggleBucket())
+                new InstantCommand(() -> outtake.toggleWristState(), outtake),
+                new InstantCommand(() -> outtakeSlides.toggleBucket(), outtakeSlides)
         );
 
         Command sample = new SequentialCommandGroup(
@@ -92,19 +92,25 @@ public class Blue_Bucket_Autonomous extends CommandOpMode {
                 new WaitCommand(800),
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
+        waitForStart();
+        Command auto =
+                  new SequentialCommandGroup(
+                          new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
+                          new InstantCommand(() -> outtake.toggleSpecimenOutput()),
+                          new WaitCommand(2000),
+                          new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen))
 
-        Command auto = new ParallelCommandGroup(
-                new SequentialCommandGroup(new WaitCommand(1050), bucket),
-                new ParallelCommandGroup(
+/*                new ParallelCommandGroup(
                         new SequentialCommandGroup(new WaitCommand(5050), sample),
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(new WaitCommand(7700), bucket),
                                 new ParallelCommandGroup(
                                         new SequentialCommandGroup(new WaitCommand(11600), sample),
                                         new SequentialCommandGroup(new WaitCommand(14300), bucket)
+                                        // TODO level 1 ascent
                                 )
                         )
-                )
+                )*/
         );
         schedule(new ParallelCommandGroup(trajectory,auto));
         // TODO: create wrappers for trajectory following maybe possibly
