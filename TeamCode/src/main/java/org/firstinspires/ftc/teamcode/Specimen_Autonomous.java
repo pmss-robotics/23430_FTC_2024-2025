@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 
 @Config
-@Autonomous(name="Red_Bucket_Auto", group="Auto")
+@Autonomous(name="SpecimenAuto", group="Auto")
 public class Specimen_Autonomous extends CommandOpMode {
     @Override
     public void initialize() {
