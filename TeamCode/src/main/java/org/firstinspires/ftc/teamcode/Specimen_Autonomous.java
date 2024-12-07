@@ -94,7 +94,9 @@ public class Specimen_Autonomous extends CommandOpMode {
         );
 
         Command auto = new ParallelCommandGroup(
-//                new SequentialCommandGroup(new WaitCommand(1050), bucket)
+                  new SequentialCommandGroup(
+                          new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
+                          new InstantCommand(() -> outtake.toggleSpecimenOutput()))
 /*                new ParallelCommandGroup(
                         new SequentialCommandGroup(new WaitCommand(5050), sample),
                         new ParallelCommandGroup(

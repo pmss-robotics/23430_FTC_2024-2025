@@ -151,6 +151,18 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
             case start:
                 moveTo(pStart);
                 break;
+            case specimen:
+                moveTo(pSpecimen);
+                break;
+            case specimen0:
+                moveTo(pSpecimen0);
+                break;
+            case post_specimen:
+                moveTo(pPostSpecimen);
+                break;
+            case player:
+                moveTo(pPlayer);
+                break;
         }
     }
 }
