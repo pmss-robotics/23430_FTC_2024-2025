@@ -41,7 +41,7 @@ public class TeleOp extends CommandOpMode {
 
     States.Global currentState = States.Global.home;
 
-    GamepadEx driver, tools;
+    GamepadEx driver1, driver2;
     DriveSubsystem drive;
     OuttakeSlidesSubsystem outtakeSlides;
     IntakeSlidesSubsystem intakeSlides;
@@ -55,8 +55,8 @@ public class TeleOp extends CommandOpMode {
         telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.NEWEST_FIRST);
         telemetry.log().setCapacity(8);
         // GamepadEx wraps gamepad 1 or 2 for easier implementations of more complex key bindings
-        GamepadEx driver = new GamepadEx(gamepad1);
-        GamepadEx tools = new GamepadEx(gamepad2);
+        driver1 = new GamepadEx(gamepad1);
+        driver2 = new GamepadEx(gamepad2);
         // The driveSubsystem wraps Roadrunner's MecanumDrive to combine with Commands.
         DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0, 0)), telemetry);
         // The driveCommand uses methods defined in the DriveSubsystem to create behaviour.
@@ -69,9 +69,9 @@ public class TeleOp extends CommandOpMode {
         // intake extenstion
         // outtake macro positions
         DriveCommand driveCommand = new DriveCommand(drive,
-                () -> -driver.getLeftX()*driveSpeed,
-                () -> driver.getLeftY()*driveSpeed,
-                () -> -driver.getRightX()*driveSpeed,
+                () -> -driver1.getLeftX()*driveSpeed,
+                () -> driver1.getLeftY()*driveSpeed,
+                () -> -driver1.getRightX()*driveSpeed,
                 true);
 
         outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
@@ -101,61 +101,61 @@ public class TeleOp extends CommandOpMode {
         );
 */
         // IMU reset
-        new GamepadButton(driver, GamepadKeys.Button.X).whenPressed(
+        new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(
                 new InstantCommand(() -> drive.drive.pinpoint.recalibrateIMU())
         );
 
         // slower driving
-        new GamepadButton(driver, GamepadKeys.Button.B).toggleWhenPressed(
+        new GamepadButton(driver1, GamepadKeys.Button.B).toggleWhenPressed(
                 () -> driveSpeed = slow,
                 () -> driveSpeed = fast
         );
 
         // intake rotation
-        new GamepadButton(tools, GamepadKeys.Button.LEFT_BUMPER)
+        new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(
                         () -> intake.incrementPosition(servoIncrement),
                         intake
         ));
-        new GamepadButton(tools, GamepadKeys.Button.RIGHT_BUMPER)
+        new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER)
                 .whileHeld(new InstantCommand(
                         () -> intake.incrementPosition(-servoIncrement),
                         intake
         ));
 
         // roller intake rotation
-        new GamepadButton(tools, GamepadKeys.Button.A).toggleWhenPressed(
+        new GamepadButton(driver2, GamepadKeys.Button.A).toggleWhenPressed(
                 new InstantCommand(() -> intake.setPower(0.5+servoSpeed), intake),
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
-        new GamepadButton(tools, GamepadKeys.Button.B).toggleWhenPressed(
+        new GamepadButton(driver2, GamepadKeys.Button.B).toggleWhenPressed(
                 new InstantCommand(() -> intake.setPower(1-servoSpeed), intake),
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
 
-        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
+        new Trigger(() -> driver1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand(
                         () -> intakeSlides.incrementPosition(-intakeSlideIncrement),
                         intakeSlides
         ));
-        new Trigger(() -> tools.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
+        new Trigger(() -> driver1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand(
                         () -> intakeSlides.incrementPosition(intakeSlideIncrement),
                         intakeSlides
         ));
 
-        new Trigger(()-> tools.getLeftY() > 0.1 || tools.getLeftY() < -0.1)
+        new Trigger(()-> driver2.getLeftY() > 0.1 || driver2.getLeftY() < -0.1)
                 .whileActiveContinuous(new InstantCommand (
-                        () -> outtakeSlides.manual(tools.getLeftY()*outtakeResetPower),
+                        () -> outtakeSlides.manual(driver2.getLeftY()*outtakeResetPower),
                         outtakeSlides
         ));
 
-        new GamepadButton(tools, GamepadKeys.Button.DPAD_DOWN).whenPressed(
+        new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(
                 new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides)
         );
 
         // toggle outtake system
-        new GamepadButton(tools, GamepadKeys.Button.Y).whenPressed(
+        new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(
                 new ConditionalCommand(
                         new InstantCommand(() -> outtakeSlides.toggleBucket()),
                         new SequentialCommandGroup(
@@ -167,17 +167,17 @@ public class TeleOp extends CommandOpMode {
                         () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
                 )
         );
-        new GamepadButton(tools, GamepadKeys.Button.X).whenPressed(
+        new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(
                 new InstantCommand(() -> outtakeSlides.toggleSpecimen())
         );
-        new GamepadButton(tools, GamepadKeys.Button.DPAD_UP).whenPressed(
+        new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(
                 new InstantCommand(() -> outtake.toggleSpecimenOutput())
         );
 
         // ascent
-        new Trigger(()-> tools.getRightY() > 0.1 || tools.getRightY() < -0.1)
+        new Trigger(()-> driver2.getRightY() > 0.1 || driver2.getRightY() < -0.1)
                 .whileActiveContinuous(new InstantCommand (
-                        () -> ascent.manual(tools.getRightY()*ascentTiltPower),
+                        () -> ascent.manual(driver2.getRightY()*ascentTiltPower),
                         ascent
         ));
 
