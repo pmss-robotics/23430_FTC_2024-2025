@@ -31,8 +31,8 @@ import java.util.stream.Stream;
 
 
 @Config
-@Autonomous(name="Red_Bucket_Auto", group="Auto")
-public class Specimen_Autonomous extends CommandOpMode {
+@Autonomous(name="SpecimenAuto", group="Auto")
+public class SpecimenAutonomous extends CommandOpMode {
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
