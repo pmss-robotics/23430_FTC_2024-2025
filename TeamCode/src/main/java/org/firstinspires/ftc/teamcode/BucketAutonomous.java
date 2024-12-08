@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 
 @Config
 @Autonomous(name="Blue_Bucket_Auto", group="Auto")
-public class Blue_Bucket_Autonomous extends CommandOpMode {
+public class BucketAutonomous extends CommandOpMode {
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
