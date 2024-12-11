@@ -42,8 +42,8 @@ public class SpecimenAutonomous extends CommandOpMode {
         Action trajectoryAction = drive.actionBuilder(drive.getPose())
                 .lineToYLinearHeading(-35, Math.PI*1.5)
                 .waitSeconds(0.5)
-                .strafeTo(new Vector2d(35, -35))
-                .strafeTo(new Vector2d(35, -13))
+                .strafeTo(new Vector2d(38, -35))
+                .strafeTo(new Vector2d(38, -13))
                 .splineToLinearHeading(new Pose2d(new Vector2d( 46, -13), Math.PI/2), Math.PI)
                 .strafeTo(new Vector2d(46, -48))
                 .strafeTo(new Vector2d(46, -13))
@@ -77,53 +77,53 @@ public class SpecimenAutonomous extends CommandOpMode {
                 .waitSeconds(0.5)
                 .strafeTo(new Vector2d(35, -35))
                 .strafeTo(new Vector2d(35, -13))
-                .splineToLinearHeading(new Pose2d(new Vector2d( 46, -13), Math.PI/2), Math.PI)
-                .strafeTo(new Vector2d(46, -48))
-                .strafeTo(new Vector2d(46, -13))
-                .strafeTo(new Vector2d(55, -13))
-                .strafeTo(new Vector2d(55, -48))
-                .strafeTo(new Vector2d(55, -45))
+                .splineToLinearHeading(new Pose2d(new Vector2d( 48, -13), Math.PI/2), Math.PI)
+                .strafeTo(new Vector2d(48, -48))
+                .strafeTo(new Vector2d(48, -13))
+                .strafeTo(new Vector2d(57, -13))
+                .strafeTo(new Vector2d(57, -48))
+                .strafeTo(new Vector2d(57, -47))
                 .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
-                .strafeTo(new Vector2d(37, -59))
+                .strafeTo(new Vector2d(37, -60))
                 .build();
         Command traj1 = new ActionCommand(trajectory1, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory2 = drive.actionBuilder(drive.getPose())
                 .waitSeconds(0.1)
-                .strafeToLinearHeading(new Vector2d(13, -35), Math.PI*1.5)
+                .strafeToSplineHeading(new Vector2d(13, -35), Math.PI*1.5)
                 .build();
         Command traj2 = new ActionCommand(trajectory2, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory3 = drive.actionBuilder(drive.getPose())
                 .waitSeconds(0.1)
-                .strafeToLinearHeading(new Vector2d(7, -35), Math.PI*1.5)
+                .strafeToSplineHeading(new Vector2d(7, -35), Math.PI*1.5)
                 .build();
         Command traj3 = new ActionCommand(trajectory3, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory4 = drive.actionBuilder(drive.getPose())
                 .waitSeconds(0.1)
-                .strafeToLinearHeading(new Vector2d(4, -35), Math.PI*1.5)
+                .strafeToSplineHeading(new Vector2d(4, -35), Math.PI*1.5)
                 .build();
         Command traj4 = new ActionCommand(trajectory4, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectoryHome = drive.actionBuilder(drive.getPose())
                 .waitSeconds(0.5)
-                .strafeToLinearHeading(new Vector2d(37, -55), Math.PI*.5)
-                .strafeTo(new Vector2d(37, -59))
+                .strafeToSplineHeading(new Vector2d(37, -55), Math.PI*.5)
+                .strafeTo(new Vector2d(37, -60))
                 .build();
         Command trajHome = new ActionCommand(trajectoryHome, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectoryHome1 = drive.actionBuilder(drive.getPose())
                 .waitSeconds(0.5)
-                .strafeToLinearHeading(new Vector2d(37, -55), Math.PI*.5)
-                .strafeTo(new Vector2d(37, -59))
+                .strafeToSplineHeading(new Vector2d(37, -55), Math.PI*.5)
+                .strafeTo(new Vector2d(37, -60))
                 .build();
         Command trajHome1 = new ActionCommand(trajectoryHome1, Stream.of(drive).collect(Collectors.toSet()));
 
 
         Action trajectoryEnd = drive.actionBuilder(drive.getPose())
                 .waitSeconds(0.5)
-                .strafeToLinearHeading(new Vector2d(45, -59), Math.PI*.5)
+                .strafeToSplineHeading(new Vector2d(45, -59), Math.PI*.5)
                 .build();
         Command trajEnd = new ActionCommand(trajectoryEnd, Stream.of(drive).collect(Collectors.toSet()));
 
