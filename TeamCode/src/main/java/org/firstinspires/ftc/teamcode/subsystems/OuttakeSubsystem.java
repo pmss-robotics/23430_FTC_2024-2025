@@ -29,12 +29,12 @@ public class OuttakeSubsystem extends SubsystemBase {
     ServoImplEx wrist;
     // wrist rotates intake and spinners are rollers
 
-    public static double W_target = 260; // in degrees
-    public static double position = 0;
+    public static double W_target = 255; // in degrees
+    public static double position = 255;
 
     private States.Outtake currentOuttakeState;
 
-    public static int pHome = 260, pStart = 0, pBucket = 150, pSpecimen = 170, pAscent = 300; // in degrees
+    public static int pHome = 255, pStart = 0, pBucket = 145, pSpecimen = 165, pAscent = 300; // in degrees
     public static int wMin = 0, wMax = 0;
     public static int dropTime = 1000;
 
