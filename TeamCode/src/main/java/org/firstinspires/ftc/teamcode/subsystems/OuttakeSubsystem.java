@@ -56,11 +56,13 @@ public class OuttakeSubsystem extends SubsystemBase {
         switch (currentOuttakeState) {
             case home:
                 bucketL.setPosition(scale(pBucket));
+                bucketR.setPosition(scale(pBucket));
                 position = pBucket;
                 currentOuttakeState = States.Outtake.bucket;
                 break;
             case bucket:
                 bucketL.setPosition(scale(pHome));
+                bucketR.setPosition(scale(pHome));
                 position = pHome;
                 currentOuttakeState = States.Outtake.home;
                 break;
@@ -71,11 +73,13 @@ public class OuttakeSubsystem extends SubsystemBase {
         switch (currentOuttakeState) {
             case home:
                 bucketL.setPosition(scale(pSpecimen));
+                bucketR.setPosition(scale(pSpecimen));
                 position = pSpecimen;
                 currentOuttakeState = States.Outtake.specimen;
                 break;
             case specimen:
                 bucketL.setPosition(scale(pHome));
+                bucketR.setPosition(scale(pHome));
                 position = pHome;
                 currentOuttakeState = States.Outtake.home;
                 break;
@@ -86,11 +90,13 @@ public class OuttakeSubsystem extends SubsystemBase {
         switch (currentOuttakeState) {
             case home:
                 bucketL.setPosition(scale(pAscent));
+                bucketR.setPosition(scale(pAscent));
                 position = pAscent;
                 currentOuttakeState = States.Outtake.ascent;
                 break;
             case ascent:
                 bucketL.setPosition(scale(pHome));
+                bucketR.setPosition(scale(pHome));
                 position = pHome;
                 currentOuttakeState = States.Outtake.home;
                 break;
@@ -102,10 +108,12 @@ public class OuttakeSubsystem extends SubsystemBase {
         switch (currentOuttakeState) {
             case home:
                 bucketL.setPosition(scale(pHome));
+                bucketR.setPosition(scale(pHome));
                 position = pHome;
                 break;
             case bucket:
                 bucketL.setPosition(scale(pBucket));
+                bucketR.setPosition(scale(pBucket));
                 position = pBucket;
                 break;
         }
@@ -115,10 +123,12 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         position = MathUtils.clamp(position + increment, wMin, wMax);
         bucketL.setPosition(scale(position));
+        bucketR.setPosition(scale(position));
     }
 
     public void setPosition(double position) {
         bucketL.setPosition(position);
+        bucketR.setPosition(position);
         IntakeSubsystem.position = position;
     }
 
