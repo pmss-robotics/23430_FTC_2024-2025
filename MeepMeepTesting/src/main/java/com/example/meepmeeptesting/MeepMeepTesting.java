@@ -17,7 +17,7 @@ public class MeepMeepTesting {
 
     final static MecanumKinematics kinematics = new MecanumKinematics(
             15.984252, 0.8);
-    final static VelConstraint defaultVelConstraint =
+    final static VelConstraint slowVelConstraint =
             new MinVelConstraint(Arrays.asList(
                     kinematics.new WheelVelConstraint(10),
                     new AngularVelConstraint(Math.PI)
@@ -26,6 +26,8 @@ public class MeepMeepTesting {
     public static double intakeWaitTime = 2.0;
     public static double outtakeWaitTime = 2.0;
     public static double specimenWaitTime = 0.5;
+    public static double specimenIntakeTime = 0.1;
+    public static double specimenOuttakeTime = 0.5;
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(600);
@@ -35,7 +37,7 @@ public class MeepMeepTesting {
                 .setConstraints(55, 55, Math.toRadians(180), Math.toRadians(180), 15.984252)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-10, -61.5, -Math.PI/2))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(10, -61.5, -Math.PI/2))
                 //sample auto pathing
 /*                .strafeTo(new Vector2d(-10, -35))
                 .waitSeconds(specimenWaitTime)
@@ -54,7 +56,7 @@ public class MeepMeepTesting {
                 .splineToLinearHeading(new Pose2d(-24, -10, Math.PI), Math.toRadians(0)) */
                 //specimen auto pathing
                 .strafeTo(new Vector2d(10, -35))
-                .waitSeconds(0.5)
+                .waitSeconds(specimenOuttakeTime)
                 .strafeTo(new Vector2d(37, -35))
                 .strafeTo(new Vector2d(37, -13))
                 .splineToLinearHeading(new Pose2d(new Vector2d( 48, -13), Math.PI/2), -Math.PI/2)
@@ -64,17 +66,18 @@ public class MeepMeepTesting {
                 .strafeTo(new Vector2d(57, -48))
                 .strafeTo(new Vector2d(57, -47))
                 .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
-                .waitSeconds(0.1)
+                .strafeTo(new Vector2d(37, -60), slowVelConstraint)
+                .waitSeconds(specimenIntakeTime)
                 .strafeToSplineHeading(new Vector2d(13, -35), -Math.PI/2)
-                .waitSeconds(0.5)
+                .waitSeconds(specimenOuttakeTime)
                 .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2)
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
-                .waitSeconds(0.1)
+                .strafeTo(new Vector2d(37, -60), slowVelConstraint)
+                .waitSeconds(specimenIntakeTime)
                 .strafeToSplineHeading(new Vector2d(7, -35), -Math.PI/2)
-                .waitSeconds(0.5)
+                .waitSeconds(specimenOuttakeTime)
                 .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2)
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
+                .strafeTo(new Vector2d(37, -60), slowVelConstraint)
+                .waitSeconds(specimenIntakeTime)
                 .strafeToSplineHeading(new Vector2d(4, -35), -Math.PI/2)
 
                 //.splineToLinearHeading(new Pose2d(new Vector2d(25, -40), Math.PI/4), Math.PI/4)
