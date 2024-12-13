@@ -41,9 +41,6 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
         intakeSlideL = hardwareMap.get(ServoImplEx.class, "intakeSlideL");
-
-        // expand the range of the servo beyond the default for control/expansion hubs
-        // test
         intakeSlideL.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeSlideL.setPosition(scale(F_target));
 
