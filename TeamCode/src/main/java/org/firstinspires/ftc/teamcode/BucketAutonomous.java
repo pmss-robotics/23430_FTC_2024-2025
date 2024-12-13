@@ -36,12 +36,12 @@ import java.util.stream.Stream;
 
 
 @Config
-@Autonomous(name="Bucket_Auto", group="Auto")
+@Autonomous(name="BucketAuto", group="Auto")
 public class BucketAutonomous extends CommandOpMode {
 
     final static MecanumKinematics kinematics = new MecanumKinematics(
             15.984252, 0.8);
-    final static VelConstraint defaultVelConstraint =
+    final static VelConstraint slowVelConstraint =
             new MinVelConstraint(Arrays.asList(
                     kinematics.new WheelVelConstraint(10),
                     new AngularVelConstraint(Math.PI)
@@ -98,19 +98,21 @@ public class BucketAutonomous extends CommandOpMode {
                 new InstantCommand(() -> outtakeSlides.toggleBucket())
         );
 
+
+        //tune extension position
         Command sample = new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.intake)),
                         new InstantCommand(() -> intake.setWristState(States.Intake.intake))
                 ),
-                new InstantCommand(() -> intake.setPower(0.5+1), intake),
+                new InstantCommand(() -> intake.setPower(1), intake),
                 new WaitCommand(800),
                 new InstantCommand(() -> intake.setPower(0.5), intake),
                 new ParallelCommandGroup(
                         new InstantCommand(() -> intake.toggleWristState()),
                         new InstantCommand(() -> intakeSlides.toggleIntakeSlidesState())
                 ),
-                new InstantCommand(() -> intake.setPower(1-1), intake),
+                new InstantCommand(() -> intake.setPower(0), intake),
                 new WaitCommand(800),
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
