@@ -23,6 +23,10 @@ public class MeepMeepTesting {
                     new AngularVelConstraint(Math.PI)
             ));
 
+    public static double intakeWaitTime = 2.0;
+    public static double outtakeWaitTime = 2.0;
+    public static double specimenWaitTime = 0.5;
+
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(600);
 
@@ -31,12 +35,29 @@ public class MeepMeepTesting {
                 .setConstraints(55, 55, Math.toRadians(180), Math.toRadians(180), 15.984252)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(10, -61.5, Math.PI/2))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-10, -61.5, -Math.PI/2))
+                //sample auto pathing
+/*                .strafeTo(new Vector2d(-10, -35))
+                .waitSeconds(specimenWaitTime)
+                .splineToLinearHeading(new Pose2d(-52, -52, Math.toRadians(80)), Math.PI)
+                .waitSeconds(intakeWaitTime)
+                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), Math.PI)
+                .waitSeconds(outtakeWaitTime)
+                .splineToLinearHeading(new Pose2d(-52, -52, Math.toRadians(105)), Math.PI)
+                .waitSeconds(intakeWaitTime)
+                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), Math.PI)
+                .waitSeconds(outtakeWaitTime)
+                .splineToLinearHeading(new Pose2d(-53, -51, Math.toRadians(120)), Math.PI)
+                .waitSeconds(intakeWaitTime)
+                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), Math.PI)
+                .waitSeconds(outtakeWaitTime)
+                .splineToLinearHeading(new Pose2d(-24, -10, Math.PI), Math.toRadians(0)) */
+                //specimen auto pathing
                 .strafeTo(new Vector2d(10, -35))
                 .waitSeconds(0.5)
-                .strafeTo(new Vector2d(35, -35))
-                .strafeTo(new Vector2d(35, -13))
-                .splineToLinearHeading(new Pose2d(new Vector2d( 48, -13), 0), -Math.PI/2)
+                .strafeTo(new Vector2d(37, -35))
+                .strafeTo(new Vector2d(37, -13))
+                .splineToLinearHeading(new Pose2d(new Vector2d( 48, -13), Math.PI/2), -Math.PI/2)
                 .strafeTo(new Vector2d(48, -48))
                 .strafeTo(new Vector2d(48, -13))
                 .strafeTo(new Vector2d(57, -13))
@@ -45,16 +66,16 @@ public class MeepMeepTesting {
                 .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .waitSeconds(0.1)
-                .strafeToSplineHeading(new Vector2d(13, -35), Math.PI)
+                .strafeToSplineHeading(new Vector2d(13, -35), -Math.PI/2)
                 .waitSeconds(0.5)
-                .strafeToSplineHeading(new Vector2d(37, -55), 0)
+                .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2)
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .waitSeconds(0.1)
-                .strafeToSplineHeading(new Vector2d(7, -35), Math.PI)
+                .strafeToSplineHeading(new Vector2d(7, -35), -Math.PI/2)
                 .waitSeconds(0.5)
-                .strafeToSplineHeading(new Vector2d(37, -55), 0)
+                .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2)
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
-                .strafeToSplineHeading(new Vector2d(4, -35), Math.PI)
+                .strafeToSplineHeading(new Vector2d(4, -35), -Math.PI/2)
 
                 //.splineToLinearHeading(new Pose2d(new Vector2d(25, -40), Math.PI/4), Math.PI/4)
 //                .strafeToLinearHeading(new Vector2d(35, -60), Math.PI)
