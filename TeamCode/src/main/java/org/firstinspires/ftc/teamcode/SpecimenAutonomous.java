@@ -54,9 +54,9 @@ public class SpecimenAutonomous extends CommandOpMode {
             ));
 
     public static double specimenIntakeTime = 0.1;
-    public static double specimenOuttakeTime = 0.3;
+    public static double specimenOuttakeTime = 0.1;
     public static long endWaitTime = 250;
-    public static double startWaitTime = 0.5;
+    public static double startWaitTime = 0.15;
     public static double specimenY = -31;
     public static double specimenY1 = -34;
     public static double specimenY2 = -34;
