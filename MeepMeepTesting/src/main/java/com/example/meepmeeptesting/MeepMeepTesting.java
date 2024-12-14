@@ -19,7 +19,7 @@ public class MeepMeepTesting {
             15.984252, 0.8);
     final static VelConstraint slowVelConstraint =
             new MinVelConstraint(Arrays.asList(
-                    kinematics.new WheelVelConstraint(10),
+                    kinematics.new WheelVelConstraint(30),
                     new AngularVelConstraint(Math.PI)
             ));
 
@@ -64,8 +64,7 @@ public class MeepMeepTesting {
                 .strafeTo(new Vector2d(48, -13))
                 .strafeTo(new Vector2d(57, -13))
                 .strafeTo(new Vector2d(57, -48))
-                .strafeTo(new Vector2d(57, -47))
-                .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
+                .splineToConstantHeading(new Vector2d(37, -55), Math.toRadians(-90))
                 .strafeTo(new Vector2d(37, -60), slowVelConstraint)
                 .waitSeconds(specimenIntakeTime)
                 .strafeToSplineHeading(new Vector2d(13, -35), -Math.PI/2)

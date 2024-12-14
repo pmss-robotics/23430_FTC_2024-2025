@@ -49,14 +49,14 @@ public class SpecimenAutonomous extends CommandOpMode {
             15.984252, 0.8);
     public final VelConstraint defaultVelConstraint =
             new MinVelConstraint(Arrays.asList(
-                    kinematics.new WheelVelConstraint(20),
+                    kinematics.new WheelVelConstraint(30),
                     new AngularVelConstraint(Math.PI)
             ));
 
     public static double specimenIntakeTime = 0.1;
-    public static double specimenOuttakeTime = 0.1;
-    public static long endWaitTime = 250;
-    public static double startWaitTime = 0.15;
+    public static double specimenOuttakeTime = 0.3;
+    public static long endWaitTime = 300;
+    public static double startWaitTime = 0.25;
     public static double specimenY = -31;
     public static double specimenY1 = -34;
     public static double specimenY2 = -34;
@@ -85,7 +85,6 @@ public class SpecimenAutonomous extends CommandOpMode {
                 .strafeTo(new Vector2d(48, -13))
                 .strafeTo(new Vector2d(57, -13))
                 .strafeTo(new Vector2d(57, -48))
-                .strafeTo(new Vector2d(57, -47))
                 .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .waitSeconds(specimenIntakeTime)
@@ -118,7 +117,6 @@ public class SpecimenAutonomous extends CommandOpMode {
                 .strafeTo(new Vector2d(48, -13))
                 .strafeTo(new Vector2d(57, -13))
                 .strafeTo(new Vector2d(57, -48))
-                .strafeTo(new Vector2d(57, -47))
                 .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
                 .strafeTo(new Vector2d(37, specimen1), defaultVelConstraint)
                 .build();
