@@ -49,13 +49,24 @@ public class SpecimenAutonomous extends CommandOpMode {
             15.984252, 0.8);
     public final VelConstraint defaultVelConstraint =
             new MinVelConstraint(Arrays.asList(
-                    kinematics.new WheelVelConstraint(10),
+                    kinematics.new WheelVelConstraint(20),
                     new AngularVelConstraint(Math.PI)
             ));
 
     public static double specimenIntakeTime = 0.1;
-    public static double specimenOuttakeTime = 0.5;
-    public static long endWaitTime = 25;
+    public static double specimenOuttakeTime = 0.3;
+    public static long endWaitTime = 250;
+    public static double startWaitTime = 0.5;
+    public static double specimenY = -31;
+    public static double specimenY1 = -34;
+    public static double specimenY2 = -34;
+    public static double specimenY3 = -33;
+    public static double specimenX1 = 12;
+    public static double specimenX2 = 7;
+    public static double specimenX3 = 4;
+    public static double specimen1 = -60;
+    public static double specimen2 = -62;
+    public static double specimen3 = -63;
 
     @Override
     public void initialize() {
@@ -64,6 +75,7 @@ public class SpecimenAutonomous extends CommandOpMode {
 
         //auto pathing
         Action specimenTrajectoryAction = drive.actionBuilder(drive.getPose())
+                .waitSeconds(startWaitTime)
                 .strafeTo(new Vector2d(10, -35))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeTo(new Vector2d(35, -35))
@@ -89,17 +101,18 @@ public class SpecimenAutonomous extends CommandOpMode {
                 .waitSeconds(specimenIntakeTime)
                 .strafeToSplineHeading(new Vector2d(4, -35), Math.PI*1.5)
                 .build();
-        Command SpecimenTrajectory = new ActionCommand(specimenTrajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
+        Command specimenTrajectory = new ActionCommand(specimenTrajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectoryStart = drive.actionBuilder(drive.getPose())
-                .strafeTo(new Vector2d(10, -35))
+                .waitSeconds(startWaitTime)
+                .strafeTo(new Vector2d(10, specimenY))
                 .build();
         Command trajStart = new ActionCommand(trajectoryStart, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory1 = drive.actionBuilder(drive.getPose())
+        Action trajectory1 = drive.actionBuilder(new Pose2d (10, -33, -Math.PI/2))
                 .waitSeconds(specimenOuttakeTime)
-                .strafeTo(new Vector2d(35, -35))
-                .strafeTo(new Vector2d(35, -13))
+                .strafeTo(new Vector2d(37, -37))
+                .strafeTo(new Vector2d(37, -13))
                 .splineToLinearHeading(new Pose2d(new Vector2d( 48, -13), Math.PI/2), -Math.PI/2)
                 .strafeTo(new Vector2d(48, -48))
                 .strafeTo(new Vector2d(48, -13))
@@ -107,39 +120,39 @@ public class SpecimenAutonomous extends CommandOpMode {
                 .strafeTo(new Vector2d(57, -48))
                 .strafeTo(new Vector2d(57, -47))
                 .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
+                .strafeTo(new Vector2d(37, specimen1), defaultVelConstraint)
                 .build();
         Command traj1 = new ActionCommand(trajectory1, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory2 = drive.actionBuilder(drive.getPose())
+        Action trajectory2 = drive.actionBuilder(new Pose2d (37, -60, Math.PI/2))
                 .waitSeconds(specimenIntakeTime)
-                .strafeToSplineHeading(new Vector2d(13, -35), -Math.PI/2)
+                .strafeToSplineHeading(new Vector2d(specimenX1, specimenY1), -Math.PI/2)
                 .build();
         Command traj2 = new ActionCommand(trajectory2, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory3 = drive.actionBuilder(drive.getPose())
+        Action trajectory3 = drive.actionBuilder(new Pose2d (37, -60, Math.PI/2))
                 .waitSeconds(specimenIntakeTime)
-                .strafeToSplineHeading(new Vector2d(7, -35), -Math.PI/2)
+                .strafeToSplineHeading(new Vector2d(specimenX2, specimenY2), -Math.PI/2)
                 .build();
         Command traj3 = new ActionCommand(trajectory3, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory4 = drive.actionBuilder(drive.getPose())
+        Action trajectory4 = drive.actionBuilder(new Pose2d (37, -60, Math.PI/2))
                 .waitSeconds(specimenIntakeTime)
-                .strafeToSplineHeading(new Vector2d(4, -35), Math.PI*1.5)
+                .strafeToSplineHeading(new Vector2d(specimenX3, specimenY3), Math.PI*1.5)
                 .build();
         Command traj4 = new ActionCommand(trajectory4, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome = drive.actionBuilder(drive.getPose())
+        Action trajectoryHome = drive.actionBuilder(new Pose2d (13, -35, -Math.PI/2))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2)
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
+                .strafeTo(new Vector2d(37, specimen2), defaultVelConstraint)
                 .build();
         Command trajHome = new ActionCommand(trajectoryHome, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome1 = drive.actionBuilder(drive.getPose())
+        Action trajectoryHome1 = drive.actionBuilder(new Pose2d (7, -35, -Math.PI/2))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2)
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
+                .strafeTo(new Vector2d(37, specimen3), defaultVelConstraint)
                 .build();
         Command trajHome1 = new ActionCommand(trajectoryHome1, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -189,45 +202,28 @@ public class SpecimenAutonomous extends CommandOpMode {
         //specimen cycle system
 
         Command auto = new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                        trajStart,
-                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
-                        new InstantCommand(() -> outtake.toggleSpecimenOutput())
-                ),
-                new ParallelCommandGroup(
-                        traj1,
-                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.player))
-                ),
-                new ParallelCommandGroup(
-                        traj2,
-                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen))
-                ),
-                new ParallelCommandGroup(
-                        trajHome,
-                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.player))
-                ),
-                new ParallelCommandGroup(
-                        traj3,
-                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen))
-                ),
-                new ParallelCommandGroup(
-                        trajHome1,
-                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.player))
-                ),
-                new ParallelCommandGroup(
-                        traj4,
-                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen))
-                ),
-                new ParallelCommandGroup(
-                        trajEnd,
-                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
-                        new SequentialCommandGroup(
-                                new WaitCommand(endWaitTime),
-                                new InstantCommand(() -> outtake.toggleSpecimenOutput())
-                        )
-                )
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
+                new InstantCommand(() -> outtake.toggleSpecimenOutput()),
+                trajStart,
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.player)),
+                traj1,
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
+                traj2,
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.player)),
+                trajHome,
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
+                traj3,
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.player)),
+                trajHome1,
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
+                traj4,
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.player)),
+                new WaitCommand(endWaitTime),
+                new InstantCommand(() -> outtake.toggleSpecimenOutput()),
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home))
+
         );
-        schedule(SpecimenTrajectory);
+        schedule(auto);
         // TODO: create wrappers for trajectory following maybe possibly
         // this RunCommand Loop might be useless
         schedule(new RunCommand(() -> {
