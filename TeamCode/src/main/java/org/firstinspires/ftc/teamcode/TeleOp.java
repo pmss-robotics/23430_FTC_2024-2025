@@ -103,7 +103,7 @@ public class TeleOp extends CommandOpMode {
 */
         // IMU reset
         new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(
-                new InstantCommand(() -> drive.drive.pinpoint.recalibrateIMU())
+                new InstantCommand(() -> drive.drive.pinpoint.resetPosAndIMU())
         );
 
         // slower driving
@@ -130,7 +130,7 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
         new GamepadButton(driver2, GamepadKeys.Button.B).toggleWhenPressed(
-                new InstantCommand(() -> intake.setPower(1-servoSpeed), intake),
+                new InstantCommand(() -> intake.setPower(1.2-servoSpeed), intake),
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
 

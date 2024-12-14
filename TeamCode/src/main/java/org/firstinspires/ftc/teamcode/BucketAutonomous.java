@@ -57,7 +57,7 @@ public class BucketAutonomous extends CommandOpMode {
         DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(-10, -61.5,-Math.PI/2)), telemetry);
 
         Action trajectoryAction = drive.actionBuilder(drive.getPose())
-                .strafeTo(new Vector2d(-10, -35))
+                .strafeTo(new Vector2d(-10, -31))
                 .waitSeconds(specimenWaitTime)
                 .splineToLinearHeading(new Pose2d(-52, -52, Math.toRadians(80)), Math.PI)
                 .waitSeconds(intakeWaitTime)
@@ -75,6 +75,19 @@ public class BucketAutonomous extends CommandOpMode {
 //                .strafeToLinearHeading(new Vector2d(-35, 60), 0)
                 .build();
         Command trajectory = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
+
+        Action trajectory1 = drive.actionBuilder(drive.getPose())
+                .strafeTo(new Vector2d(-10, -31))
+                .build();
+        Command traj1 = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
+
+
+
+        Action trajectory2 = drive.actionBuilder(new Pose2d(10, -33, -Math.PI/2))
+                .waitSeconds(specimenWaitTime)
+                .splineToLinearHeading(new Pose2d(-52, -52, -Math.PI/2), Math.PI)
+                .build();
+        Command traj2 = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
         OuttakeSlidesSubsystem outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
         outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
@@ -118,7 +131,19 @@ public class BucketAutonomous extends CommandOpMode {
         );
 
 
-        schedule(trajectory);
+        Command auto = new SequentialCommandGroup(
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
+                new InstantCommand(() -> outtake.toggleSpecimenOutput()),
+                traj1,
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.player)),
+                new WaitCommand(500),
+                new InstantCommand(() -> outtake.toggleSpecimenOutput()),
+                new InstantCommand(() -> outtakeSlides.setState((States.OuttakeExtension.home))),
+                traj2
+
+        );
+
+        schedule(auto);
         // TODO: create wrappers for trajectory following maybe possibly
         // this RunCommand Loop might be useless
         schedule(new RunCommand(() -> {
