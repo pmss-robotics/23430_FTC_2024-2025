@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.util.States;
 public class TeleOp extends CommandOpMode {
     // probably need to change later.
     public static double servoIncrement = 7;
-    public static double intakeSlideIncrement = 2;
+    public static double intakeSlideIncrement = 4;
     public static double servoSpeed = 1;
     public static double driveSpeed = 1;
     public static double fast = 1;

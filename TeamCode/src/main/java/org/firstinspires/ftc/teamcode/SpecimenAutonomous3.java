@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -9,12 +7,9 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.AngularVelConstraint;
-import com.acmerobotics.roadrunner.Arclength;
 import com.acmerobotics.roadrunner.MecanumKinematics;
 import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
-import com.acmerobotics.roadrunner.PosePath;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
@@ -27,7 +22,6 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.commands.ActionCommand;
 import org.firstinspires.ftc.teamcode.drive.Drawing;
 import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
@@ -44,8 +38,8 @@ import java.util.stream.Stream;
 
 
 @Config
-@Autonomous(name="SpecimenAuto", group="Auto")
-public class SpecimenAutonomous extends CommandOpMode {
+@Autonomous(name="SpecimenAuto3", group="Auto")
+public class SpecimenAutonomous3 extends CommandOpMode {
 
     public final MecanumKinematics kinematics = new MecanumKinematics(
             15.984252, 0.8);
@@ -76,8 +70,8 @@ public class SpecimenAutonomous extends CommandOpMode {
     public static double specimenY2 = -34;
     public static double specimenY3 = -33;
     public static double specimenX1 = 12;
-    public static double specimenX2 = 7;
-    public static double specimenX3 = 4;
+    public static double specimenX2 = 10;
+    public static double specimenX3 = 7;
     public static double specimen1 = -64.5;
     public static double specimen2 = -62;
     public static double specimen3 = -63;
@@ -85,7 +79,7 @@ public class SpecimenAutonomous extends CommandOpMode {
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(9, -61.5, -Math.PI/2)), telemetry);
+        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(4, -61.5, -Math.PI/2)), telemetry);
 
         //auto pathing
         Action specimenTrajectoryAction = drive.actionBuilder(drive.getPose())
@@ -118,11 +112,11 @@ public class SpecimenAutonomous extends CommandOpMode {
 
         Action trajectoryStart = drive.actionBuilder(drive.getPose())
                 .waitSeconds(startWaitTime)
-                .strafeTo(new Vector2d(9, specimenY))
+                .strafeTo(new Vector2d(4, specimenY))
                 .build();
         Command trajStart = new ActionCommand(trajectoryStart, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory1 = drive.actionBuilder(new Pose2d (9, -33, -Math.PI/2))
+        Action trajectory1 = drive.actionBuilder(new Pose2d (4, -33, -Math.PI/2))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeTo(new Vector2d(37, -37))
                 .strafeTo(new Vector2d(37, -13))
@@ -154,14 +148,14 @@ public class SpecimenAutonomous extends CommandOpMode {
                 .build();
         Command traj4 = new ActionCommand(trajectory4, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome = drive.actionBuilder(new Pose2d (11, -35, -Math.PI/2))
+        Action trajectoryHome = drive.actionBuilder(new Pose2d (12, -35, -Math.PI/2))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2, velConstraint, defaultAccelConstraint)
                 .strafeTo(new Vector2d(37, specimen2), defaultVelConstraint)
                 .build();
         Command trajHome = new ActionCommand(trajectoryHome, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome1 = drive.actionBuilder(new Pose2d (7, -35, -Math.PI/2))
+        Action trajectoryHome1 = drive.actionBuilder(new Pose2d (10, -35, -Math.PI/2))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2, velConstraint, defaultAccelConstraint)
                 .strafeTo(new Vector2d(37, specimen3), defaultVelConstraint)
