@@ -46,7 +46,6 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
         leftExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
         target = 0;
         pidController = new PIDController(P, I, D);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
@@ -54,9 +53,9 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (Objects.nonNull(leftExtension.getCurrentPosition())) {
-            telemetry.addData("Extension Target: ", target);
-            telemetry.addData("Extension Pos: ", leftExtension.getCurrentPosition());
-            telemetry.addData("Extension state: ", currentState);
+            telemetry.addData("VExtension Target: ", target);
+            telemetry.addData("VExtension Pos: ", leftExtension.getCurrentPosition());
+            telemetry.addData("VExtension State: ", currentState);
             telemetry.update();
         }
     }

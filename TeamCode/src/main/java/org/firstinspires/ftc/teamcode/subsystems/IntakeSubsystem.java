@@ -30,12 +30,12 @@ public class IntakeSubsystem extends SubsystemBase {
     ServoImplEx wrist, spinnerL, spinnerR;
     // wrist rotates intake and spinners are rollers
 
-    public static double W_target = 220; // in degrees
-    public static double position = 220;
+    public static double W_target = 50; // in degrees
+    public static double position = 50;
     private States.Intake currentIntakeState;
 
     public static int pHome = 0, pStart = 0, pIntake = 0, pTransfer = 0; // in degrees
-    public static int wMin = 10, wMax = 260;
+    public static int wMin = 50, wMax = 215;
 
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
