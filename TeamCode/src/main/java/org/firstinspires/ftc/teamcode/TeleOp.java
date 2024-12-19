@@ -38,6 +38,8 @@ public class TeleOp extends CommandOpMode {
     public static double bucketStart = 0.636;
     public static double outtakeResetPower = 0.6;
     public static double ascentTiltPower = 0.2;
+    public static double intakeSlidePowerO = 0.6;
+    public static double intakeSlidePowerI = 0.75;
 
     States.Global currentState = States.Global.home;
 
@@ -45,7 +47,6 @@ public class TeleOp extends CommandOpMode {
     DriveSubsystem drive;
     OuttakeSlidesSubsystem outtakeSlides;
     IntakeSlidesSubsystem intakeSlides;
-    AscentSubsystem ascent;
     VisionSubsystem vision;
     @Override
     public void initialize() {
@@ -90,9 +91,6 @@ public class TeleOp extends CommandOpMode {
 
         OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
 
-        ascent = new AscentSubsystem(hardwareMap, telemetry);
-        ascent.setDefaultCommand(new RunCommand(ascent::holdPosition, ascent));
-
         // reset everything, probably unnecessary
 /*      SequentialCommandGroup returnHome = new SequentialCommandGroup(
                 new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.home), intakeSlides),
@@ -117,12 +115,12 @@ public class TeleOp extends CommandOpMode {
                 .whileHeld(new InstantCommand(
                         () -> intake.incrementPosition(servoIncrement),
                         intake
-        ));
+                ));
         new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER)
                 .whileHeld(new InstantCommand(
                         () -> intake.incrementPosition(-servoIncrement),
                         intake
-        ));
+                ));
 
         // roller intake rotation
         new GamepadButton(driver2, GamepadKeys.Button.A).toggleWhenPressed(
@@ -138,18 +136,18 @@ public class TeleOp extends CommandOpMode {
                 .whileActiveContinuous(new InstantCommand(
                         () -> intakeSlides.incrementPosition(-intakeSlideIncrement),
                         intakeSlides
-        ));
+                ));
         new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand(
                         () -> intakeSlides.incrementPosition(intakeSlideIncrement),
                         intakeSlides
-        ));
+                ));
 
-        new Trigger(()-> driver2.getLeftY() > 0.1 || driver2.getLeftY() < -0.1)
+        new Trigger(() -> driver2.getLeftY() > 0.1 || driver2.getLeftY() < -0.1)
                 .whileActiveContinuous(new InstantCommand (
                         () -> outtakeSlides.manual(driver2.getLeftY()*outtakeResetPower),
                         outtakeSlides
-        ));
+                ));
 
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(
                 new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides)
@@ -175,12 +173,17 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> outtake.toggleSpecimenOutput())
         );
 
-        // ascent
-        new Trigger(()-> driver2.getRightY() > 0.1 || driver2.getRightY() < -0.1)
+        // horizontal extension
+        new Trigger(() -> driver2.getRightX() > 0.1)
                 .whileActiveContinuous(new InstantCommand (
-                        () -> ascent.manual(driver2.getRightY()*ascentTiltPower),
-                        ascent
-        ));
+                        () -> intakeSlides.manual(driver2.getRightX()*intakeSlidePowerO),
+                        intakeSlides
+                ));
+        new Trigger(() -> driver2.getRightX() < -0.1)
+                .whileActiveContinuous(new InstantCommand (
+                        () -> intakeSlides.manual(driver2.getRightX()*intakeSlidePowerI),
+                        intakeSlides
+                ));
 
         schedule(new RunCommand(() -> {
             TelemetryPacket packet = new TelemetryPacket();

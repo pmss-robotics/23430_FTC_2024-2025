@@ -1,18 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import android.bluetooth.le.ScanSettings;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
-import com.arcrobotics.ftclib.util.InterpLUT;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.util.MathUtils;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PwmControl;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImpl;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -25,9 +17,11 @@ import java.util.Objects;
 public class IntakeSlidesSubsystem extends SubsystemBase {
 
     // declare hardware here
-    Telemetry telemetry;
-    ServoImplEx intakeSlideL; // in order of precedence
-    ServoImplEx intakeSlideR;
+    private Telemetry telemetry;
+    private ServoImplEx intakeSlideL; // in order of precedence
+    private ServoImplEx intakeSlideR;
+    private DcMotorEx hExtension;
+    private VoltageSensor voltageSensor;
     // wrist moves hand and finger along an axis, wrist just moves fingers, etc.
 
     public static double F_target = 125; // in degrees
@@ -36,6 +30,13 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     private States.IntakeExtension currentSlidesState;
     public static int pIntake = 210;
     public static int pHome = 110;
+
+    public static int target = 0;
+
+    // public static double P = 0.0000001, I = 0, D = 0; // p: 0.021, i: 0.003
+
+    // public PIDController pidController = new PIDController(P,I,D);
+
 
     public IntakeSlidesSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
@@ -49,8 +50,44 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         intakeSlideR.setDirection(Servo.Direction.REVERSE);
         intakeSlideR.setPosition(scale(F_target));
 
+        hExtension = hardwareMap.get(DcMotorEx.class, "intakeSlides");
+        hExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
+
+        target = 0;
 
         currentSlidesState = States.IntakeExtension.home;
+    }
+
+    @Override
+    public void periodic() {
+        if (Objects.nonNull(hExtension.getCurrentPosition())) {
+            telemetry.addData("HExtension Target: ", target);
+            telemetry.addData("HExtension Pos: ", hExtension.getCurrentPosition());
+            telemetry.update();
+        }
+    }
+
+    public void holdPosition() {
+        hExtension.setPower(0);
+    }
+
+    /*
+    private double calculate() {
+        pidController.setPID(P,I,D);
+        int current = hExtension.getCurrentPosition();
+
+        double power = pidController.calculate(current, target);
+        power /= voltageSensor.getVoltage();
+
+        telemetry.addData("HExtension Power:", power);
+        return power;
+    }
+     */
+
+    public void manual(double power) {
+        hExtension.setPower(power);
+        target = hExtension.getCurrentPosition();
     }
 
     public States.IntakeExtension getCurrentIntExState() {
@@ -84,11 +121,6 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         }
     }
 
-    public void holdPosition () {
-        intakeSlideL.setPosition(scale(position));
-        intakeSlideR.setPosition(scale(position));
-    }
-
     public void setIntakeSlidesState(States.IntakeExtension state) {
         currentSlidesState = state;
         switch (currentSlidesState) {
@@ -101,12 +133,6 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
                 intakeSlideR.setPosition(scale(pIntake));
                 break;
         }
-    }
-
-    @Override
-    public void periodic() {
-        telemetry.addData("intake slide position", intakeSlideL.getPosition());
-
     }
 
     private double scale(double angle){
