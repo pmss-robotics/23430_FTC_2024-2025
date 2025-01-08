@@ -38,8 +38,8 @@ public class TeleOp extends CommandOpMode {
     public static double bucketStart = 0.636;
     public static double outtakeResetPower = 0.6;
     public static double ascentTiltPower = 0.2;
-    public static double intakeSlidePowerO = 0.6;
-    public static double intakeSlidePowerI = 0.75;
+    public static double intakeSlidePowerO = 0.5;
+    public static double intakeSlidePowerI = 0.7;
 
     States.Global currentState = States.Global.home;
 
@@ -132,16 +132,7 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> intake.setPower(0.5), intake)
         );
 
-        new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
-                .whileActiveContinuous(new InstantCommand(
-                        () -> intakeSlides.incrementPosition(-intakeSlideIncrement),
-                        intakeSlides
-                ));
-        new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
-                .whileActiveContinuous(new InstantCommand(
-                        () -> intakeSlides.incrementPosition(intakeSlideIncrement),
-                        intakeSlides
-                ));
+
 
         new Trigger(() -> driver2.getLeftY() > 0.1 || driver2.getLeftY() < -0.1)
                 .whileActiveContinuous(new InstantCommand (
@@ -174,14 +165,15 @@ public class TeleOp extends CommandOpMode {
         );
 
         // horizontal extension
-        new Trigger(() -> driver2.getRightX() > 0.1)
-                .whileActiveContinuous(new InstantCommand (
-                        () -> intakeSlides.manual(driver2.getRightX()*intakeSlidePowerO),
-                        intakeSlides
-                ));
-        new Trigger(() -> driver2.getRightX() < -0.1)
+
+        new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand (
                         () -> intakeSlides.manual(driver2.getRightX()*intakeSlidePowerI),
+                        intakeSlides
+                ));
+        new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
+                .whileActiveContinuous(new InstantCommand (
+                        () -> intakeSlides.manual(driver2.getRightX()*intakeSlidePowerO),
                         intakeSlides
                 ));
 
