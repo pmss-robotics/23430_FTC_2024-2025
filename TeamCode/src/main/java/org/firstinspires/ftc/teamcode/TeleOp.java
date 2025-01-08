@@ -39,7 +39,7 @@ public class TeleOp extends CommandOpMode {
     public static double outtakeResetPower = 0.6;
     public static double ascentTiltPower = 0.2;
     public static double intakeSlidePowerO = 0.5;
-    public static double intakeSlidePowerI = 0.7;
+    public static double intakeSlidePowerI = -0.7;
 
     States.Global currentState = States.Global.home;
 
