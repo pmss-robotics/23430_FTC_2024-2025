@@ -43,7 +43,7 @@ public class SpecimenAutonomous2 extends CommandOpMode {
 
     public final MecanumKinematics kinematics = new MecanumKinematics(
             15.984252, 0.8);
-    public final VelConstraint defaultVelConstraint =
+    public final VelConstraint slowVelConstraint =
             new MinVelConstraint(Arrays.asList(
                     kinematics.new WheelVelConstraint(10),
                     new AngularVelConstraint(Math.PI)
@@ -78,30 +78,28 @@ public class SpecimenAutonomous2 extends CommandOpMode {
 
         //auto pathing
         Action specimenTrajectoryAction = drive.actionBuilder(drive.getPose())
-                .waitSeconds(startWaitTime)
                 .strafeTo(new Vector2d(10, -35))
                 .waitSeconds(specimenOuttakeTime)
-                .strafeTo(new Vector2d(35, -35))
-                .strafeTo(new Vector2d(35, -13))
-                .splineToLinearHeading(new Pose2d(new Vector2d( 48, -13), Math.PI/2), -Math.PI/2)
-                .strafeTo(new Vector2d(48, -48))
-                .strafeTo(new Vector2d(48, -13))
-                .strafeTo(new Vector2d(57, -13))
-                .strafeTo(new Vector2d(57, -48))
-                .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
+                .splineToLinearHeading(new Pose2d(20, -45, Math.toRadians(45)), Math.toRadians(45))
+                .splineToLinearHeading(new Pose2d(25, -50, Math.toRadians(-30)), Math.toRadians(135))
+                .splineToLinearHeading(new Pose2d(30, -45, Math.toRadians(45)), Math.toRadians(45))
+                .splineToLinearHeading(new Pose2d(35, -50, Math.toRadians(-30)), Math.toRadians(135))
+                .splineToLinearHeading(new Pose2d(40, -45, Math.toRadians(45)), Math.toRadians(45))
+                .splineToLinearHeading(new Pose2d(35, -50, Math.toRadians(-30)), Math.toRadians(135))
+                .splineToLinearHeading(new Pose2d(37, -55, Math.toRadians(90)), Math.toRadians(-90))
+                .strafeTo(new Vector2d(37, -60), slowVelConstraint)
                 .waitSeconds(specimenIntakeTime)
                 .strafeToSplineHeading(new Vector2d(13, -35), -Math.PI/2)
                 .waitSeconds(specimenOuttakeTime)
                 .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2)
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
+                .strafeTo(new Vector2d(37, -60), slowVelConstraint)
                 .waitSeconds(specimenIntakeTime)
                 .strafeToSplineHeading(new Vector2d(7, -35), -Math.PI/2)
                 .waitSeconds(specimenOuttakeTime)
                 .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2)
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
+                .strafeTo(new Vector2d(37, -60), slowVelConstraint)
                 .waitSeconds(specimenIntakeTime)
-                .strafeToSplineHeading(new Vector2d(4, -35), Math.PI*1.5)
+                .strafeToSplineHeading(new Vector2d(4, -35), -Math.PI/2)
                 .build();
         Command specimenTrajectory = new ActionCommand(specimenTrajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -113,16 +111,14 @@ public class SpecimenAutonomous2 extends CommandOpMode {
 
         Action trajectory1 = drive.actionBuilder(new Pose2d (10, -33, -Math.PI/2))
                 .waitSeconds(specimenOuttakeTime)
-                .strafeTo(new Vector2d(37, -37))
-                .strafeTo(new Vector2d(37, -13))
-                .splineToLinearHeading(new Pose2d(new Vector2d( 48, -13), Math.PI/2), -Math.PI/2)
-                .strafeTo(new Vector2d(48, -48))
-                .strafeTo(new Vector2d(48, -13))
-                .strafeTo(new Vector2d(57, -13))
-                .strafeTo(new Vector2d(57, -48))
-                .strafeTo(new Vector2d(37, -55))
-                .waitSeconds(0.4)
-                .strafeTo(new Vector2d(37, specimen1), defaultVelConstraint)
+                .splineToLinearHeading(new Pose2d(20, -45, Math.toRadians(45)), Math.toRadians(45))
+                .splineToLinearHeading(new Pose2d(25, -50, Math.toRadians(-30)), Math.toRadians(135))
+                .splineToLinearHeading(new Pose2d(30, -45, Math.toRadians(45)), Math.toRadians(45))
+                .splineToLinearHeading(new Pose2d(35, -50, Math.toRadians(-30)), Math.toRadians(135))
+                .splineToLinearHeading(new Pose2d(40, -45, Math.toRadians(45)), Math.toRadians(45))
+                .splineToLinearHeading(new Pose2d(35, -50, Math.toRadians(-30)), Math.toRadians(135))
+                .splineToLinearHeading(new Pose2d(37, -55, Math.toRadians(90)), Math.toRadians(-90))
+                .strafeTo(new Vector2d(37, -60), slowVelConstraint)
                 .build();
         Command traj1 = new ActionCommand(trajectory1, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -148,7 +144,7 @@ public class SpecimenAutonomous2 extends CommandOpMode {
                 .waitSeconds(specimenOuttakeTime)
                 .strafeToSplineHeading(new Vector2d(37, -54), Math.PI/2, velConstraint, defaultAccelConstraint)
                 .waitSeconds(0.4)
-                .strafeTo(new Vector2d(37, specimen2), defaultVelConstraint)
+                .strafeTo(new Vector2d(37, specimen2), slowVelConstraint)
                 .build();
         Command trajHome = new ActionCommand(trajectoryHome, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -156,7 +152,7 @@ public class SpecimenAutonomous2 extends CommandOpMode {
                 .waitSeconds(specimenOuttakeTime)
                 .strafeToSplineHeading(new Vector2d(37, -54), Math.PI/2, velConstraint, defaultAccelConstraint)
                 .waitSeconds(0.4)
-                .strafeTo(new Vector2d(37, specimen3), defaultVelConstraint)
+                .strafeTo(new Vector2d(37, specimen3), slowVelConstraint)
                 .build();
         Command trajHome1 = new ActionCommand(trajectoryHome1, Stream.of(drive).collect(Collectors.toSet()));
 
