@@ -33,9 +33,9 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
 
     public static int target = 0;
 
-    // public static double P = 0.0000001, I = 0, D = 0; // p: 0.021, i: 0.003
+    public static double P = 0.005, I = 0, D = 0; // p: 0.021, i: 0.003
 
-    // public PIDController pidController = new PIDController(P,I,D);
+    public PIDController pidController;
 
 
     public IntakeSlidesSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -53,6 +53,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         hExtension = hardwareMap.get(DcMotorEx.class, "intakeSlides");
         hExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
+        pidController = new PIDController(P,I,D);;
 
         target = 0;
 
@@ -69,10 +70,11 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     }
 
     public void holdPosition() {
-        hExtension.setPower(0);
+//        hExtension.setPower(0);
+        calculate();
     }
 
-    /*
+
     private double calculate() {
         pidController.setPID(P,I,D);
         int current = hExtension.getCurrentPosition();
@@ -83,7 +85,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         telemetry.addData("HExtension Power:", power);
         return power;
     }
-     */
+
 
     public void manual(double power) {
         hExtension.setPower(power);
