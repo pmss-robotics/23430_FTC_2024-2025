@@ -52,9 +52,9 @@ public class BucketAutonomous2 extends CommandOpMode {
     public static double specimenWaitTime = 0.5;
     public static int intakeWaitMili = 3000;
     public static int outtakeWaitmili = 2000;
-    public static double sampleAngle1 = 83;
+    public static double sampleAngle1 = 85;
     public static double sampleAngle2 = 107;
-    public static double sampleAngle3 = 121;
+    public static double sampleAngle3 = 127;
 
     @Override
     public void initialize() {
@@ -107,19 +107,19 @@ public class BucketAutonomous2 extends CommandOpMode {
         Command traj5 = new ActionCommand(trajectory5, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory6 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
-                .strafeToLinearHeading(new Vector2d(-53, -50), Math.toRadians(sampleAngle3), velConstraint)
+                .strafeToLinearHeading(new Vector2d(-53, -48), Math.toRadians(sampleAngle3), velConstraint)
                 .build();
         Command traj6 = new ActionCommand(trajectory6, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory7 = drive.actionBuilder(new Pose2d(-53, -50, Math.toRadians(sampleAngle3)))
+        Action trajectory7 = drive.actionBuilder(new Pose2d(-53, -48, Math.toRadians(sampleAngle3)))
                 .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45), velConstraint)
                 .build();
         Command traj7 = new ActionCommand(trajectory7, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory8 = drive.actionBuilder(new Pose2d(-53, -50, Math.toRadians(sampleAngle3)))
-                .strafeToLinearHeading(new Vector2d(-40, -10), Math.toRadians(90), velConstraint)
+                .turnTo(Math.toRadians(90))
                 .build();
-        Command traj8 = new ActionCommand(trajectory7, Stream.of(drive).collect(Collectors.toSet()));
+        Command traj8 = new ActionCommand(trajectory8, Stream.of(drive).collect(Collectors.toSet()));
 
         OuttakeSlidesSubsystem outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
         outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
@@ -181,10 +181,10 @@ public class BucketAutonomous2 extends CommandOpMode {
 
         );
         Command intakeSample3 = new SequentialCommandGroup(
-                new InstantCommand(() -> intakeSlides.manual(0.7)),
-                new WaitCommand(280),
+                new InstantCommand(() -> intakeSlides.manual(0.8)),
+                new WaitCommand(220),
                 new InstantCommand(() -> intakeSlides.manual(0.40)),
-                new WaitCommand(850)
+                new WaitCommand(1000)
 
         );
 
@@ -251,9 +251,7 @@ public class BucketAutonomous2 extends CommandOpMode {
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
                 new InstantCommand(() -> intake.setPower(0.5)),
                 new WaitCommand(1500),
-                bucket,
-                new WaitCommand(500),
-                traj8
+                bucket
 
         );
 
