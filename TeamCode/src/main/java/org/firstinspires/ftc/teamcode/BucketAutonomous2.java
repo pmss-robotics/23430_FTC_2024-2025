@@ -41,10 +41,10 @@ public class BucketAutonomous2 extends CommandOpMode {
 
     final static MecanumKinematics kinematics = new MecanumKinematics(
             15.984252, 0.8);
-    final static VelConstraint slowVelConstraint =
+    final static VelConstraint velConstraint =
             new MinVelConstraint(Arrays.asList(
-                    kinematics.new WheelVelConstraint(10),
-                    new AngularVelConstraint(Math.PI)
+                    kinematics.new WheelVelConstraint(60),
+                    new AngularVelConstraint(1.141592653589793)
             ));
 
     public static double intakeWaitTime = 2.0;
@@ -52,6 +52,9 @@ public class BucketAutonomous2 extends CommandOpMode {
     public static double specimenWaitTime = 0.5;
     public static int intakeWaitMili = 3000;
     public static int outtakeWaitmili = 2000;
+    public static double sampleAngle1 = 83;
+    public static double sampleAngle2 = 107;
+    public static double sampleAngle3 = 121;
 
     @Override
     public void initialize() {
@@ -79,41 +82,44 @@ public class BucketAutonomous2 extends CommandOpMode {
         Command trajectory = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory1 = drive.actionBuilder(drive.getPose())
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(35))
+                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(35), velConstraint)
                 .build();
         Command traj1 = new ActionCommand(trajectory1, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory2 = drive.actionBuilder(new Pose2d(-55, -55, Math.toRadians(35)))
-                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(86))
+                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(sampleAngle1), velConstraint)
                 .build();
         Command traj2 = new ActionCommand(trajectory2, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory3 = drive.actionBuilder(new Pose2d(-52, -52, Math.toRadians(86)))
-                .strafeToLinearHeading(new Vector2d(-55, -55), Math.toRadians(45))
+        Action trajectory3 = drive.actionBuilder(new Pose2d(-52, -52, Math.toRadians(sampleAngle1)))
+                .strafeToLinearHeading(new Vector2d(-55, -55), Math.toRadians(45), velConstraint)
                 .build();
         Command traj3 = new ActionCommand(trajectory3, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory4 = drive.actionBuilder(new Pose2d(-55, -55, Math.toRadians(45)))
-                .strafeToLinearHeading(new Vector2d(-52, -50), Math.toRadians(95))
+                .strafeToLinearHeading(new Vector2d(-52, -50), Math.toRadians(sampleAngle2), velConstraint)
                 .build();
         Command traj4 = new ActionCommand(trajectory4, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory5 = drive.actionBuilder(new Pose2d(-52, -50, Math.toRadians(95)))
-                .strafeToLinearHeading(new Vector2d(-55, -55), Math.toRadians(45))
+        Action trajectory5 = drive.actionBuilder(new Pose2d(-52, -50, Math.toRadians(sampleAngle2)))
+                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45), velConstraint)
                 .build();
         Command traj5 = new ActionCommand(trajectory5, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory6 = drive.actionBuilder(new Pose2d(-55, -55, Math.toRadians(45)))
-                .strafeToLinearHeading(new Vector2d(-53, -50), Math.toRadians(70))
+        Action trajectory6 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
+                .strafeToLinearHeading(new Vector2d(-53, -50), Math.toRadians(sampleAngle3), velConstraint)
                 .build();
         Command traj6 = new ActionCommand(trajectory6, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory7 = drive.actionBuilder(new Pose2d(-53, -50, Math.toRadians(80)))
-                .strafeToLinearHeading(new Vector2d(-55, -55), Math.toRadians(45))
+        Action trajectory7 = drive.actionBuilder(new Pose2d(-53, -50, Math.toRadians(sampleAngle3)))
+                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45), velConstraint)
                 .build();
         Command traj7 = new ActionCommand(trajectory7, Stream.of(drive).collect(Collectors.toSet()));
 
-
+        Action trajectory8 = drive.actionBuilder(new Pose2d(-53, -50, Math.toRadians(sampleAngle3)))
+                .strafeToLinearHeading(new Vector2d(-40, -10), Math.toRadians(90), velConstraint)
+                .build();
+        Command traj8 = new ActionCommand(trajectory7, Stream.of(drive).collect(Collectors.toSet()));
 
         OuttakeSlidesSubsystem outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
         outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
@@ -162,9 +168,9 @@ public class BucketAutonomous2 extends CommandOpMode {
                 new InstantCommand(() -> intakeSlides.manual(0.7)),
                 new WaitCommand(150),
                 new InstantCommand(() -> intakeSlides.manual(0.5)),
-                new WaitCommand(150),
-                new InstantCommand(() -> intakeSlides.manual(0.4)),
-                new WaitCommand(700)
+                new WaitCommand(100),
+                new InstantCommand(() -> intakeSlides.manual(0.35)),
+                new WaitCommand(850)
 
         );
         Command intakeSample2 = new SequentialCommandGroup(
@@ -175,10 +181,10 @@ public class BucketAutonomous2 extends CommandOpMode {
 
         );
         Command intakeSample3 = new SequentialCommandGroup(
-                new InstantCommand(() -> intakeSlides.manual(0.8)),
-                new WaitCommand(250),
-                new InstantCommand(() -> intakeSlides.manual(0.4)),
-                new WaitCommand(700)
+                new InstantCommand(() -> intakeSlides.manual(0.7)),
+                new WaitCommand(280),
+                new InstantCommand(() -> intakeSlides.manual(0.40)),
+                new WaitCommand(850)
 
         );
 
@@ -187,6 +193,7 @@ public class BucketAutonomous2 extends CommandOpMode {
                 new InstantCommand(() -> intake.setWristState(States.Intake.transfer)),
                 new InstantCommand(() -> outtakeSlides.toggleBucket()),
                 traj1,
+                new WaitCommand(100),
                 bucket,
                 new InstantCommand(() -> intake.setWristState(States.Intake.intake)),
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
@@ -198,7 +205,7 @@ public class BucketAutonomous2 extends CommandOpMode {
                 new InstantCommand(() -> intake.setWristState(States.Intake.home)),
                 new InstantCommand(() -> intakeSlides.manual(-0.8)),
                 traj3,
-                new WaitCommand(750),
+                new WaitCommand(450),
                 new InstantCommand(() -> intake.setPower(0)),
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 new WaitCommand(500),
@@ -217,7 +224,7 @@ public class BucketAutonomous2 extends CommandOpMode {
                 new InstantCommand(() -> intake.setWristState(States.Intake.home)),
                 new InstantCommand(() -> intakeSlides.manual(-0.8)),
                 traj5,
-                new WaitCommand(750),
+                new WaitCommand(450),
                 new InstantCommand(() -> intake.setPower(0)),
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 new WaitCommand(500),
@@ -236,7 +243,7 @@ public class BucketAutonomous2 extends CommandOpMode {
                 new InstantCommand(() -> intake.setWristState(States.Intake.home)),
                 new InstantCommand(() -> intakeSlides.manual(-0.8)),
                 traj7,
-                new WaitCommand(750),
+                new WaitCommand(450),
                 new InstantCommand(() -> intake.setPower(0)),
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 new WaitCommand(500),
@@ -244,7 +251,9 @@ public class BucketAutonomous2 extends CommandOpMode {
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
                 new InstantCommand(() -> intake.setPower(0.5)),
                 new WaitCommand(1500),
-                bucket
+                bucket,
+                new WaitCommand(500),
+                traj8
 
         );
 
