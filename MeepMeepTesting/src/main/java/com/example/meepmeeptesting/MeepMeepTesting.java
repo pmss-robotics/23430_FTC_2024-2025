@@ -37,7 +37,7 @@ public class MeepMeepTesting {
                 .setConstraints(55, 55, Math.toRadians(180), Math.toRadians(180), 15.984252)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-33, -61.5, Math.PI/2))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-33, -61.5, -Math.PI/2))
                 //sample auto pathing
 /*                .strafeTo(new Vector2d(-10, -35))
                 .waitSeconds(specimenWaitTime)
@@ -55,7 +55,7 @@ public class MeepMeepTesting {
                 .waitSeconds(outtakeWaitTime)
                 .splineToLinearHeading(new Pose2d(-24, -10, Math.PI), Math.toRadians(0)) */
                 //specimen auto pathing
-                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(225)), -Math.PI/2)
+                .strafeToLinearHeading(new Vector2d(-53, -53), Math.toRadians(225))
                 .waitSeconds(outtakeWaitTime)
                 .splineToLinearHeading(new Pose2d(-52, -52, Math.toRadians(260)), Math.PI)
                 .waitSeconds(intakeWaitTime)

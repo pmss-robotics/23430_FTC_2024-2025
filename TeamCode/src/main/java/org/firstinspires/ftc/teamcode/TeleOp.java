@@ -15,6 +15,7 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
@@ -30,7 +31,7 @@ public class TeleOp extends CommandOpMode {
     public static double servoIncrement = 7;
     public static double intakeSlideIncrement = 4;
     public static double servoSpeed = 1;
-    public static double driveSpeed = 1;
+    public static double driveSpeed = 1.2;
     public static double fast = 1;
     public static double slow = 0.5;
     public static double rotationSpeed = 1;
@@ -38,8 +39,8 @@ public class TeleOp extends CommandOpMode {
     public static double bucketStart = 0.636;
     public static double outtakeResetPower = 0.6;
     public static double ascentTiltPower = 0.2;
-    public static double intakeSlidePowerO = 0.5;
-    public static double intakeSlidePowerI = -0.7;
+    public static double intakeSlidePowerO = 0.58;
+    public static double intakeSlidePowerI = -0.75;
 
     States.Global currentState = States.Global.home;
 
@@ -91,6 +92,8 @@ public class TeleOp extends CommandOpMode {
 
         OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
 
+        Servo lights = hardwareMap.get(Servo.class, "rgbLights");
+
         // reset everything, probably unnecessary
 /*      SequentialCommandGroup returnHome = new SequentialCommandGroup(
                 new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.home), intakeSlides),
@@ -122,14 +125,16 @@ public class TeleOp extends CommandOpMode {
                         intake
                 ));
 
+
+
         // roller intake rotation
         new GamepadButton(driver2, GamepadKeys.Button.A).toggleWhenPressed(
-                new InstantCommand(() -> intake.setPower(0.5+servoSpeed), intake),
-                new InstantCommand(() -> intake.setPower(0.5), intake)
+                new SequentialCommandGroup(new InstantCommand(() -> intake.setPower(0.5+servoSpeed)),new InstantCommand(() -> lights.setPosition(0.7))),
+                new SequentialCommandGroup(new InstantCommand(() -> intake.setPower(0.5)),new InstantCommand(() -> lights.setPosition(0.1)))
         );
         new GamepadButton(driver2, GamepadKeys.Button.B).toggleWhenPressed(
-                new InstantCommand(() -> intake.setPower(1.2-servoSpeed), intake),
-                new InstantCommand(() -> intake.setPower(0.5), intake)
+                new SequentialCommandGroup(new InstantCommand(() -> intake.setPower(1.2-servoSpeed)),new InstantCommand(() -> lights.setPosition(0.35))),
+                new SequentialCommandGroup(new InstantCommand(() -> intake.setPower(0.5)),new InstantCommand(() -> lights.setPosition(0.1)))
         );
 
 

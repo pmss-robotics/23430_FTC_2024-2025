@@ -33,7 +33,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
 
     public static int target = 0;
 
-    public static double P = 0.005, I = 0, D = 0; // p: 0.021, i: 0.003
+    public static double P = 0, I = 0, D = 0; // p: 0.021, i: 0.003
 
     public PIDController pidController;
 
