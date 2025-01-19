@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.subsystems.*;
 import org.firstinspires.ftc.teamcode.util.States;
 
 @Config
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "lights", group = "TeleOp")
 public class Lightsthingbigthinglightscoolred extends CommandOpMode {
     // probably need to change later.
     public static double servoIncrement = 7;

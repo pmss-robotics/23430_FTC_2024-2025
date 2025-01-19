@@ -53,8 +53,8 @@ public class BucketAutonomous2 extends CommandOpMode {
     public static int intakeWaitMili = 3000;
     public static int outtakeWaitmili = 2000;
     public static double sampleAngle1 = 85;
-    public static double sampleAngle2 = 107;
-    public static double sampleAngle3 = 127;
+    public static double sampleAngle2 = 109;
+    public static double sampleAngle3 = 135;
 
     @Override
     public void initialize() {
@@ -107,11 +107,11 @@ public class BucketAutonomous2 extends CommandOpMode {
         Command traj5 = new ActionCommand(trajectory5, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory6 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
-                .strafeToLinearHeading(new Vector2d(-53, -48), Math.toRadians(sampleAngle3), velConstraint)
+                .strafeToLinearHeading(new Vector2d(-53, -44), Math.toRadians(sampleAngle3), velConstraint)
                 .build();
         Command traj6 = new ActionCommand(trajectory6, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory7 = drive.actionBuilder(new Pose2d(-53, -48, Math.toRadians(sampleAngle3)))
+        Action trajectory7 = drive.actionBuilder(new Pose2d(-53, -44, Math.toRadians(sampleAngle3)))
                 .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45), velConstraint)
                 .build();
         Command traj7 = new ActionCommand(trajectory7, Stream.of(drive).collect(Collectors.toSet()));
@@ -165,12 +165,12 @@ public class BucketAutonomous2 extends CommandOpMode {
         );
 
         Command intakeSample = new SequentialCommandGroup(
-                new InstantCommand(() -> intakeSlides.manual(0.7)),
-                new WaitCommand(150),
+                new InstantCommand(() -> intakeSlides.manual(0.75)),
+                new WaitCommand(220),
                 new InstantCommand(() -> intakeSlides.manual(0.5)),
                 new WaitCommand(100),
-                new InstantCommand(() -> intakeSlides.manual(0.35)),
-                new WaitCommand(850)
+                new InstantCommand(() -> intakeSlides.manual(0.4)),
+                new WaitCommand(800)
 
         );
         Command intakeSample2 = new SequentialCommandGroup(
@@ -181,10 +181,10 @@ public class BucketAutonomous2 extends CommandOpMode {
 
         );
         Command intakeSample3 = new SequentialCommandGroup(
-                new InstantCommand(() -> intakeSlides.manual(0.8)),
-                new WaitCommand(220),
+                new InstantCommand(() -> intakeSlides.manual(0.7)),
+                new WaitCommand(200),
                 new InstantCommand(() -> intakeSlides.manual(0.40)),
-                new WaitCommand(1000)
+                new WaitCommand(1500)
 
         );
 
