@@ -167,6 +167,25 @@ public class OuttakeSubsystem extends SubsystemBase {
         }
     }
 
+    public void toggleClaw () {
+        if (clawOpen) {
+            claw.setPosition(scale(cClosed));
+            clawOpen = false;
+        } else {
+            claw.setPosition(scale(cOpen));
+            clawOpen = true;
+        }
+    }
+
+    public void openClaw () {
+        claw.setPosition(scale(cOpen));
+        clawOpen = true;
+    }
+    public void closeClaw () {
+        claw.setPosition(scale(cClosed));
+        clawOpen = false;
+    }
+
     public void incrementClawPosition(double increment) {
         cPosition = MathUtils.clamp(aPosition + increment, cMin, cMax);
         clawL.setPosition(scale(cPosition));

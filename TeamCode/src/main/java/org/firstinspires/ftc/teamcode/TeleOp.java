@@ -153,22 +153,49 @@ public class TeleOp extends CommandOpMode {
 
         // toggle outtake system
         new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(
-                new ConditionalCommand(
-                        new InstantCommand(() -> outtakeSlides.toggleBucket()),
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
-                                new WaitCommand(OuttakeSubsystem.dropTime),
-                                new InstantCommand(() -> outtake.toggleWristState()),
-                                new InstantCommand(() -> outtakeSlides.toggleBucket())
+                new ConditionalCommand (
+                        new ConditionalCommand(
+                                new InstantCommand(() -> outtakeSlides.toggleBucket()),
+                                new SequentialCommandGroup(
+                                        new InstantCommand(() -> outtake.toggleOuttakeState()),
+                                        new InstantCommand(() -> outtake.openClaw()),
+                                        new WaitCommand(OuttakeSubsystem.dropTime),
+                                        new InstantCommand(() -> outtake.toggleClaw()),
+                                        new InstantCommand(() -> outtake.toggleOuttakeState()),
+                                        new InstantCommand(() -> outtakeSlides.toggleBucket())
+                                ),
+                                () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
                         ),
-                        () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
+                        new InstantCommand(() -> currentMode = States.Mode.specimen),
+                        () -> currentMode == States.Mode.sample
                 )
         );
+
+        new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(
+                new ConditionalCommand (
+                        new ConditionalCommand( //TODO make specimen cycle (currently sample system)
+                                new InstantCommand(() -> outtakeSlides.toggleBucket()),
+                                new SequentialCommandGroup(
+                                        new InstantCommand(() -> outtake.toggleOuttakeState()),
+                                        new InstantCommand(() -> outtake.openClaw()),
+                                        new WaitCommand(OuttakeSubsystem.dropTime),
+                                        new InstantCommand(() -> outtake.toggleClaw()),
+                                        new InstantCommand(() -> outtake.toggleOuttakeState()),
+                                        new InstantCommand(() -> outtakeSlides.toggleBucket())
+                                ),
+                                () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
+                        ),
+                        new InstantCommand(() -> currentMode = States.Mode.sample),
+                        () -> currentMode == States.Mode.specimen
+                )
+        );
+
         new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(
                 new InstantCommand(() -> outtakeSlides.toggleSpecimen())
         );
-        new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(
-                new InstantCommand(() -> outtake.toggleSpecimenOutput())
+        new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).toggleWhenPressed(
+                new InstantCommand(() -> currentMode = States.Mode.sample),
+                new InstantCommand(() -> currentMode = States.Mode.specimen)
         );
 
         // horizontal extension
