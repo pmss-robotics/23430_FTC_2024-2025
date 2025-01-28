@@ -54,6 +54,11 @@ public class States {
         ascent
     }
 
+    public enum Mode {
+        sample,
+        specimen
+    }
+
 
 
 }

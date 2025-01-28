@@ -43,6 +43,8 @@ public class TeleOp extends CommandOpMode {
     public static double intakeSlidePowerI = -0.75;
 
     States.Global currentState = States.Global.home;
+    public static States.Mode currentMode = States.Mode.specimen;
+
 
     GamepadEx driver1, driver2;
     DriveSubsystem drive;
