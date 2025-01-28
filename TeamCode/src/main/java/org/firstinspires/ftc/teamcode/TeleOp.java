@@ -115,7 +115,7 @@ public class TeleOp extends CommandOpMode {
                 () -> driveSpeed = fast
         );
 
-        // intake rotation
+        // manual intake wrist movement
         new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(
                         () -> intake.incrementPosition(servoIncrement),
@@ -127,8 +127,6 @@ public class TeleOp extends CommandOpMode {
                         intake
                 ));
 
-
-
         // roller intake rotation
         new GamepadButton(driver2, GamepadKeys.Button.A).toggleWhenPressed(
                 new SequentialCommandGroup(new InstantCommand(() -> intake.setPower(0.5+servoSpeed)),new InstantCommand(() -> lights.setPosition(0.7))),
@@ -139,19 +137,19 @@ public class TeleOp extends CommandOpMode {
                 new SequentialCommandGroup(new InstantCommand(() -> intake.setPower(0.5)),new InstantCommand(() -> lights.setPosition(0.1)))
         );
 
-
-
+        // manual control for vertical slides
         new Trigger(() -> driver2.getLeftY() > 0.1 || driver2.getLeftY() < -0.1)
                 .whileActiveContinuous(new InstantCommand (
                         () -> outtakeSlides.manual(driver2.getLeftY()*outtakeResetPower),
                         outtakeSlides
                 ));
 
+        // reset vertical slides position
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(
                 new InstantCommand(() -> outtakeSlides.resetEncoder(), outtakeSlides)
         );
 
-        // toggle outtake system
+        // sample cycling system
         new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(
                 new ConditionalCommand (
                         new ConditionalCommand(
@@ -171,6 +169,7 @@ public class TeleOp extends CommandOpMode {
                 )
         );
 
+        // specimen cycling system
         new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(
                 new ConditionalCommand (
                         new ConditionalCommand( //TODO make specimen cycle (currently sample system)
@@ -190,16 +189,18 @@ public class TeleOp extends CommandOpMode {
                 )
         );
 
+        // old specimen system, can probably assign different function to X, maybe an intake or transfer macro?
         new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(
                 new InstantCommand(() -> outtakeSlides.toggleSpecimen())
         );
+
+        // switching between sample and specimen
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).toggleWhenPressed(
                 new InstantCommand(() -> currentMode = States.Mode.sample),
                 new InstantCommand(() -> currentMode = States.Mode.specimen)
         );
 
         // horizontal extension
-
         new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand (
                         () -> intakeSlides.manual(driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)*intakeSlidePowerI),
