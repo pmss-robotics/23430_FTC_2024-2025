@@ -24,7 +24,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     ServoImplEx armL;
     ServoImplEx armR;
     ServoImplEx claw;
-    // wrist rotates intake and spinners are rollers
+    // two servos to move the arm, two to move the claw, one to open and close the claw
 
     public static double W_target = 170; // in degrees
     public static double position = 170;
@@ -187,7 +187,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void incrementClawPosition(double increment) {
-        cPosition = MathUtils.clamp(aPosition + increment, cMin, cMax);
+        cPosition = MathUtils.clamp(cPosition + increment, cMin, cMax);
         clawL.setPosition(scale(cPosition));
         clawR.setPosition(scale(cPosition));
     }

@@ -45,7 +45,8 @@ public class States {
         home,
         bucket,
         specimen,
-        ascent
+        ascent,
+        transfer
     }
 
     public enum Ascent {
