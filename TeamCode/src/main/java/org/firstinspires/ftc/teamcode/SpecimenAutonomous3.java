@@ -88,25 +88,35 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 .waitSeconds(specimenOuttakeTime)
                 .strafeTo(new Vector2d(35, -35))
                 .strafeTo(new Vector2d(35, -13))
-                .splineToLinearHeading(new Pose2d(new Vector2d( 48, -13), Math.PI/2), -Math.PI/2)
+                .splineToConstantHeading(new Vector2d( 48, -13), -Math.PI/2)
                 .strafeTo(new Vector2d(48, -48))
                 .strafeTo(new Vector2d(48, -13))
-                .strafeTo(new Vector2d(57, -13))
+                .splineToConstantHeading(new Vector2d( 57, -13), -Math.PI/2)
                 .strafeTo(new Vector2d(57, -48))
+                .strafeTo(new Vector2d(57, -13))
+                .splineToConstantHeading(new Vector2d( 62, -13), -Math.PI/2)
+                .strafeTo(new Vector2d(62, -48))
                 .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .waitSeconds(specimenIntakeTime)
-                .strafeToSplineHeading(new Vector2d(13, -35), -Math.PI/2)
+                .strafeTo(new Vector2d(13, -35))
                 .waitSeconds(specimenOuttakeTime)
-                .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2)
+                .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .waitSeconds(specimenIntakeTime)
-                .strafeToSplineHeading(new Vector2d(7, -35), -Math.PI/2)
+                .strafeTo(new Vector2d(7, -35))
                 .waitSeconds(specimenOuttakeTime)
-                .strafeToSplineHeading(new Vector2d(37, -55), Math.PI/2)
+                .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .waitSeconds(specimenIntakeTime)
-                .strafeToSplineHeading(new Vector2d(4, -35), Math.PI*1.5)
+                .strafeTo(new Vector2d(4, -35))
+                .waitSeconds(specimenOuttakeTime)
+                .strafeTo(new Vector2d(37, -55))
+                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
+                .waitSeconds(specimenIntakeTime)
+                .strafeTo(new Vector2d(1, -35))
+                .waitSeconds(specimenOuttakeTime)
+
                 .build();
         Command specimenTrajectory = new ActionCommand(specimenTrajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -178,14 +188,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
         waitForStart();
 
         //drop sample into high bucket
-        Command bucket = new SequentialCommandGroup(
-                new InstantCommand(() -> intake.setPosition(60), intake),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket), outtakeSlides),
-                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket), outtake),
-                new WaitCommand(OuttakeSubsystem.dropTime),
-                new InstantCommand(() -> outtake.toggleWristState(), outtake),
-                new InstantCommand(() -> outtakeSlides.toggleBucket(), outtakeSlides)
-        );
+
 
         //intake a sample
         Command sample = new SequentialCommandGroup(
@@ -229,7 +232,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home))
 
         );
-        schedule(auto);
+        schedule(specimenTrajectory);
         // TODO: create wrappers for trajectory following maybe possibly
         // this RunCommand Loop might be useless
         schedule(new RunCommand(() -> {
