@@ -68,7 +68,7 @@ public class MeepMeepTesting {
                 .strafeTo(new Vector2d(57, -13))
                 .splineToConstantHeading(new Vector2d( 62, -13), -Math.PI/2)
                 .strafeTo(new Vector2d(62, -48))
-                .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
+                .splineToConstantHeading(new Vector2d(37, -55), Math.PI)
                 .strafeTo(new Vector2d(37, -60), slowVelConstraint)
                 .waitSeconds(specimenIntakeTime)
                 .strafeTo(new Vector2d(13, -35))
