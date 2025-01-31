@@ -88,7 +88,7 @@ public class MeepMeepTesting {
                 .waitSeconds(specimenIntakeTime)
                 .strafeTo(new Vector2d(1, -35))
                 .waitSeconds(specimenOuttakeTime)
-
+                .strafeToConstantHeading(new Vector2d(45, -59))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
