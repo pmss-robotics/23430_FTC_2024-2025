@@ -138,6 +138,7 @@ public class IntakeSubsystem extends SubsystemBase {
         return Range.scale(angle, 0, 300, 0, 1);
     }
 
+    //TODO make this work
     public void intakeRotation (){
         wristL.setPosition(wPosition+wRotation);
         wristR.setPosition(wPosition-wPosition);
