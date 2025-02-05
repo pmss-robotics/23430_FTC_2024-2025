@@ -28,6 +28,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // declare hardware here
     Telemetry telemetry;
     ServoImplEx wrist, spinnerL, spinnerR;
+    ServoImplEx wristL, wristR, claw;
     // wrist rotates intake and spinners are rollers
 
     public static double W_target = 270; // in degrees
@@ -37,6 +38,12 @@ public class IntakeSubsystem extends SubsystemBase {
     public static int pHome = 262, pStart = 0, pIntake = 21, pTransfer = 190; // in degrees
     public static int wMin = 21, wMax = 262;
 
+    public static int wHome = 0, wTransfer = 0, wIntake = 0, wMiddle = 0;
+    public static int cOpen = 0, cClosed = 0;
+    public static int wPosition = 0, wRotation = 0;
+    public static boolean intakeOpen = false;
+    public static int rMax = 0, rMin = 0;
+
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
@@ -44,15 +51,19 @@ public class IntakeSubsystem extends SubsystemBase {
         spinnerL = hardwareMap.get(ServoImplEx.class, "spinnerL");
         spinnerR = hardwareMap.get(ServoImplEx.class, "spinnerR");
 
+        wristL = hardwareMap.get(ServoImplEx.class, "wristL");
+        wristR = hardwareMap.get(ServoImplEx.class, "wristR");
+        claw = hardwareMap.get(ServoImplEx.class, "intakeClaw");
         // expand the range of the servo beyond the default for control/expansion hubs
         // test
-        wrist.setPwmRange(new PwmControl.PwmRange(500, 2500));
-/*      spinnerL.setPwmRange(new PwmControl.PwmRange(500, 2500)); // do we need this?
-        spinnerR.setPwmRange(new PwmControl.PwmRange(500, 2500));
-*/      spinnerR.setDirection(Servo.Direction.REVERSE);
+        wristL.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        wristR.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        claw.setPwmRange(new PwmControl.PwmRange(500, 2500));
 
-        wrist.setPosition(scale(W_target));
-        position = W_target;
+        wristR.setDirection(Servo.Direction.REVERSE);
+
+        wrist.setPosition(scale(wHome));
+        wPosition = wHome;
 
         currentIntakeState = States.Intake.home;
     }
@@ -125,6 +136,11 @@ public class IntakeSubsystem extends SubsystemBase {
     private double scale(double angle){
         // angle in degrees
         return Range.scale(angle, 0, 300, 0, 1);
+    }
+
+    public void intakeRotation (){
+        wristL.setPosition(wPosition+wRotation);
+        wristR.setPosition(wPosition-wPosition);
     }
 
 }
