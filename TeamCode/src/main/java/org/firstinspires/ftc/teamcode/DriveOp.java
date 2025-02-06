@@ -90,7 +90,7 @@ public class DriveOp extends CommandOpMode {
 /*      SequentialCommandGroup returnHome = new SequentialCommandGroup(
                 new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.home), intakeSlides),
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home), outtakeSlides),
-                new InstantCommand(() -> intake.setWristState(States.Intake.home), intake),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.home), intake),
                 swapState(States.Global.home)
         );
 */
@@ -126,9 +126,9 @@ public class DriveOp extends CommandOpMode {
                 new ConditionalCommand(
                         new InstantCommand(() -> outtakeSlides.toggleState()),
                         new SequentialCommandGroup(
-                                //new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
+                                //new InstantCommand(() -> outtake.setIntakeState(States.Outtake.bucket)),
                                 new WaitCommand(OuttakeSubsystem.dropTime),
-                                //new InstantCommand(() -> outtake.toggleWristState()),
+                                //new InstantCommand(() -> outtake.toggleIntakeState()),
                                 new InstantCommand(() -> outtakeSlides.toggleState())
                         ),
                         () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home

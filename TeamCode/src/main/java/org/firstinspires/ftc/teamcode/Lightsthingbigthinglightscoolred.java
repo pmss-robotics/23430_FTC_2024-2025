@@ -97,7 +97,7 @@ public class Lightsthingbigthinglightscoolred extends CommandOpMode {
 /*      SequentialCommandGroup returnHome = new SequentialCommandGroup(
                 new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.home), intakeSlides),
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home), outtakeSlides),
-                new InstantCommand(() -> intake.setWristState(States.Intake.home), intake),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.home), intake),
                 swapState(States.Global.home)
         );
 */
@@ -124,15 +124,7 @@ public class Lightsthingbigthinglightscoolred extends CommandOpMode {
                         intake
                 ));
 
-        // roller intake rotation
-        new GamepadButton(driver2, GamepadKeys.Button.A).toggleWhenPressed(
-                new InstantCommand(() -> intake.setPower(0.5 + servoSpeed), intake),
-                new InstantCommand(() -> intake.setPower(0.5), intake)
-        );
-        new GamepadButton(driver2, GamepadKeys.Button.B).toggleWhenPressed(
-                new InstantCommand(() -> intake.setPower(1.2 - servoSpeed), intake),
-                new InstantCommand(() -> intake.setPower(0.5), intake)
-        );
+
 
         new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand(
@@ -160,9 +152,9 @@ public class Lightsthingbigthinglightscoolred extends CommandOpMode {
                 new ConditionalCommand(
                         new InstantCommand(() -> outtakeSlides.toggleBucket()),
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
+                                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.bucket)),
                                 new WaitCommand(OuttakeSubsystem.dropTime),
-                                new InstantCommand(() -> outtake.toggleWristState()),
+                                new InstantCommand(() -> outtake.toggleOuttakeState()),
                                 new InstantCommand(() -> outtakeSlides.toggleBucket())
                         ),
                         () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home

@@ -100,7 +100,7 @@ public class TeleOp extends CommandOpMode {
 /*      SequentialCommandGroup returnHome = new SequentialCommandGroup(
                 new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.home), intakeSlides),
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home), outtakeSlides),
-                new InstantCommand(() -> intake.setWristState(States.Intake.home), intake),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.home), intake),
                 swapState(States.Global.home)
         );
 */
@@ -127,15 +127,7 @@ public class TeleOp extends CommandOpMode {
                         intake
                 ));
 
-        // roller intake rotation
-        new GamepadButton(driver2, GamepadKeys.Button.A).toggleWhenPressed(
-                new SequentialCommandGroup(new InstantCommand(() -> intake.setPower(0.5+servoSpeed)),new InstantCommand(() -> lights.setPosition(0.7))),
-                new SequentialCommandGroup(new InstantCommand(() -> intake.setPower(0.5)),new InstantCommand(() -> lights.setPosition(0.1)))
-        );
-        new GamepadButton(driver2, GamepadKeys.Button.B).toggleWhenPressed(
-                new SequentialCommandGroup(new InstantCommand(() -> intake.setPower(1.2-servoSpeed)),new InstantCommand(() -> lights.setPosition(0.35))),
-                new SequentialCommandGroup(new InstantCommand(() -> intake.setPower(0.5)),new InstantCommand(() -> lights.setPosition(0.1)))
-        );
+
 
         // manual control for vertical slides
         new Trigger(() -> driver2.getLeftY() > 0.1 || driver2.getLeftY() < -0.1)
@@ -153,9 +145,11 @@ public class TeleOp extends CommandOpMode {
         new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(
                 new ConditionalCommand (
                         new ConditionalCommand(
-                                new InstantCommand(() -> outtakeSlides.toggleBucket()),
                                 new SequentialCommandGroup(
-                                        new InstantCommand(() -> outtake.toggleOuttakeState()),
+                                        new InstantCommand(() -> outtakeSlides.toggleBucket()),
+                                        new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.bucket))
+                                ),
+                                new SequentialCommandGroup(
                                         new InstantCommand(() -> outtake.openClaw()),
                                         new WaitCommand(OuttakeSubsystem.dropTime),
                                         new InstantCommand(() -> outtake.toggleClaw()),
@@ -189,9 +183,27 @@ public class TeleOp extends CommandOpMode {
                 )
         );
 
-        // old specimen system, can probably assign different function to X, maybe an intake or transfer macro?
+        // transfer
         new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(
-                new InstantCommand(() -> outtakeSlides.toggleSpecimen())
+                new SequentialCommandGroup(
+                        new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
+                        new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.transfer)),
+                        new InstantCommand(() -> outtake.openClaw()),
+                        new InstantCommand(() -> intakeSlides.manual(-1)),
+                        new WaitCommand(500),
+                        new InstantCommand(() -> intakeSlides.manual(0)),
+                        new InstantCommand(() -> outtake.closeClaw()),
+                        new WaitCommand(150),
+                        new InstantCommand(() -> intake.openIntakeClaw())
+                )
+        );
+
+        new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(
+                new ConditionalCommand(
+                        new SequentialCommandGroup(),
+                        new InstantCommand(() -> intake.toggleIntakeState()),
+                        () -> intake.getCurrentIntakeState() == States.Intake.intake
+                )
         );
 
         // switching between sample and specimen

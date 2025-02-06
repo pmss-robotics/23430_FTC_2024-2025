@@ -105,9 +105,9 @@ public class BucketAutonomous extends CommandOpMode {
 
         Command bucket = new SequentialCommandGroup(
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
-                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.bucket)),
                 new WaitCommand(OuttakeSubsystem.dropTime),
-                new InstantCommand(() -> outtake.toggleWristState()),
+                new InstantCommand(() -> outtake.toggleOuttakeState()),
                 new InstantCommand(() -> outtakeSlides.toggleBucket())
         );
 
@@ -116,18 +116,18 @@ public class BucketAutonomous extends CommandOpMode {
         Command sample = new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.intake)),
-                        new InstantCommand(() -> intake.setWristState(States.Intake.intake))
+                        new InstantCommand(() -> intake.setIntakeState(States.Intake.intake))
                 ),
-                new InstantCommand(() -> intake.setPower(1), intake),
+
                 new WaitCommand(800),
-                new InstantCommand(() -> intake.setPower(0.5), intake),
+
                 new ParallelCommandGroup(
-                        new InstantCommand(() -> intake.toggleWristState()),
+                        new InstantCommand(() -> intake.toggleIntakeState()),
                         new InstantCommand(() -> intakeSlides.toggleIntakeSlidesState())
                 ),
-                new InstantCommand(() -> intake.setPower(0), intake),
-                new WaitCommand(800),
-                new InstantCommand(() -> intake.setPower(0.5), intake)
+
+                new WaitCommand(800)
+
         );
 
 

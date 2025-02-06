@@ -172,32 +172,10 @@ public class SpecimenAutonomous2 extends CommandOpMode {
         waitForStart();
 
         //drop sample into high bucket
-        Command bucket = new SequentialCommandGroup(
-                new InstantCommand(() -> intake.setPosition(60), intake),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket), outtakeSlides),
-                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket), outtake),
-                new WaitCommand(OuttakeSubsystem.dropTime),
-                new InstantCommand(() -> outtake.toggleWristState(), outtake),
-                new InstantCommand(() -> outtakeSlides.toggleBucket(), outtakeSlides)
-        );
+
 
         //intake a sample
-        Command sample = new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.intake)),
-                        new InstantCommand(() -> intake.setWristState(States.Intake.intake))
-                ),
-                new InstantCommand(() -> intake.setPower(0.5+1), intake),
-                new WaitCommand(800),
-                new InstantCommand(() -> intake.setPower(0.5), intake),
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> intake.toggleWristState()),
-                        new InstantCommand(() -> intakeSlides.toggleIntakeSlidesState())
-                ),
-                new InstantCommand(() -> intake.setPower(1-1), intake),
-                new WaitCommand(800),
-                new InstantCommand(() -> intake.setPower(0.5), intake)
-        );
+
 
         //specimen cycle system
 

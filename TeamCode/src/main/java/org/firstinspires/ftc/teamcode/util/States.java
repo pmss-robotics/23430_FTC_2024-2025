@@ -23,7 +23,8 @@ public class States {
         start,
         home,
         intake,
-        transfer
+        transfer,
+        middle
     }
 
     // Outtake Enums

@@ -14,7 +14,6 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
@@ -140,27 +139,12 @@ public class BucketAutonomous2 extends CommandOpMode {
 
 
         //tune extension position
-        Command sample = new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.intake)),
-                        new InstantCommand(() -> intake.setWristState(States.Intake.intake))
-                ),
-                new InstantCommand(() -> intake.setPower(1), intake),
-                new WaitCommand(800),
-                new InstantCommand(() -> intake.setPower(0.5), intake),
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> intake.toggleWristState()),
-                        new InstantCommand(() -> intakeSlides.toggleIntakeSlidesState())
-                ),
-                new InstantCommand(() -> intake.setPower(0), intake),
-                new WaitCommand(800),
-                new InstantCommand(() -> intake.setPower(0.5), intake)
-        );
+
 
         Command bucket = new SequentialCommandGroup(
-                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket)),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.bucket)),
                 new WaitCommand(OuttakeSubsystem.dropTime),
-                new InstantCommand(() -> outtake.toggleWristState()),
+                new InstantCommand(() -> outtake.toggleOuttakeState()),
                 new InstantCommand(() -> outtakeSlides.toggleBucket())
         );
 
@@ -190,66 +174,66 @@ public class BucketAutonomous2 extends CommandOpMode {
 
 
         Command auto = new SequentialCommandGroup(
-                new InstantCommand(() -> intake.setWristState(States.Intake.transfer)),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
                 new InstantCommand(() -> outtakeSlides.toggleBucket()),
                 traj1,
                 new WaitCommand(100),
                 bucket,
-                new InstantCommand(() -> intake.setWristState(States.Intake.intake)),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.intake)),
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 traj2,
                 new WaitCommand(750),
-                new InstantCommand(() -> intake.setPower(1)),
+                //new InstantCommand(() -> intake.setPower(1)),
                 intakeSample,
-                new InstantCommand(() -> intake.setPower(0.5)),
-                new InstantCommand(() -> intake.setWristState(States.Intake.home)),
+                //new InstantCommand(() -> intake.setPower(0.5)),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.home)),
                 new InstantCommand(() -> intakeSlides.manual(-0.8)),
                 traj3,
                 new WaitCommand(450),
-                new InstantCommand(() -> intake.setPower(0)),
+                //new InstantCommand(() -> intake.setPower(0)),
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 new WaitCommand(500),
-                new InstantCommand(() -> intake.setWristState(States.Intake.transfer)),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
-                new InstantCommand(() -> intake.setPower(0.5)),
+                //new InstantCommand(() -> intake.setPower(0.5)),
                 new WaitCommand(1500),
                 bucket,
-                new InstantCommand(() -> intake.setWristState(States.Intake.intake)),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.intake)),
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 traj4,
                 new WaitCommand(750),
-                new InstantCommand(() -> intake.setPower(1)),
+                //new InstantCommand(() -> intake.setPower(1)),
                 intakeSample2,
-                new InstantCommand(() -> intake.setPower(0.5)),
-                new InstantCommand(() -> intake.setWristState(States.Intake.home)),
+                //new InstantCommand(() -> intake.setPower(0.5)),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.home)),
                 new InstantCommand(() -> intakeSlides.manual(-0.8)),
                 traj5,
                 new WaitCommand(450),
-                new InstantCommand(() -> intake.setPower(0)),
+                //new InstantCommand(() -> intake.setPower(0)),
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 new WaitCommand(500),
-                new InstantCommand(() -> intake.setWristState(States.Intake.transfer)),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
-                new InstantCommand(() -> intake.setPower(0.5)),
+                //new InstantCommand(() -> intake.setPower(0.5)),
                 new WaitCommand(1500),
                 bucket,
-                new InstantCommand(() -> intake.setWristState(States.Intake.intake)),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.intake)),
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 traj6,
                 new WaitCommand(750),
-                new InstantCommand(() -> intake.setPower(1)),
+                //new InstantCommand(() -> intake.setPower(1)),
                 intakeSample3,
-                new InstantCommand(() -> intake.setPower(0.5)),
-                new InstantCommand(() -> intake.setWristState(States.Intake.home)),
+                //new InstantCommand(() -> intake.setPower(0.5)),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.home)),
                 new InstantCommand(() -> intakeSlides.manual(-0.8)),
                 traj7,
                 new WaitCommand(450),
-                new InstantCommand(() -> intake.setPower(0)),
+                //new InstantCommand(() -> intake.setPower(0)),
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 new WaitCommand(500),
-                new InstantCommand(() -> intake.setWristState(States.Intake.transfer)),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
-                new InstantCommand(() -> intake.setPower(0.5)),
+                //new InstantCommand(() -> intake.setPower(0.5)),
                 new WaitCommand(1500),
                 bucket
 

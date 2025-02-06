@@ -1,25 +1,15 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import android.bluetooth.le.ScanSettings;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
-import com.arcrobotics.ftclib.util.InterpLUT;
 import com.arcrobotics.ftclib.util.MathUtils;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImpl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.States;
-
-import java.util.function.DoubleSupplier;
-import java.util.Objects;
 
 // https://docs.ftclib.org/ftclib/command-base/command-system/subsystems
 @Config
@@ -27,8 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // declare hardware here
     Telemetry telemetry;
-    ServoImplEx wrist, spinnerL, spinnerR;
-    ServoImplEx wristL, wristR, claw;
+    ServoImplEx wrist, arm, claw, wristR;
     // wrist rotates intake and spinners are rollers
 
     public static double W_target = 270; // in degrees
@@ -39,31 +28,33 @@ public class IntakeSubsystem extends SubsystemBase {
     public static int wMin = 21, wMax = 262;
 
     public static int wHome = 0, wTransfer = 0, wIntake = 0, wMiddle = 0;
+    public static int aHome = 0, aTransfer = 0, aIntake = 0, aMiddle = 0;
     public static int cOpen = 0, cClosed = 0;
-    public static int wPosition = 0, wRotation = 0;
+    public static int wPosition = 0, wRotation = 0, aPosition;
     public static boolean intakeOpen = false;
-    public static int rMax = 0, rMin = 0;
+    public static int rHome = 0, rMax = 0, rMin = 0;
 
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
-        wrist = hardwareMap.get(ServoImplEx.class, "wrist");
-        spinnerL = hardwareMap.get(ServoImplEx.class, "spinnerL");
-        spinnerR = hardwareMap.get(ServoImplEx.class, "spinnerR");
 
-        wristL = hardwareMap.get(ServoImplEx.class, "wristL");
+        wrist = hardwareMap.get(ServoImplEx.class, "wristL");
         wristR = hardwareMap.get(ServoImplEx.class, "wristR");
         claw = hardwareMap.get(ServoImplEx.class, "intakeClaw");
         // expand the range of the servo beyond the default for control/expansion hubs
         // test
-        wristL.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        wrist.setPwmRange(new PwmControl.PwmRange(500, 2500));
         wristR.setPwmRange(new PwmControl.PwmRange(500, 2500));
         claw.setPwmRange(new PwmControl.PwmRange(500, 2500));
 
-        wristR.setDirection(Servo.Direction.REVERSE);
+
 
         wrist.setPosition(scale(wHome));
         wPosition = wHome;
+        wristR.setPosition(scale(rHome));
+        wRotation = rHome;
+        arm.setPosition(scale(aHome));
+        aPosition = aHome;
 
         currentIntakeState = States.Intake.home;
     }
@@ -72,38 +63,80 @@ public class IntakeSubsystem extends SubsystemBase {
         return currentIntakeState;
     }
 
-    public void toggleWristState() {
+    public void toggleIntakeState() {
         switch (currentIntakeState) {
-            case transfer:
-            case home:
-                wrist.setPosition(scale(pIntake));
-                position = pIntake;
+            case middle:
+                wrist.setPosition(scale(wIntake));
+                wPosition = wIntake;
+                arm.setPosition(scale(aIntake));
+                aPosition = aIntake;
                 currentIntakeState = States.Intake.intake;
                 break;
             case intake:
-                wrist.setPosition(scale(pHome));
-                position = pHome;
+                wrist.setPosition(scale(wHome));
+                wPosition = wHome;
+                arm.setPosition(scale(aHome));
+                aPosition = aHome;
                 currentIntakeState = States.Intake.home;
+                break;
+            case home:
+            case transfer:
+                wrist.setPosition(scale(wMiddle));
+                wPosition = wMiddle;
+                arm.setPosition(scale(aMiddle));
+                aPosition = aMiddle;
+                currentIntakeState = States.Intake.middle;
                 break;
         }
     }
 
-    public void setWristState(States.Intake state) {
+    public void setIntakeState(States.Intake state) {
         currentIntakeState = state;
         switch (currentIntakeState) {
             case home:
-                wrist.setPosition(scale(pHome));
-                position = pHome;
+                wrist.setPosition(scale(wHome));
+                wPosition = wHome;
+                arm.setPosition(scale(aHome));
+                aPosition = aHome;
                 break;
             case intake:
-                wrist.setPosition(scale(pIntake));
-                position = pIntake;
+                wrist.setPosition(scale(wIntake));
+                wPosition = wIntake;
+                arm.setPosition(scale(aIntake));
+                aPosition = aIntake;
                 break;
             case transfer:
-                wrist.setPosition(scale(pTransfer));
-                position = pTransfer;
+                wrist.setPosition(scale(wTransfer));
+                wPosition = wTransfer;
+                arm.setPosition(scale(aTransfer));
+                aPosition = aTransfer;
+                break;
+            case middle:
+                wrist.setPosition(scale(wMiddle));
+                wPosition = wMiddle;
+                arm.setPosition(scale(aMiddle));
+                aPosition = aMiddle;
                 break;
         }
+    }
+
+    public void toggleIntakeClaw () {
+        if (intakeOpen) {
+            claw.setPosition(scale(cClosed));
+            intakeOpen = false;
+        } else {
+            claw.setPosition(scale(cOpen));
+            intakeOpen = true;
+        }
+    }
+
+    public void openIntakeClaw () {
+        claw.setPosition(scale(cOpen));
+        intakeOpen = true;
+    }
+    public void closeIntakeClaw () {
+        claw.setPosition(scale(cClosed));
+        intakeOpen = false;
     }
 
     public void incrementPosition(double increment) {
@@ -111,22 +144,12 @@ public class IntakeSubsystem extends SubsystemBase {
         wrist.setPosition(scale(position));
     }
 
-    public void setPosition(double position) {
+    public void setWristPosition(double position) {
         wrist.setPosition(position);
         IntakeSubsystem.position = position;
     }
 
-    // To-do: continuous rotation method
-    public void setPower(DoubleSupplier power) {
-        spinnerL.setPosition(power.getAsDouble());
-        spinnerR.setPosition(power.getAsDouble());
-    }
 
-    public void setPower(double power) {
-        spinnerL.setPosition(power);
-        spinnerR.setPosition(power);
-
-    }
 
     @Override
     public void periodic() {
@@ -136,12 +159,6 @@ public class IntakeSubsystem extends SubsystemBase {
     private double scale(double angle){
         // angle in degrees
         return Range.scale(angle, 0, 300, 0, 1);
-    }
-
-    //TODO make this work
-    public void intakeRotation (){
-        wristL.setPosition(wPosition+wRotation);
-        wristR.setPosition(wPosition-wPosition);
     }
 
 }

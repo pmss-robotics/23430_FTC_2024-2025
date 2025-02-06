@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -9,12 +7,9 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.AngularVelConstraint;
-import com.acmerobotics.roadrunner.Arclength;
 import com.acmerobotics.roadrunner.MecanumKinematics;
 import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
-import com.acmerobotics.roadrunner.PosePath;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
@@ -27,7 +22,6 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.commands.ActionCommand;
 import org.firstinspires.ftc.teamcode.drive.Drawing;
 import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
@@ -185,11 +179,11 @@ public class SpecimenAutonomous extends CommandOpMode {
 
         //drop sample into high bucket
         Command bucket = new SequentialCommandGroup(
-                new InstantCommand(() -> intake.setPosition(60), intake),
+                new InstantCommand(() -> intake.setWristPosition(60), intake),
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket), outtakeSlides),
-                new InstantCommand(() -> outtake.setWristState(States.Outtake.bucket), outtake),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.bucket), outtake),
                 new WaitCommand(OuttakeSubsystem.dropTime),
-                new InstantCommand(() -> outtake.toggleWristState(), outtake),
+                new InstantCommand(() -> outtake.toggleOuttakeState(), outtake),
                 new InstantCommand(() -> outtakeSlides.toggleBucket(), outtakeSlides)
         );
 
@@ -197,18 +191,18 @@ public class SpecimenAutonomous extends CommandOpMode {
         Command sample = new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         new InstantCommand(() -> intakeSlides.setIntakeSlidesState(States.IntakeExtension.intake)),
-                        new InstantCommand(() -> intake.setWristState(States.Intake.intake))
+                        new InstantCommand(() -> intake.setIntakeState(States.Intake.intake))
                 ),
-                new InstantCommand(() -> intake.setPower(0.5+1), intake),
+
                 new WaitCommand(800),
-                new InstantCommand(() -> intake.setPower(0.5), intake),
+
                 new ParallelCommandGroup(
-                        new InstantCommand(() -> intake.toggleWristState()),
+                        new InstantCommand(() -> intake.toggleIntakeState()),
                         new InstantCommand(() -> intakeSlides.toggleIntakeSlidesState())
                 ),
-                new InstantCommand(() -> intake.setPower(1-1), intake),
-                new WaitCommand(800),
-                new InstantCommand(() -> intake.setPower(0.5), intake)
+
+                new WaitCommand(800)
+
         );
 
         //specimen cycle system
