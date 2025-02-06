@@ -198,11 +198,19 @@ public class TeleOp extends CommandOpMode {
                 )
         );
 
+        // intake: goes to above the intake position, and then intakes
         new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(
                 new ConditionalCommand(
-                        new SequentialCommandGroup(),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> intake.toggleIntakeState()),
+                                new InstantCommand(() -> intake.openIntakeClaw()),
+                                new WaitCommand(250),
+                                new InstantCommand(() -> intake.closeIntakeClaw()),
+                                new WaitCommand(100),
+                                new InstantCommand(() -> intake.setIntakeState(States.Intake.middle))
+                        ),
                         new InstantCommand(() -> intake.toggleIntakeState()),
-                        () -> intake.getCurrentIntakeState() == States.Intake.intake
+                        () -> intake.getCurrentIntakeState() == States.Intake.middle
                 )
         );
 

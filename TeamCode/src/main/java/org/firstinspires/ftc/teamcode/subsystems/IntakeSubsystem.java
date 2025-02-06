@@ -73,11 +73,11 @@ public class IntakeSubsystem extends SubsystemBase {
                 currentIntakeState = States.Intake.intake;
                 break;
             case intake:
-                wrist.setPosition(scale(wHome));
-                wPosition = wHome;
-                arm.setPosition(scale(aHome));
-                aPosition = aHome;
-                currentIntakeState = States.Intake.home;
+                wrist.setPosition(scale(wTransfer));
+                wPosition = wTransfer;
+                arm.setPosition(scale(aTransfer));
+                aPosition = aTransfer;
+                currentIntakeState = States.Intake.transfer;
                 break;
             case home:
             case transfer:
