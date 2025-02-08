@@ -29,6 +29,7 @@ import org.firstinspires.ftc.teamcode.util.States;
 public class TeleOp extends CommandOpMode {
     // probably need to change later.
     public static double servoIncrement = 7;
+    public static double clawRotation = 3;
     public static double intakeSlideIncrement = 4;
     public static double servoSpeed = 1;
     public static double driveSpeed = 1.2;
@@ -115,15 +116,15 @@ public class TeleOp extends CommandOpMode {
                 () -> driveSpeed = fast
         );
 
-        // manual intake wrist movement
+        // intake claw rotation
         new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(new InstantCommand(
-                        () -> intake.incrementPosition(servoIncrement),
+                        () -> intake.rotateClaw(clawRotation),
                         intake
                 ));
         new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER)
                 .whileHeld(new InstantCommand(
-                        () -> intake.incrementPosition(-servoIncrement),
+                        () -> intake.rotateClaw(-clawRotation),
                         intake
                 ));
 
@@ -166,35 +167,43 @@ public class TeleOp extends CommandOpMode {
         // specimen cycling system
         new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(
                 new ConditionalCommand (
-                        new ConditionalCommand( //TODO make specimen cycle (currently sample system)
-                                new InstantCommand(() -> outtakeSlides.toggleBucket()),
+                        new ConditionalCommand(
+                                new SequentialCommandGroup(
+                                        new InstantCommand(() -> outtake.closeClaw()),
+                                        new InstantCommand(() -> outtake.toggleOuttakeState())
+                                ),
                                 new SequentialCommandGroup(
                                         new InstantCommand(() -> outtake.toggleOuttakeState()),
-                                        new InstantCommand(() -> outtake.openClaw()),
-                                        new WaitCommand(OuttakeSubsystem.dropTime),
-                                        new InstantCommand(() -> outtake.toggleClaw()),
-                                        new InstantCommand(() -> outtake.toggleOuttakeState()),
-                                        new InstantCommand(() -> outtakeSlides.toggleBucket())
+                                        new WaitCommand(200),
+                                        new InstantCommand(() -> outtake.openClaw())
                                 ),
-                                () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
+                                () -> outtake.getCurrentOuttakeState() == States.Outtake.home
                         ),
                         new InstantCommand(() -> currentMode = States.Mode.sample),
                         () -> currentMode == States.Mode.specimen
                 )
         );
 
-        // transfer
+        // transfer (sample) and deposit (specimen)
         new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(
-                new SequentialCommandGroup(
-                        new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
-                        new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.transfer)),
-                        new InstantCommand(() -> outtake.openClaw()),
-                        new InstantCommand(() -> intakeSlides.manual(-1)),
-                        new WaitCommand(500),
-                        new InstantCommand(() -> intakeSlides.manual(0)),
-                        new InstantCommand(() -> outtake.closeClaw()),
-                        new WaitCommand(150),
-                        new InstantCommand(() -> intake.openIntakeClaw())
+                new ConditionalCommand(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
+                                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.transfer)),
+                                new InstantCommand(() -> outtake.openClaw()),
+                                new InstantCommand(() -> intakeSlides.manual(-1)),
+                                new WaitCommand(500),
+                                new InstantCommand(() -> intakeSlides.manual(-0.3)),
+                                new InstantCommand(() -> outtake.closeClaw()),
+                                new WaitCommand(150),
+                                new InstantCommand(() -> intake.openIntakeClaw()),
+                                new InstantCommand(() -> intakeSlides.manual(0))
+                        ),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> intake.setIntakeState(States.Intake.middle)),
+                                new InstantCommand(() -> intake.openIntakeClaw())
+                        ),
+                        () -> currentMode == States.Mode.sample
                 )
         );
 

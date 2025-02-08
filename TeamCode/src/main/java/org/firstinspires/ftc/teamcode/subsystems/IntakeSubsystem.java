@@ -30,7 +30,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public static int wHome = 0, wTransfer = 0, wIntake = 0, wMiddle = 0;
     public static int aHome = 0, aTransfer = 0, aIntake = 0, aMiddle = 0;
     public static int cOpen = 0, cClosed = 0;
-    public static int wPosition = 0, wRotation = 0, aPosition;
+    public static double wPosition = 0, wRotation = 0, aPosition;
     public static boolean intakeOpen = false;
     public static int rHome = 0, rMax = 0, rMin = 0;
 
@@ -147,6 +147,11 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setWristPosition(double position) {
         wrist.setPosition(position);
         IntakeSubsystem.position = position;
+    }
+
+    public void rotateClaw (double increment) {
+        wRotation = MathUtils.clamp(wRotation + increment, rMin, rMax);
+        wristR.setPosition(scale(wRotation));
     }
 
 
