@@ -114,13 +114,13 @@ public class VisionSubsystem extends SubsystemBase {
             telemetry.addData("Sample: " + detections.indexOf(sample), " "+ sample.color);
             telemetry.addData("Sample: " + detections.indexOf(sample), " " + sample.angle);
 
-            for (int i = 0; i < sample.tvec.rows(); i++) {
-                for (int j = 0; j < sample.tvec.cols(); j++) {
-                    telemetry.addData("Sample: " + detections.indexOf(sample), " term 1 " + Arrays.toString(sample.tvec.get(i, j)));
+            String x = Arrays.toString(sample.tvec.get(0,0));
+            String y = Arrays.toString(sample.tvec.get(1,0));
+            String z = Arrays.toString(sample.tvec.get(2,0));
 
-                }
-
-            }
+            telemetry.addData("Sample: " + detections.indexOf(sample), "x " + x);
+            telemetry.addData("Sample: " + detections.indexOf(sample), "y " + y);
+            telemetry.addData("Sample: " + detections.indexOf(sample), "z " + z);
         }
         if(Objects.isNull(closest)) return 666;
         return angle;
