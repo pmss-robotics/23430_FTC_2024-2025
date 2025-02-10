@@ -34,8 +34,8 @@ public class DriveOp extends CommandOpMode {
     // probably need to change later.
     public static double servoIncrement = 7;
     public static double servoSpeed = 1;
-    public static double driveSpeed = 0.2;
-    public static double rotationSpeed = 0.2;
+    public static double driveSpeed = 1;
+    public static double rotationSpeed = 1;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
     States.Global currentState = States.Global.home;
@@ -70,7 +70,7 @@ public class DriveOp extends CommandOpMode {
                 () -> -driver.getLeftX()*driveSpeed,
                 () -> driver.getLeftY()*driveSpeed,
                 () -> -driver.getRightX()*rotationSpeed,
-                false);
+                true);
 
 //        outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
 //        outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
