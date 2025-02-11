@@ -152,7 +152,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         }
     }
 
-    public void toggleClaw () {
+    public void toggleClaw() {
         if (clawOpen) {
             claw.setPosition(scale(cClosed));
             clawOpen = false;
@@ -162,11 +162,11 @@ public class OuttakeSubsystem extends SubsystemBase {
         }
     }
 
-    public void openClaw () {
+    public void openClaw() {
         claw.setPosition(scale(cOpen));
         clawOpen = true;
     }
-    public void closeClaw () {
+    public void closeClaw() {
         claw.setPosition(scale(cClosed));
         clawOpen = false;
     }
