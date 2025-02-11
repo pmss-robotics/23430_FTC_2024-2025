@@ -32,7 +32,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public static int cOpen = 0, cClosed = 0;
     public static double wPosition = 0, wRotation = 0, aPosition;
     public static boolean intakeOpen = false;
-    public static int rHome = 0, rMax = 0, rMin = 0;
+    public static int rRange = 0;
+    public static int rHome = 150, rMax = rHome+rRange, rMin = rHome-rRange;
 
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
@@ -77,6 +78,8 @@ public class IntakeSubsystem extends SubsystemBase {
                 wPosition = wTransfer;
                 arm.setPosition(scale(aTransfer));
                 aPosition = aTransfer;
+                wristR.setPosition(scale(rHome));
+                wRotation = rHome;
                 currentIntakeState = States.Intake.transfer;
                 break;
             case home:
@@ -110,6 +113,8 @@ public class IntakeSubsystem extends SubsystemBase {
                 wPosition = wTransfer;
                 arm.setPosition(scale(aTransfer));
                 aPosition = aTransfer;
+                wristR.setPosition(scale(rHome));
+                wRotation = rHome;
                 break;
             case middle:
                 wrist.setPosition(scale(wMiddle));
