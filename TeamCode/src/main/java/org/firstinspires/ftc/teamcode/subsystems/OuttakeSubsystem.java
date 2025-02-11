@@ -202,9 +202,14 @@ public class OuttakeSubsystem extends SubsystemBase {
         }
     }
 
-    private double scale(double angle){
+    private double scale(double angle) {
         // angle in degrees
         return Range.scale(angle, 0, 300, 0, 1);
+    }
+
+    private double scale5(double angle) {
+        // angle in degrees
+        return Range.scale(angle, 0, 1800, 0, 1);
     }
 
 }
