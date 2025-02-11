@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.util.MathUtils;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 
@@ -17,7 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // declare hardware here
     Telemetry telemetry;
-    ServoImplEx wrist, arm, claw, wristR;
+    ServoImplEx armL, armR, claw, wrist;
     // wrist rotates intake and spinners are rollers
 
     public static double W_target = 270; // in degrees
@@ -39,23 +40,25 @@ public class IntakeSubsystem extends SubsystemBase {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
 
-        wrist = hardwareMap.get(ServoImplEx.class, "wristL");
-        wristR = hardwareMap.get(ServoImplEx.class, "wristR");
+        armL = hardwareMap.get(ServoImplEx.class, "intakeArmL");
+        armR = hardwareMap.get(ServoImplEx.class, "intakeArmR");
+        wrist = hardwareMap.get(ServoImplEx.class, "intakeWrist");
         claw = hardwareMap.get(ServoImplEx.class, "intakeClaw");
         // expand the range of the servo beyond the default for control/expansion hubs
         // test
+        armL.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        armR.setPwmRange(new PwmControl.PwmRange(500, 2500));
         wrist.setPwmRange(new PwmControl.PwmRange(500, 2500));
-        wristR.setPwmRange(new PwmControl.PwmRange(500, 2500));
         claw.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        armR.setDirection(Servo.Direction.REVERSE);
 
 
-
-        wrist.setPosition(scale(wHome));
+        armL.setPosition(scale(wHome));
         wPosition = wHome;
-        wristR.setPosition(scale(rHome));
+        wrist.setPosition(scale(rHome));
         wRotation = rHome;
-        arm.setPosition(scale(aHome));
-        aPosition = aHome;
+        armR.setPosition(scale(wHome));
+        claw.setPosition(scale(cClosed));
 
         currentIntakeState = States.Intake.home;
     }
@@ -67,27 +70,24 @@ public class IntakeSubsystem extends SubsystemBase {
     public void toggleIntakeState() {
         switch (currentIntakeState) {
             case middle:
-                wrist.setPosition(scale(wIntake));
+                armL.setPosition(scale(wIntake));
                 wPosition = wIntake;
-                arm.setPosition(scale(aIntake));
-                aPosition = aIntake;
+                armR.setPosition(scale(wIntake));
                 currentIntakeState = States.Intake.intake;
                 break;
             case intake:
-                wrist.setPosition(scale(wTransfer));
+                armL.setPosition(scale(wTransfer));
                 wPosition = wTransfer;
-                arm.setPosition(scale(aTransfer));
-                aPosition = aTransfer;
-                wristR.setPosition(scale(rHome));
+                armR.setPosition(scale(wTransfer));
+                wrist.setPosition(scale(rHome));
                 wRotation = rHome;
                 currentIntakeState = States.Intake.transfer;
                 break;
             case home:
             case transfer:
-                wrist.setPosition(scale(wMiddle));
+                armL.setPosition(scale(wMiddle));
                 wPosition = wMiddle;
-                arm.setPosition(scale(aMiddle));
-                aPosition = aMiddle;
+                armR.setPosition(scale(wMiddle));
                 currentIntakeState = States.Intake.middle;
                 break;
         }
@@ -97,30 +97,26 @@ public class IntakeSubsystem extends SubsystemBase {
         currentIntakeState = state;
         switch (currentIntakeState) {
             case home:
-                wrist.setPosition(scale(wHome));
+                armL.setPosition(scale(wHome));
                 wPosition = wHome;
-                arm.setPosition(scale(aHome));
-                aPosition = aHome;
+                armR.setPosition(scale(wHome));
                 break;
             case intake:
-                wrist.setPosition(scale(wIntake));
+                armL.setPosition(scale(wIntake));
                 wPosition = wIntake;
-                arm.setPosition(scale(aIntake));
-                aPosition = aIntake;
+                armR.setPosition(scale(wIntake));
                 break;
             case transfer:
-                wrist.setPosition(scale(wTransfer));
+                armL.setPosition(scale(wTransfer));
                 wPosition = wTransfer;
-                arm.setPosition(scale(aTransfer));
-                aPosition = aTransfer;
-                wristR.setPosition(scale(rHome));
+                armR.setPosition(scale(wTransfer));
+                wrist.setPosition(scale(rHome));
                 wRotation = rHome;
                 break;
             case middle:
-                wrist.setPosition(scale(wMiddle));
+                armL.setPosition(scale(wMiddle));
                 wPosition = wMiddle;
-                arm.setPosition(scale(aMiddle));
-                aPosition = aMiddle;
+                armR.setPosition(scale(wMiddle));
                 break;
         }
     }
@@ -146,24 +142,26 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void incrementPosition(double increment) {
         position = MathUtils.clamp(position + increment, wMin, wMax);
-        wrist.setPosition(scale(position));
+        armL.setPosition(scale(position));
+        armR.setPosition(scale(position));
     }
 
     public void setWristPosition(double position) {
-        wrist.setPosition(position);
+        armL.setPosition(scale(position));
+        armR.setPosition(scale(position));
         IntakeSubsystem.position = position;
     }
 
     public void rotateClaw (double increment) {
         wRotation = MathUtils.clamp(wRotation + increment, rMin, rMax);
-        wristR.setPosition(scale(wRotation));
+        wrist.setPosition(scale(wRotation));
     }
 
 
 
     @Override
     public void periodic() {
-        telemetry.addData("intake wrist position", wrist.getPosition());
+        telemetry.addData("intake wrist position", armL.getPosition());
     }
 
     private double scale(double angle){
