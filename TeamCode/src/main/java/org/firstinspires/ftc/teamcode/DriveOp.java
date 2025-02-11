@@ -5,16 +5,10 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
-import com.arcrobotics.ftclib.command.SelectCommand;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
-import com.arcrobotics.ftclib.command.button.GamepadButton;
-import com.arcrobotics.ftclib.command.button.Trigger;
+
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
@@ -42,6 +36,7 @@ public class DriveOp extends CommandOpMode {
 
     GamepadEx driver, tools;
     DriveSubsystem drive;
+    OuttakeSlidesSubsystem outtakeSlides;
     /*    OuttakeSlidesSubsystem outtakeSlides;
         IntakeSlidesSubsystem intakeSlides;
         VisionSubsystem vision; */
@@ -72,8 +67,8 @@ public class DriveOp extends CommandOpMode {
                 () -> -driver.getRightX()*rotationSpeed,
                 true);
 
-//        outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
-//        outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
+        outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
+        outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
 
 //        intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
 /*      try {

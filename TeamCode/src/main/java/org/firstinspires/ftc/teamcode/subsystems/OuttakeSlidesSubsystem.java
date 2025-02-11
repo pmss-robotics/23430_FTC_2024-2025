@@ -22,8 +22,9 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     private DcMotorEx leftExtension;
     private DcMotorEx rightExtension;
     private Telemetry telemetry;
-    public static double P = 0.03, I = 0, D = 0.0003; // TODO retune
-    public static double kSpring = 0;
+    public static double P = 0.03, I = 0, D = 0.0001; // TODO retune
+    public static double kGrav = 0.017;
+    // 791 max
     public static int pHome = 0, pSpecimen0 = 1100, pSpecimen = 2600, pPostSpecimen = 1200, pPlayer = 450, pBucket = 4200, pStart = 0, pAscent0 = 0, pAscent = 0;
     public static int target = 0;
     // public static double resetPower = 0;
@@ -38,7 +39,8 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
 
         leftExtension = hardwareMap.get(DcMotorEx.class, "slideLeft");
         rightExtension = hardwareMap.get(DcMotorEx.class, "slideRight");
-        leftExtension.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftExtension.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightExtension.setDirection(DcMotorSimple.Direction.REVERSE);
         leftExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -80,7 +82,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
         pidController.setPID(P,I,D);
         int current = leftExtension.getCurrentPosition();
 
-        double power = pidController.calculate(current, target)+kSpring;
+        double power = pidController.calculate(current, target)+ kGrav;
         power /= voltageSensor.getVoltage();
 
         telemetry.addData("Extension Power:", power);
