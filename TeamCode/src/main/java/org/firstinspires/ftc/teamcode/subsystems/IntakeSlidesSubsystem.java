@@ -74,8 +74,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     }
 
     public void holdPosition() {
-//        hExtension.setPower(0);
-        calculate();
+        hExtension.setPower(0);
     }
 
 
