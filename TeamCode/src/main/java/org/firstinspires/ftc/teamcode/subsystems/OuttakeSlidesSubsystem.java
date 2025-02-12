@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import androidx.core.math.MathUtils;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
@@ -22,8 +24,9 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     private DcMotorEx leftExtension;
     private DcMotorEx rightExtension;
     private Telemetry telemetry;
-    public static double P = 0.03, I = 0, D = 0.0001; // TODO retune
+    public static double P = 0.03, I = 0, D = 0.0001;
     public static double kGrav = 0.017;
+    public static double maxDescentPower = -0.2;
     // 791 max
     public static int pHome = 0, pSpecimen0 = 1100, pSpecimen = 2600, pPostSpecimen = 1200, pPlayer = 450, pBucket = 4200, pStart = 0, pAscent0 = 0, pAscent = 0;
     public static int target = 0;
@@ -84,6 +87,11 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
 
         double power = pidController.calculate(current, target)+ kGrav;
         power /= voltageSensor.getVoltage();
+
+        // capping descent power
+        if(current > target) {
+            power = MathUtils.clamp(power, maxDescentPower,0);
+        }
 
         telemetry.addData("Extension Power:", power);
         return power;
