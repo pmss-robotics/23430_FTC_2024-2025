@@ -29,7 +29,8 @@ import org.firstinspires.ftc.teamcode.util.States;
 public class TeleOp extends CommandOpMode {
     // probably need to change later.
     public static double servoIncrement = 7;
-    public static double clawRotation = 3;
+    public static double clawRotation = 10;
+    public static double iArmIncrement = 7;
     public static double intakeSlideIncrement = 4;
     public static double servoSpeed = 1;
     public static double driveSpeed = 1.2;
@@ -40,8 +41,8 @@ public class TeleOp extends CommandOpMode {
     public static double bucketStart = 0.636;
     public static double outtakeResetPower = 0.6;
     public static double ascentTiltPower = 0.2;
-    public static double intakeSlidePowerO = 0.58;
-    public static double intakeSlidePowerI = -0.75;
+    public static double intakeSlidePowerO = 0.3;
+    public static double intakeSlidePowerI = -0.4;
 
     States.Global currentState = States.Global.home;
     public static States.Mode currentMode = States.Mode.specimen;
@@ -125,6 +126,13 @@ public class TeleOp extends CommandOpMode {
         new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER)
                 .whileHeld(new InstantCommand(
                         () -> intake.rotateClaw(-clawRotation),
+                        intake
+                ));
+
+        // manual intake arm control
+        new Trigger(() -> Math.abs(driver2.getRightX()) > 0.1)
+                .whileActiveContinuous(new InstantCommand (
+                        () -> intake.incrementPosition(driver2.getRightX()*iArmIncrement),
                         intake
                 ));
 

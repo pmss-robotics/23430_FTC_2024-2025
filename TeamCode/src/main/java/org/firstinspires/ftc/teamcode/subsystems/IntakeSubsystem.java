@@ -25,25 +25,23 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double position = 270;
     private States.Intake currentIntakeState;
 
-    public static int pHome = 262, pStart = 0, pIntake = 21, pTransfer = 190; // in degrees
-    public static int wMin = 21, wMax = 262;
+    public static int wMin = 0, wMax = 200;
 
-    public static int wHome = 0, wTransfer = 0, wIntake = 0, wMiddle = 0;
-    public static int aHome = 0, aTransfer = 0, aIntake = 0, aMiddle = 0;
-    public static int cOpen = 0, cClosed = 0;
-    public static double wPosition = 0, wRotation = 0, aPosition;
+    public static int wHome = 25, wTransfer = 25, wIntake = 200, wMiddle = 160;
+    public static int cOpen = 300, cClosed = 255;
+    public static double wPosition = 25, wRotation = 150;
     public static boolean intakeOpen = false;
-    public static int rRange = 0;
-    public static int rHome = 150, rMax = rHome+rRange, rMin = rHome-rRange;
+    public static int rRange = 80;
+    public static int rHome = 110, rMax = 190, rMin = 30;
 
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
 
-        armL = hardwareMap.get(ServoImplEx.class, "intakeArmL");
-        armR = hardwareMap.get(ServoImplEx.class, "intakeArmR");
-        wrist = hardwareMap.get(ServoImplEx.class, "intakeWrist");
-        claw = hardwareMap.get(ServoImplEx.class, "intakeClaw");
+        armL = hardwareMap.get(ServoImplEx.class, "iArmL");
+        armR = hardwareMap.get(ServoImplEx.class, "iArmR");
+        wrist = hardwareMap.get(ServoImplEx.class, "iWrist");
+        claw = hardwareMap.get(ServoImplEx.class, "iClaw");
         // expand the range of the servo beyond the default for control/expansion hubs
         // test
         armL.setPwmRange(new PwmControl.PwmRange(500, 2500));
@@ -121,7 +119,7 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    public void toggleIntakeClaw () {
+    public void toggleIntakeClaw() {
         if (intakeOpen) {
             claw.setPosition(scale(cClosed));
             intakeOpen = false;
@@ -131,11 +129,11 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    public void openIntakeClaw () {
+    public void openIntakeClaw() {
         claw.setPosition(scale(cOpen));
         intakeOpen = true;
     }
-    public void closeIntakeClaw () {
+    public void closeIntakeClaw() {
         claw.setPosition(scale(cClosed));
         intakeOpen = false;
     }
@@ -152,7 +150,7 @@ public class IntakeSubsystem extends SubsystemBase {
         IntakeSubsystem.position = position;
     }
 
-    public void rotateClaw (double increment) {
+    public void rotateClaw(double increment) {
         wRotation = MathUtils.clamp(wRotation + increment, rMin, rMax);
         wrist.setPosition(scale(wRotation));
     }

@@ -18,8 +18,8 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
 
     // declare hardware here
     private Telemetry telemetry;
-    private ServoImplEx intakeSlideL; // in order of precedence
-    private ServoImplEx intakeSlideR;
+    // private ServoImplEx intakeSlideL; // in order of precedence
+    // private ServoImplEx intakeSlideR;
     private DcMotorEx hExtension;
     private VoltageSensor voltageSensor;
     // wrist moves hand and finger along an axis, wrist just moves fingers, etc.
@@ -41,14 +41,18 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     public IntakeSlidesSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
         this.telemetry = telemetry;
+        /*
         intakeSlideL = hardwareMap.get(ServoImplEx.class, "intakeSlideL");
         intakeSlideL.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeSlideL.setPosition(scale(F_target));
+         */
 
+        /*
         intakeSlideR = hardwareMap.get(ServoImplEx.class, "intakeSlideR");
         intakeSlideR.setPwmRange(new PwmControl.PwmRange(500, 2500));
         intakeSlideR.setDirection(Servo.Direction.REVERSE);
         intakeSlideR.setPosition(scale(F_target));
+         */
 
         hExtension = hardwareMap.get(DcMotorEx.class, "intakeSlides");
         hExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -100,6 +104,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         return currentSlidesState == States.IntakeExtension.intake;
     }
 
+    /*
     public void incrementPosition(double increment) {
         position = MathUtils.clamp(position + increment, pHome, pIntake);
         intakeSlideL.setPosition(scale(position));
@@ -136,6 +141,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
                 break;
         }
     }
+     */
 
     private double scale(double angle){
         // angle in degrees
