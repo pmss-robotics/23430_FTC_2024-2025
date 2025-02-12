@@ -234,8 +234,9 @@ public class AutoAlignProcessor implements VisionProcessor
 
         // Prepare object points and image points for solvePnP
         // Assuming the object is a rectangle with known dimensions
-        double objectWidth = 10.0;  // Replace with your object's width in real-world units (e.g., centimeters)
-        double objectHeight = 5.0;  // Replace with your object's height in real-world units
+        // Widths and Heights in inches
+        double objectWidth = 3.5;
+        double objectHeight = 1.5;
 
         // Define the 3D coordinates of the object corners in the object coordinate space
         MatOfPoint3f objectPoints = new MatOfPoint3f(

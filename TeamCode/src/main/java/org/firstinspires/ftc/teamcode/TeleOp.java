@@ -242,19 +242,14 @@ public class TeleOp extends CommandOpMode {
                 .whileActiveContinuous(new InstantCommand (
                         () -> intakeSlides.intakeExtension(driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)*intakeSlidePowerI),
                         intakeSlides
-                ));
+                )).whenInactive(
+                        new InstantCommand(() -> intakeSlides.intakeExtension(0))
+                );
         new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand (
                         () -> intakeSlides.intakeExtension(driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)*intakeSlidePowerO),
                         intakeSlides
-                ));
-
-        new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.1)
-                .whenInactive(
-                        new InstantCommand(() -> intakeSlides.intakeExtension(0))
-                );
-        new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.1)
-                .whenInactive(
+                )).whenInactive(
                         new InstantCommand(() -> intakeSlides.intakeExtension(0))
                 );
 
