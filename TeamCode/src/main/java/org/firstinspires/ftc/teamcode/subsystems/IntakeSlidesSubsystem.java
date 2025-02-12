@@ -32,6 +32,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     public static int pHome = 110;
 
     public static int target = 0;
+    public static int targetMax = 240, targetMin = -100;
 
     public static double P = 0, I = 0, D = 0; // TODO implement and tune, figure out how to get the slides to instantly stop when button is let go
 
@@ -56,8 +57,9 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
 
         hExtension = hardwareMap.get(DcMotorEx.class, "intakeSlides");
         hExtension.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
-        pidController = new PIDController(P,I,D);;
+        pidController = new PIDController(P,I,D);
 
         target = 0;
 
@@ -74,9 +76,21 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     }
 
     public void holdPosition() {
-        hExtension.setPower(0);
+        hExtension.setPower(calculate());
     }
 
+    public void intakeExtension (double power) {
+        if (power > 0) {
+            target = targetMax;
+            hExtension.setPower(calculate()*power+((targetMax)-hExtension.getCurrentPosition())/2400);
+        } else if (power < 0) {
+            target = targetMin;
+            hExtension.setPower(-calculate()*power-0.2);
+        } else {
+            target = hExtension.getCurrentPosition();
+            holdPosition();
+        }
+    }
 
     private double calculate() {
         pidController.setPID(P,I,D);

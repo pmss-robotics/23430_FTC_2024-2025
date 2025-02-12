@@ -240,14 +240,23 @@ public class TeleOp extends CommandOpMode {
         // horizontal extension
         new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand (
-                        () -> intakeSlides.manual(driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)*intakeSlidePowerI),
+                        () -> intakeSlides.intakeExtension(driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)*intakeSlidePowerI),
                         intakeSlides
                 ));
         new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
                 .whileActiveContinuous(new InstantCommand (
-                        () -> intakeSlides.manual(driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)*intakeSlidePowerO),
+                        () -> intakeSlides.intakeExtension(driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)*intakeSlidePowerO),
                         intakeSlides
                 ));
+
+        new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0.1)
+                .whenInactive(
+                        new InstantCommand(() -> intakeSlides.intakeExtension(0))
+                );
+        new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>0.1)
+                .whenInactive(
+                        new InstantCommand(() -> intakeSlides.intakeExtension(0))
+                );
 
         schedule(new RunCommand(() -> {
             TelemetryPacket packet = new TelemetryPacket();
