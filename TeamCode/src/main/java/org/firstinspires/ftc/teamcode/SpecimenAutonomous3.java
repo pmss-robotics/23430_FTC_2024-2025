@@ -79,7 +79,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(4, -61.5, -Math.PI/2)), telemetry);
+        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(4, -61.5, Math.PI/2)), telemetry);
 
         //auto pathing
         Action specimenTrajectoryAction = drive.actionBuilder(drive.getPose())
