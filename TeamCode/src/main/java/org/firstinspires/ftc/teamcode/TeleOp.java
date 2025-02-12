@@ -221,7 +221,7 @@ public class TeleOp extends CommandOpMode {
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> intake.toggleIntakeState()),
                                 new InstantCommand(() -> intake.openIntakeClaw()),
-                                new WaitCommand(250),
+                                new WaitCommand(350),
                                 new InstantCommand(() -> intake.closeIntakeClaw()),
                                 new WaitCommand(100),
                                 new InstantCommand(() -> intake.setIntakeState(States.Intake.middle))
