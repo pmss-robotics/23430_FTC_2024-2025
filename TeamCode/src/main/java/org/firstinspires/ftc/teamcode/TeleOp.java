@@ -199,13 +199,12 @@ public class TeleOp extends CommandOpMode {
                                 new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
                                 new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.transfer)),
                                 new InstantCommand(() -> outtake.openClaw()),
-                                new InstantCommand(() -> intakeSlides.manual(-1)),
+                                new InstantCommand(() -> intakeSlides.intakeExtension(-1)),
                                 new WaitCommand(500),
-                                new InstantCommand(() -> intakeSlides.manual(-0.3)),
+                                new InstantCommand(() -> intakeSlides.intakeExtension(0)),
                                 new InstantCommand(() -> outtake.closeClaw()),
                                 new WaitCommand(150),
-                                new InstantCommand(() -> intake.openIntakeClaw()),
-                                new InstantCommand(() -> intakeSlides.manual(0))
+                                new InstantCommand(() -> intake.openIntakeClaw())
                         ),
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> intake.setIntakeState(States.Intake.middle)),
