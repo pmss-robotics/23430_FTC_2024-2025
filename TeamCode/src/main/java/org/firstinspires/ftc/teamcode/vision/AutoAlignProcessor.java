@@ -108,7 +108,8 @@ public class AutoAlignProcessor implements VisionProcessor
         // Distortion coefficients (k1, k2, p1, p2, k3)
         // If you have calibrated your camera and have these values, use them
         // Otherwise, you can assume zero distortion for simplicity
-        distCoeffs = new MatOfDouble(-0.0449369, 1.17277, 0, 0, -3.63244);
+        // -0.0449369, 1.17277, 0, 0, -3.63244
+        distCoeffs = new MatOfDouble(0, 0, 0, 0, 0);
     }
 
     @Override

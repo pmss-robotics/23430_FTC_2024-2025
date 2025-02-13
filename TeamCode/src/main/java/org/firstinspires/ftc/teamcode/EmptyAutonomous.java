@@ -25,15 +25,15 @@ public class EmptyAutonomous extends CommandOpMode {
         // TODO: create wrappers for trajectory following maybe possibly
         // this RunCommand Loop might be useless
         schedule(new RunCommand(() -> {
-            TelemetryPacket packet = new TelemetryPacket();
+            // TelemetryPacket packet = new TelemetryPacket();
             Pose2d pose = drive.getPose();
             telemetry.addData("x", pose.position.x);
             telemetry.addData("y",pose.position.y);
             telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
             telemetry.update();
-            packet.fieldOverlay().setStroke("#3F51B5");
-            Drawing.drawRobot(packet.fieldOverlay(), pose);
-            FtcDashboard.getInstance().sendTelemetryPacket(packet);
+            // packet.fieldOverlay().setStroke("#3F51B5");
+            // Drawing.drawRobot(packet.fieldOverlay(), pose);
+            // FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }));
     }
 }
