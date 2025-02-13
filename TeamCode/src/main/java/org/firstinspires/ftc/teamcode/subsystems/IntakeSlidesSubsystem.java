@@ -32,9 +32,9 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     public static int pHome = 110;
 
     public static int target = 0;
-    public static int targetMax = 240, targetMin = -100;
+    public static int targetMax = 150, targetMin = -50;
 
-    public static double P = 0, I = 0, D = 0; // TODO implement and tune, figure out how to get the slides to instantly stop when button is let go
+    public static double P = 0.025, I = 0, D = 0.002; // TODO implement and tune, figure out how to get the slides to instantly stop when button is let go
 
     public PIDController pidController;
 
@@ -82,7 +82,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     public void intakeExtension (double power) {
         if (power > 0) {
             target = targetMax;
-            hExtension.setPower(calculate()*power+((targetMax)-hExtension.getCurrentPosition())/2400);
+            hExtension.setPower(calculate()*power+((targetMax)-hExtension.getCurrentPosition())/1200);
         } else if (power < 0) {
             target = targetMin;
             hExtension.setPower(-calculate()*power-0.2);
@@ -92,13 +92,39 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         }
     }
 
+    public void resetEncoder() {
+        hExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        target = 0;
+    }
+
+    public void retract () {
+        target = -250;
+    }
+
+    public void intakeOut () {
+        target = targetMax;
+    }
+
+    public void intakeIn () {
+        target = targetMin;
+    }
+
+    public void resetTarget () {
+        target = hExtension.getCurrentPosition();
+    }
+
     private double calculate() {
         pidController.setPID(P,I,D);
         int current = hExtension.getCurrentPosition();
 
         double power = pidController.calculate(current, target);
         power /= voltageSensor.getVoltage();
-
+        if (current < target) {
+            power+=((targetMax)-hExtension.getCurrentPosition())/1200;
+        } else {
+            power -= 0.05;
+        }
         telemetry.addData("HExtension Power:", power);
         return power;
     }

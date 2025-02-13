@@ -155,6 +155,25 @@ public class IntakeSubsystem extends SubsystemBase {
         wrist.setPosition(scale(wRotation));
     }
 
+    public void rotateCenter () {
+        wRotation = rHome;
+        wrist.setPosition(scale(rHome));
+    }
+
+    public void rotateLeft () {
+        if (wRotation>rHome-60) {
+            wRotation-=30;
+            wrist.setPosition(scale(wRotation));
+        }
+    }
+
+    public void rotateRight () {
+        if (wRotation<rHome+60) {
+            wRotation+=30;
+            wrist.setPosition(scale(wRotation));
+        }
+    }
+
 
 
     @Override
