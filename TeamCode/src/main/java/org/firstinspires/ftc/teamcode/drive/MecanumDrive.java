@@ -76,15 +76,21 @@ public class MecanumDrive {
         public double maxWheelVel = 65;
         public double minProfileAccel = -65;
         public double maxProfileAccel = 65;
+        public double minProfileReduceAccel = -65;
+        public double maxProfileReduceAccel = 65;
+
+
+        // in inches
+        public double accelReductionDistance = 10;
 
         // turn profile parameters (in radians)
         public double maxAngVel = Math.PI; // shared with path
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 9; //5
-        public double lateralGain = 11; //10
-        public double headingGain = 22; //6 // shared with turn
+        public double axialGain = 9;
+        public double lateralGain = 11;
+        public double headingGain = 22; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -103,8 +109,21 @@ public class MecanumDrive {
                     kinematics.new WheelVelConstraint(PARAMS.maxWheelVel),
                     new AngularVelConstraint(PARAMS.maxAngVel)
             ));
+    /*
     public final AccelConstraint defaultAccelConstraint =
             new ProfileAccelConstraint(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
+
+     */
+
+
+
+    public AccelConstraint defaultAccelConstraint  = (robotPose, _path, _disp) -> {
+        if(_path.length() - _disp < PARAMS.accelReductionDistance) {
+            return new MinMax(PARAMS.minProfileReduceAccel, PARAMS.maxProfileReduceAccel);
+        } else {
+            return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
+        }
+    };
 
     public final DcMotorEx leftFront, leftBack, rightBack, rightFront;
 

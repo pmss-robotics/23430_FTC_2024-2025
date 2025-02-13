@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.AngularVelConstraint;
 import com.acmerobotics.roadrunner.MecanumKinematics;
+import com.acmerobotics.roadrunner.MinMax;
 import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
@@ -24,6 +25,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.commands.ActionCommand;
 import org.firstinspires.ftc.teamcode.drive.Drawing;
+import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
+
 import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSlidesSubsystem;
@@ -58,8 +61,10 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                     kinematics.new WheelVelConstraint(60),
                     new AngularVelConstraint(Math.PI)
             ));
-    public final AccelConstraint defaultAccelConstraint =
-            new ProfileAccelConstraint(-70, 70);
+
+
+
+
 
     public static double specimenIntakeTime = 0.2;
     public static double specimenOuttakeTime = 0.5;
