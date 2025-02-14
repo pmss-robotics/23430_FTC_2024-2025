@@ -24,10 +24,10 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     private DcMotorEx leftExtension;
     private DcMotorEx rightExtension;
     private Telemetry telemetry;
-    public static double P = 0.03, I = 0, D = 0.0001;
+    public static double P = 0.02, I = 0, D = 0;
     public static double kGrav = 0.017;
-    public static double maxDescentPower = -0.2;
-    // 791 max
+    public static double maxDescentPower = -1;
+    // 3850 max
     public static int pHome = 0, pSpecimen0 = 1100, pSpecimen = 2600, pPostSpecimen = 1200, pPlayer = 450, pBucket = 4200, pStart = 0, pAscent0 = 0, pAscent = 0;
     public static int target = 0;
     // public static double resetPower = 0;
