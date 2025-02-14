@@ -33,7 +33,7 @@ public class TeleOp extends CommandOpMode {
     public static double iArmIncrement = 7;
     public static double intakeSlideIncrement = 4;
     public static double servoSpeed = 1;
-    public static double driveSpeed = 1.2;
+    public static double driveSpeed = 1;
     public static double fast = 1;
     public static double slow = 0.5;
     public static double wristStart = 0.5;
@@ -47,7 +47,6 @@ public class TeleOp extends CommandOpMode {
     States.Global currentState = States.Global.home;
     public static States.Mode currentMode = States.Mode.specimen;
 
-
     GamepadEx driver1, driver2;
     DriveSubsystem drive;
     OuttakeSlidesSubsystem outtakeSlides;
@@ -55,26 +54,13 @@ public class TeleOp extends CommandOpMode {
     VisionSubsystem vision;
     @Override
     public void initialize() {
-        // data sent to telemetry shows up on dashboard and driverGamepad station
-        // data sent to the telemetry packet only shows up on the dashboard
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.NEWEST_FIRST);
         telemetry.log().setCapacity(8);
-        // GamepadEx wraps gamepad 1 or 2 for easier implementations of more complex key bindings
         driver1 = new GamepadEx(gamepad1);
         driver2 = new GamepadEx(gamepad2);
-        // The driveSubsystem wraps Roadrunner's MecanumDrive to combine with Commands.
-        //TODO check if this works
         DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0, Math.PI)), telemetry);
-        // The driveCommand uses methods defined in the DriveSubsystem to create behaviour.
-        // we're passing in methods to get values instead of straight values because it avoids
-        // disturbing the structure of the CommandOpMode. The aim is to define bindings in this
-        // initialize() method through Commands and these will be looped and acted in the (hidden)
-        // run() loop.
-        driveSpeed = fast;
-        // macros to bring thing up and down
-        // intake extenstion
-        // outtake macro positions
+
         DriveCommand driveCommand = new DriveCommand(drive,
                 () -> -driver1.getLeftX()*driveSpeed,
                 () -> driver1.getLeftY()*driveSpeed,
@@ -112,12 +98,10 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> drive.drive.pinpoint.resetPosAndIMU())
         );
 
-        // TODO make this whileheld instead of toggle
         // slower driving
-        new GamepadButton(driver1, GamepadKeys.Button.B).toggleWhenPressed(
-                () -> driveSpeed = slow,
-                () -> driveSpeed = fast
-        );
+        new GamepadButton(driver1, GamepadKeys.Button.B)
+                .whenHeld(new InstantCommand(() -> driveSpeed = slow))
+                .whenReleased(new InstantCommand(() -> driveSpeed = fast));
 
         // intake claw rotation
         new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER)
@@ -278,7 +262,6 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> intakeSlides.resetEncoder())
         );
 
-
         /* FIXME: This works for manual control but the exact control power needs to be tuned. (the motor is super loose ;-;)
         new Trigger(() -> driver2.getRightX() > Math.abs(0.1))
                 .whileActiveContinuous(new InstantCommand(() -> {
@@ -288,7 +271,6 @@ public class TeleOp extends CommandOpMode {
                     intakeSlides.resetTarget();
                 }, intakeSlides)
                 );
-
          */
 
 
