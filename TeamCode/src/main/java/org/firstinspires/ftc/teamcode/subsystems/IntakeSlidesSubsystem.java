@@ -32,7 +32,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     public static int pHome = 110;
 
     public static int target = 0;
-    public static int targetMax = 150, targetMin = -50;
+    public static int targetMax = 150, targetMin = 0;
 
     public static double P = 0.025, I = 0, D = 0.002; // TODO implement and tune, figure out how to get the slides to instantly stop when button is let go
 
@@ -98,6 +98,8 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         target = 0;
     }
 
+    public void intakePosition (int pos) { target = pos; }
+
     public void retract () {
         target = -250;
     }
@@ -120,9 +122,9 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
 
         double power = pidController.calculate(current, target);
         power /= voltageSensor.getVoltage();
-        if (current < target) {
-            power+= (double) ((targetMax) - hExtension.getCurrentPosition()) /1200;
-        } else {
+        if (current < target-10) {
+            power+= ((double)  ((targetMax) - hExtension.getCurrentPosition()-25) /360)*((double)  ((targetMax) - hExtension.getCurrentPosition()-25) /360);
+        } else if (current > target+10){
             power -= 0.05;
         }
         telemetry.addData("HExtension Power:", power);

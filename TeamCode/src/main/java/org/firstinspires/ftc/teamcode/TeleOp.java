@@ -257,13 +257,15 @@ public class TeleOp extends CommandOpMode {
         new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
                 .whileActiveOnce(new SequentialCommandGroup(
                         new InstantCommand(() -> intakeSlides.intakeIn()),
-                        new WaitCommand(350),
-                        new InstantCommand(() -> intakeSlides.resetEncoder())
+                        new WaitCommand(500),
+                        new InstantCommand(() -> intakeSlides.resetEncoder()),
+                        new InstantCommand(() -> intakeSlides.resetTarget()),
+                        new InstantCommand(() -> intakeSlides.intakePosition(10))
                 ));
         new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
                 .whileActiveOnce(new SequentialCommandGroup(
                         new InstantCommand(() -> intakeSlides.intakeOut()),
-                        new WaitCommand(350),
+                        new WaitCommand(250),
                         new InstantCommand(() -> intakeSlides.resetTarget())
                 ));
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(
