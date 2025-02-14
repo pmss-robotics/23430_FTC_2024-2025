@@ -36,13 +36,13 @@ public class TeleOp extends CommandOpMode {
     public static double driveSpeed = 1.2;
     public static double fast = 1;
     public static double slow = 0.5;
-    public static double rotationSpeed = 1;
     public static double wristStart = 0.5;
     public static double bucketStart = 0.636;
     public static double outtakeResetPower = 0.6;
     public static double ascentTiltPower = 0.2;
     public static double intakeSlidePowerO = 0.3;
-    public static double intakeSlidePowerI = -0.4;
+    public static double intakeSlidePowerI = 0.1;
+    public static int intakeWaitTime = 350;
 
     States.Global currentState = States.Global.home;
     public static States.Mode currentMode = States.Mode.specimen;
@@ -78,7 +78,7 @@ public class TeleOp extends CommandOpMode {
         DriveCommand driveCommand = new DriveCommand(drive,
                 () -> -driver1.getLeftX()*driveSpeed,
                 () -> driver1.getLeftY()*driveSpeed,
-                () -> -driver1.getRightX()*driveSpeed,
+                () -> -driver1.getRightX()*0.4*driveSpeed,
                 true);
 
         outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
@@ -112,6 +112,7 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(() -> drive.drive.pinpoint.resetPosAndIMU())
         );
 
+        // TODO make this whileheld instead of toggle
         // slower driving
         new GamepadButton(driver1, GamepadKeys.Button.B).toggleWhenPressed(
                 () -> driveSpeed = slow,
@@ -126,13 +127,6 @@ public class TeleOp extends CommandOpMode {
         new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new InstantCommand(
                         () -> intake.rotateRight()
-                ));
-
-        // manual intake arm control
-        new Trigger(() -> Math.abs(driver2.getRightX()) > 0.1)
-                .whileActiveContinuous(new InstantCommand (
-                        () -> intake.incrementPosition(driver2.getRightX()*iArmIncrement),
-                        intake
                 ));
 
 
@@ -221,7 +215,7 @@ public class TeleOp extends CommandOpMode {
                                 new InstantCommand(() -> intake.openIntakeClaw()),
                                 new WaitCommand(100),
                                 new InstantCommand(() -> intake.toggleIntakeState()),
-                                new WaitCommand(250),
+                                new WaitCommand(intakeWaitTime),
                                 new InstantCommand(() -> intake.closeIntakeClaw()),
                                 new WaitCommand(100),
                                 new InstantCommand(() -> intake.setIntakeState(States.Intake.middle))
@@ -283,6 +277,20 @@ public class TeleOp extends CommandOpMode {
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(
                 new InstantCommand(() -> intakeSlides.resetEncoder())
         );
+
+
+        /* FIXME: This works for manual control but the exact control power needs to be tuned. (the motor is super loose ;-;)
+        new Trigger(() -> driver2.getRightX() > Math.abs(0.1))
+                .whileActiveContinuous(new InstantCommand(() -> {
+                    intakeSlides.manual( Math.signum(driver2.getRightX()) * intakeSlidePowerI);
+                }, intakeSlides)).whenInactive(new InstantCommand(() -> {
+                    intakeSlides.hExtension.setPower(0);
+                    intakeSlides.resetTarget();
+                }, intakeSlides)
+                );
+
+         */
+
 
         schedule(new RunCommand(() -> {
             TelemetryPacket packet = new TelemetryPacket();

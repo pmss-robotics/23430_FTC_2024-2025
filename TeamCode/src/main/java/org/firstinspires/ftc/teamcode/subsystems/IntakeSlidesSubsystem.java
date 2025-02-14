@@ -20,7 +20,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     private Telemetry telemetry;
     // private ServoImplEx intakeSlideL; // in order of precedence
     // private ServoImplEx intakeSlideR;
-    private DcMotorEx hExtension;
+    public DcMotorEx hExtension;
     private VoltageSensor voltageSensor;
     // wrist moves hand and finger along an axis, wrist just moves fingers, etc.
 
@@ -121,7 +121,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         double power = pidController.calculate(current, target);
         power /= voltageSensor.getVoltage();
         if (current < target) {
-            power+=((targetMax)-hExtension.getCurrentPosition())/1200;
+            power+= (double) ((targetMax) - hExtension.getCurrentPosition()) /1200;
         } else {
             power -= 0.05;
         }

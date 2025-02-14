@@ -18,7 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // declare hardware here
     Telemetry telemetry;
-    ServoImplEx armL, armR, claw, wrist;
+    ServoImplEx armL, armR, claw, wrist, sweep;
     // wrist rotates intake and spinners are rollers
 
     public static double W_target = 270; // in degrees
@@ -27,12 +27,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public static int wMin = 0, wMax = 200;
 
-    public static int wHome = 25, wTransfer = 25, wIntake = 200, wMiddle = 160;
+    public static int wHome = 25, wTransfer = 25, wIntake = 200, wMiddle = 115;
     public static int cOpen = 300, cClosed = 255;
     public static double wPosition = 25, wRotation = 150;
     public static boolean intakeOpen = false;
+    public static boolean sweeperDown = false;
     public static int rRange = 80;
     public static int rHome = 110, rMax = 190, rMin = 30;
+    public static int sHome = 0, sDown = 175;
 
     public IntakeSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         // initialize hardware here alongside other parameters
@@ -42,12 +44,14 @@ public class IntakeSubsystem extends SubsystemBase {
         armR = hardwareMap.get(ServoImplEx.class, "iArmR");
         wrist = hardwareMap.get(ServoImplEx.class, "iWrist");
         claw = hardwareMap.get(ServoImplEx.class, "iClaw");
+        sweep = hardwareMap.get(ServoImplEx.class, "sweep");
         // expand the range of the servo beyond the default for control/expansion hubs
         // test
         armL.setPwmRange(new PwmControl.PwmRange(500, 2500));
         armR.setPwmRange(new PwmControl.PwmRange(500, 2500));
         wrist.setPwmRange(new PwmControl.PwmRange(500, 2500));
         claw.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        sweep.setPwmRange(new PwmControl.PwmRange(500, 2500));
         armR.setDirection(Servo.Direction.REVERSE);
 
 
@@ -57,6 +61,7 @@ public class IntakeSubsystem extends SubsystemBase {
         wRotation = rHome;
         armR.setPosition(scale(wHome));
         claw.setPosition(scale(cClosed));
+        sweep.setPosition(scale(sHome));
 
         currentIntakeState = States.Intake.home;
     }
@@ -129,6 +134,16 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    public void toggleSweeper() {
+        if (sweeperDown) {
+            sweep.setPosition(scale(sHome));
+            sweeperDown = false;
+        } else {
+            sweep.setPosition(scale(sDown));
+            sweeperDown = true;
+        }
+    }
+
     public void openIntakeClaw() {
         claw.setPosition(scale(cOpen));
         intakeOpen = true;
@@ -155,21 +170,21 @@ public class IntakeSubsystem extends SubsystemBase {
         wrist.setPosition(scale(wRotation));
     }
 
-    public void rotateCenter () {
+    public void rotateCenter() {
         wRotation = rHome;
         wrist.setPosition(scale(rHome));
     }
 
-    public void rotateLeft () {
-        if (wRotation>rHome-60) {
-            wRotation-=30;
+    public void rotateLeft() {
+        if (wRotation>rHome-70) {
+            wRotation-=25;
             wrist.setPosition(scale(wRotation));
         }
     }
 
-    public void rotateRight () {
-        if (wRotation<rHome+60) {
-            wRotation+=30;
+    public void rotateRight() {
+        if (wRotation<rHome+70) {
+            wRotation+=25;
             wrist.setPosition(scale(wRotation));
         }
     }
