@@ -189,6 +189,11 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    public void rotate (int rot) {
+        wrist.setPosition(scale(rot));
+        wRotation = rot;
+    }
+
 
 
     @Override

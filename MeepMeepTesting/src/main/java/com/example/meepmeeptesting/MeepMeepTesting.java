@@ -27,7 +27,7 @@ public class MeepMeepTesting {
     public static double outtakeWaitTime = 2.0;
     public static double specimenWaitTime = 0.5;
     public static double specimenIntakeTime = 0.1;
-    public static double specimenOuttakeTime = 0.5;
+    public static double specimenOuttakeTime = 0.3;
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(600);
@@ -37,7 +37,7 @@ public class MeepMeepTesting {
                 .setConstraints(65, 65, Math.toRadians(180), Math.toRadians(180), 12.5)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(7, -61.5, -Math.PI/2))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(7, -61.5, Math.PI/2))
                 //sample auto pathing
 /*                .strafeTo(new Vector2d(-10, -35))
                 .waitSeconds(specimenWaitTime)
@@ -56,8 +56,8 @@ public class MeepMeepTesting {
                 .splineToLinearHeading(new Pose2d(-24, -10, Math.PI), Math.toRadians(0)) */
                 //specimen auto pathing
                 .waitSeconds(0.35)
-                .strafeTo(new Vector2d(1, -35))
-                .waitSeconds(specimenOuttakeTime)
+                .strafeTo(new Vector2d(-2, -35))
+                .waitSeconds(1.2)
                 /*
                 .setTangent(Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(29.14, -34.63), Math.toRadians(0.00))
@@ -73,13 +73,14 @@ public class MeepMeepTesting {
                 .setTangent(90)
                 .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
                  */
-                .splineToLinearHeading(new Pose2d(27.00, -43.00, Math.toRadians(225)), Math.toRadians(-25.54))
-                .splineToLinearHeading(new Pose2d(33.33, -45.16, Math.toRadians(135.00)), Math.toRadians(-18.18))
-                .splineToLinearHeading(new Pose2d(35.00, -43.00, Math.toRadians(225)), Math.toRadians(-25.54))
-                .splineToLinearHeading(new Pose2d(37.33, -45.16, Math.toRadians(135.00)), Math.toRadians(-18.18))
-                .splineToLinearHeading(new Pose2d(40.00, -43.00, Math.toRadians(225)), Math.toRadians(-25.54))
-                .splineToLinearHeading(new Pose2d(42.33, -45.16, Math.toRadians(135.00)), Math.toRadians(-18.18))
-                .strafeTo(new Vector2d(37, -60), slowVelConstraint)
+                .strafeToLinearHeading(new Vector2d(25, -45), -Math.PI/4)
+                .splineToLinearHeading(new Pose2d(27.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
+                .splineToLinearHeading(new Pose2d(33.33, -45.16, Math.toRadians(-45)), Math.toRadians(-18.18))
+                .splineToLinearHeading(new Pose2d(35.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
+                .splineToLinearHeading(new Pose2d(37.33, -45.16, Math.toRadians(-45)), Math.toRadians(-18.18))
+                .splineToLinearHeading(new Pose2d(40.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
+                .splineToLinearHeading(new Pose2d(30, -45.16, Math.toRadians(-45)), Math.toRadians(-18.18))
+                .strafeToLinearHeading(new Vector2d(37, -60), Math.PI/2)
                 .waitSeconds(specimenIntakeTime)
                 .strafeTo(new Vector2d(13, -35))
                 .waitSeconds(specimenOuttakeTime)
@@ -97,6 +98,11 @@ public class MeepMeepTesting {
                 .strafeTo(new Vector2d(37, -60), slowVelConstraint)
                 .waitSeconds(specimenIntakeTime)
                 .strafeTo(new Vector2d(4, -35))
+                .waitSeconds(specimenOuttakeTime)
+                .strafeTo(new Vector2d(37, -55))
+                .strafeTo(new Vector2d(37, -60), slowVelConstraint)
+                .waitSeconds(specimenIntakeTime)
+                .strafeTo(new Vector2d(1, -35))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeToConstantHeading(new Vector2d(45, -59))
                 .build());
