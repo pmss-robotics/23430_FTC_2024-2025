@@ -79,7 +79,7 @@ public class MeepMeepTesting {
                 .splineToLinearHeading(new Pose2d(35.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
                 .splineToLinearHeading(new Pose2d(37.33, -45.16, Math.toRadians(-45)), Math.toRadians(-18.18))
                 .splineToLinearHeading(new Pose2d(40.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
-                .splineToLinearHeading(new Pose2d(30, -45.16, Math.toRadians(-45)), Math.toRadians(-18.18))
+                .splineToLinearHeading(new Pose2d(37, -49.16, Math.toRadians(-45)), Math.toRadians(-18.18))
                 .strafeToLinearHeading(new Vector2d(37, -60), Math.PI/2)
                 .waitSeconds(specimenIntakeTime)
                 .strafeTo(new Vector2d(13, -35))
