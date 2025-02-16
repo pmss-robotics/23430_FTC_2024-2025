@@ -128,7 +128,7 @@ public class SpecimenAutoTest extends CommandOpMode {
                 .build();
         Command trajStart = new ActionCommand(trajectoryStart, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory1 = drive.actionBuilder(new Pose2d (4, -33, -Math.PI/2))
+        Action trajectory1 = drive.actionBuilder(new Pose2d (25, -45, -Math.PI/4))
                 .splineToLinearHeading(new Pose2d(27.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
                 .splineToLinearHeading(new Pose2d(33.33, -45.16, Math.toRadians(-45)), Math.toRadians(-18.18))
                 .splineToLinearHeading(new Pose2d(35.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
@@ -244,11 +244,11 @@ public class SpecimenAutoTest extends CommandOpMode {
         final int numEx = numExtension*24;
         final int numRot = numRotation*25;
         Action trajectorySample = drive.actionBuilder(new Pose2d(-2, -33, Math.PI/2))
-                .strafeTo(new Vector2d(4+numSide*1.5, -33))
+                .strafeTo(new Vector2d(7+numSide*1.5, -33))
                 .build();
         Command trajS = new ActionCommand(trajectorySample, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySample1 = drive.actionBuilder(new Pose2d(4+numSide*1.5, -33, Math.PI/2))
+        Action trajectorySample1 = drive.actionBuilder(new Pose2d(7+numSide*1.5, -33, Math.PI/2))
                 .strafeToLinearHeading(new Vector2d(25, -45), -Math.PI/4)
                 .build();
         Command trajS1 = new ActionCommand(trajectorySample1, Stream.of(drive).collect(Collectors.toSet()));
