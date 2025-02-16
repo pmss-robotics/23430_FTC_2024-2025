@@ -124,7 +124,7 @@ public class SpecimenAutoTest extends CommandOpMode {
 
         Action trajectoryStart = drive.actionBuilder(drive.getPose())
                 .waitSeconds(startWaitTime)
-                .strafeTo(new Vector2d(-2, -35))
+                .strafeTo(new Vector2d(2, -35))
                 .build();
         Command trajStart = new ActionCommand(trajectoryStart, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -140,7 +140,7 @@ public class SpecimenAutoTest extends CommandOpMode {
         Command traj1 = new ActionCommand(trajectory1, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory2 = drive.actionBuilder(new Pose2d (37, -60, -Math.PI/2))
-                .strafeTo(new Vector2d(13, -35))
+                .strafeTo(new Vector2d(12, -35))
                 .build();
         Command traj2 = new ActionCommand(trajectory2, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -150,22 +150,22 @@ public class SpecimenAutoTest extends CommandOpMode {
         Command traj3 = new ActionCommand(trajectory3, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory4 = drive.actionBuilder(new Pose2d (37, -60, -Math.PI/2))
-                .strafeTo(new Vector2d(7, -35))
+                .strafeTo(new Vector2d(8, -35))
                 .build();
         Command traj4 = new ActionCommand(trajectory4, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory5 = drive.actionBuilder(new Pose2d (37, -60, -Math.PI/2))
-                .strafeTo(new Vector2d(4, -35))
+                .strafeTo(new Vector2d(6, -35))
                 .build();
         Command traj5 = new ActionCommand(trajectory5, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory6 = drive.actionBuilder(new Pose2d (37, -60, -Math.PI/2))
                 .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(1, -35))
+                .strafeTo(new Vector2d(4, -35))
                 .build();
         Command traj6 = new ActionCommand(trajectory6, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome = drive.actionBuilder(new Pose2d (13, -35, -Math.PI/2))
+        Action trajectoryHome = drive.actionBuilder(new Pose2d (12, -35, -Math.PI/2))
                 .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .build();
@@ -177,19 +177,19 @@ public class SpecimenAutoTest extends CommandOpMode {
                 .build();
         Command trajHome1 = new ActionCommand(trajectoryHome1, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome2 = drive.actionBuilder(new Pose2d (7, -35, -Math.PI/2))
+        Action trajectoryHome2 = drive.actionBuilder(new Pose2d (8, -35, -Math.PI/2))
                 .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .build();
         Command trajHome2 = new ActionCommand(trajectoryHome2, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome3 = drive.actionBuilder(new Pose2d (7, -35, -Math.PI/2))
+        Action trajectoryHome3 = drive.actionBuilder(new Pose2d (6, -35, -Math.PI/2))
                 .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .build();
         Command trajHome3 = new ActionCommand(trajectoryHome3, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryEnd = drive.actionBuilder(new Pose2d (1, -35, -Math.PI/2))
+        Action trajectoryEnd = drive.actionBuilder(new Pose2d (4, -35, -Math.PI/2))
                 .strafeToConstantHeading(new Vector2d(45, -59))
                 .build();
         Command trajEnd = new ActionCommand(trajectoryEnd, Stream.of(drive).collect(Collectors.toSet()));
