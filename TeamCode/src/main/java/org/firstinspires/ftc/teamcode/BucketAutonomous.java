@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.AngularVelConstraint;
 import com.acmerobotics.roadrunner.MecanumKinematics;
@@ -20,7 +19,6 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.commands.ActionCommand;
-import org.firstinspires.ftc.teamcode.drive.Drawing;
 import org.firstinspires.ftc.teamcode.drive.PinpointDrive;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSlidesSubsystem;
@@ -35,8 +33,8 @@ import java.util.stream.Stream;
 
 
 @Config
-@Autonomous(name="BucketAuto2", group="Auto")
-public class BucketAutonomous2 extends CommandOpMode {
+@Autonomous(name="BucketAuto", group="Auto")
+public class BucketAutonomous extends CommandOpMode {
 
     final static MecanumKinematics kinematics = new MecanumKinematics(
             15.984252, 0.8);
@@ -54,6 +52,10 @@ public class BucketAutonomous2 extends CommandOpMode {
     public static double sampleAngle1 = 85;
     public static double sampleAngle2 = 109;
     public static double sampleAngle3 = 135;
+    public static int samplePos1 = 0;
+    public static int samplePos2 = 0;
+    public static int samplePos3 = 0;
+
 
     @Override
     public void initialize() {
@@ -148,27 +150,32 @@ public class BucketAutonomous2 extends CommandOpMode {
                 new InstantCommand(() -> outtakeSlides.toggleBucket())
         );
 
-        Command intakeSample = new SequentialCommandGroup(
-                new InstantCommand(() -> intakeSlides.manual(0.75)),
-                new WaitCommand(220),
-                new InstantCommand(() -> intakeSlides.manual(0.5)),
+        Command getSample = new SequentialCommandGroup(
+                new InstantCommand(() -> intake.openIntakeClaw()),
                 new WaitCommand(100),
-                new InstantCommand(() -> intakeSlides.manual(0.4)),
-                new WaitCommand(800)
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.intake)),
+                new WaitCommand(350),
+                new InstantCommand(() -> intake.closeIntakeClaw()),
+                new WaitCommand(100),
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.middle))
+        );
+
+        Command intakeSample = new SequentialCommandGroup(
+                new InstantCommand(() -> intakeSlides.intakePosition(samplePos1)),
+                new WaitCommand(220),
+                getSample
 
         );
         Command intakeSample2 = new SequentialCommandGroup(
-                new InstantCommand(() -> intakeSlides.manual(0.75)),
-                new WaitCommand(250),
-                new InstantCommand(() -> intakeSlides.manual(0.4)),
-                new WaitCommand(750)
+                new InstantCommand(() -> intakeSlides.intakePosition(samplePos2)),
+                new WaitCommand(220),
+                getSample
 
         );
         Command intakeSample3 = new SequentialCommandGroup(
-                new InstantCommand(() -> intakeSlides.manual(0.7)),
-                new WaitCommand(200),
-                new InstantCommand(() -> intakeSlides.manual(0.40)),
-                new WaitCommand(1500)
+                new InstantCommand(() -> intakeSlides.intakePosition(samplePos3)),
+                new WaitCommand(220),
+                getSample
 
         );
 

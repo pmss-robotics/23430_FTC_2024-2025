@@ -268,6 +268,7 @@ public class SpecimenAutoTest extends CommandOpMode {
                     new InstantCommand(() -> intake.setIntakeState(States.Intake.middle)),
                     new InstantCommand(() -> intake.rotate(numRot)),
                     new WaitCommand(outtakeTime),
+                    new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
                     new InstantCommand(() -> outtake.openClaw()),
                     trajS,
                     new InstantCommand(() -> intake.toggleIntakeState()),
