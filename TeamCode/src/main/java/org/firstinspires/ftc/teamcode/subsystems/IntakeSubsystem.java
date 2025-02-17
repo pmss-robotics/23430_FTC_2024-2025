@@ -144,6 +144,19 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    public void putSweeperDown (boolean down) {
+        sweeperDown = down;
+        if (down) {
+            sweep.setPosition(scale(sDown));
+        } else {
+            sweep.setPosition(scale(sHome));
+        }
+    }
+
+    public void setSweeper (int position) {
+        sweep.setPosition(scale(position));
+    }
+
     public void openIntakeClaw() {
         claw.setPosition(scale(cOpen));
         intakeOpen = true;
