@@ -155,12 +155,16 @@ public class TeleOp extends CommandOpMode {
                         new ConditionalCommand(
                                 new SequentialCommandGroup(
                                         new InstantCommand(() -> outtake.closeClaw()),
-                                        new InstantCommand(() -> outtake.toggleOuttakeState())
+                                        new WaitCommand(200),
+                                        new InstantCommand(() -> outtake.toggleOuttakeState()),
+                                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen))
                                 ),
                                 new SequentialCommandGroup(
+                                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
+                                        new WaitCommand(500),
                                         new InstantCommand(() -> outtake.toggleOuttakeState()),
-                                        new WaitCommand(200),
-                                        new InstantCommand(() -> outtake.openClaw())
+                                        new InstantCommand(() -> outtake.openClaw()),
+                                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home))
                                 ),
                                 () -> outtake.getCurrentOuttakeState() == States.Outtake.home
                         ),
