@@ -21,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.Exposur
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.teamcode.util.States.Alliance;
 import org.firstinspires.ftc.teamcode.vision.AutoAlignProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.VisionProcessor;
@@ -32,8 +33,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
-
 
 @Config
 public class VisionSubsystem extends SubsystemBase {
@@ -50,8 +49,21 @@ public class VisionSubsystem extends SubsystemBase {
      *
      * @param hardwareMap
      */
-    public VisionSubsystem(HardwareMap hardwareMap, Telemetry telemetry) throws InterruptedException {
+
+    public static double target_x = 0;
+    public static double target_y = 0;
+    public Alliance alliance;
+
+    public static class DetectedSample {
+        public double angle;
+        public double x;
+        public double y;
+        public AnalyzedStone sample;
+    }
+    public VisionSubsystem(HardwareMap hardwareMap, Alliance alliance, Telemetry telemetry) throws InterruptedException {
         this.telemetry = telemetry;
+        this.alliance = alliance;
+
         // TODO sample code!!!! re-implement in the field.
         final CameraStreamProcessor dashboard = new CameraStreamProcessor();
         sampleDetection = new AutoAlignProcessor();
@@ -100,33 +112,51 @@ public class VisionSubsystem extends SubsystemBase {
 
     }
 
-    public void enableDetection(boolean enabled) {
-        visionPortal.setProcessorEnabled(sampleDetection, enabled);
+    public void enableDetection() {
+        visionPortal.setProcessorEnabled(sampleDetection, true);
+    }
+    public void disableDetection() {
+        visionPortal.setProcessorEnabled(sampleDetection, false);
     }
 
-
-    public double getSampleAngle() {
-        double angle = 0;
-        AnalyzedStone closest = null;
+    public DetectedSample getSampleAngle() throws Exception {
+        DetectedSample closest = new DetectedSample();
+        double closestDistance = -1;
         List<AnalyzedStone> detections = sampleDetection.getDetectedStones();
+        if (detections.isEmpty()) throw new Exception("No Samples Found");
+
         for ( AnalyzedStone sample : detections) {
+            if(alliance == Alliance.blue && sample.color.equals("Red")) continue;
+            if(alliance == Alliance.red && sample.color.equals("Blue")) continue;
             // find the sample closest to the claw
-            telemetry.addData("Sample: " + detections.indexOf(sample), " "+ sample.color);
-            telemetry.addData("Sample: " + detections.indexOf(sample), " " + (180- sample.angle));
-
-            String x = Arrays.toString(sample.tvec.get(0,0));
-            String y = Arrays.toString(sample.tvec.get(1,0));
-            String z = Arrays.toString(sample.tvec.get(2,0));
-
             // 0,0 is in the centre
             // left is +x
             // up is +y
-            telemetry.addData("Sample: " + detections.indexOf(sample), "x " + x);
-            telemetry.addData("Sample: " + detections.indexOf(sample), "y " + y);
-            telemetry.addData("Sample: " + detections.indexOf(sample), "z " + z);
+            double x = Arrays.stream(sample.tvec.get(0, 0)).sum();
+            double y = Arrays.stream(sample.tvec.get(1, 0)).sum();
+            double z = Arrays.stream(sample.tvec.get(2, 0)).sum();
+            // use hypot instead of manually sqrt() for reasons.
+            double distance = Math.hypot(target_x - x, target_y - y);
+            if(closestDistance == -1 || distance < closestDistance) {
+                closestDistance = distance;
+                closest.sample = sample;
+                closest.angle = sample.angle;
+                closest.x = x;
+                closest.y = y;
+            }
         }
-        if(Objects.isNull(closest)) return 666;
-        return angle;
+        //FIXME adjust the angle offset to be appropriate for our claw.
+        double angle = 180 - closest.angle;
+        telemetry.addData("Sample: " + detections.indexOf(closest), " "+ closest.sample.color);
+        telemetry.addData("Sample: " + detections.indexOf(closest), " " + angle);
+        /*
+        telemetry.addData("Sample: " + detections.indexOf(closest), "x " + x);
+        telemetry.addData("Sample: " + detections.indexOf(closest), "y " + y);
+        telemetry.addData("Sample: " + detections.indexOf(closest), "z " + z);
+         */
+
+
+        return closest;
     }
 
 

@@ -60,7 +60,9 @@ public class States {
         sample,
         specimen
     }
-
-
+    public enum Alliance {
+        red,
+        blue,
+    }
 
 }

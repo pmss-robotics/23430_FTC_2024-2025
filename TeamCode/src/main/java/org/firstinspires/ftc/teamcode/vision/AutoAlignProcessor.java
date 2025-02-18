@@ -97,8 +97,8 @@ public class AutoAlignProcessor implements VisionProcessor
         // Focal lengths (fx, fy) and principal point (cx, cy)
         double fx = 822.317; // Replace with your camera's focal length in pixels
         double fy = 822.317;
-        double cx = 320; // Replace with your camera's principal point x-coordinate (usually image width / 2)
-        double cy = 240; // Replace with your camera's principal point y-coordinate (usually image height / 2)
+        double cx = 319.495; // Replace with your camera's principal point x-coordinate (usually image width / 2)
+        double cy = 242.502; // Replace with your camera's principal point y-coordinate (usually image height / 2)
 
         cameraMatrix.put(0, 0,
                 fx, 0, cx,
@@ -109,7 +109,7 @@ public class AutoAlignProcessor implements VisionProcessor
         // If you have calibrated your camera and have these values, use them
         // Otherwise, you can assume zero distortion for simplicity
         // -0.0449369, 1.17277, 0, 0, -3.63244
-        distCoeffs = new MatOfDouble(0, 0, 0, 0, 0);
+        distCoeffs = new MatOfDouble(-0.0449369, 1.17277, 0, 0, -3.63244);
     }
 
     @Override

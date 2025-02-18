@@ -36,6 +36,8 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     private States.OuttakeExtension currentState;
     public static int resetWait = 5000;
 
+    public static int tolerance = 15;
+
     public OuttakeSlidesSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
         currentState = States.OuttakeExtension.home;
@@ -53,6 +55,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
 
         target = 0;
         pidController = new PIDController(P, I, D);
+        pidController.setTolerance(tolerance);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
     }
     @Override
