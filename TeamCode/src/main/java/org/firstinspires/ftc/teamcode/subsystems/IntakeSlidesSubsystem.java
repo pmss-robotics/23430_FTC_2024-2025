@@ -75,9 +75,9 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     }
 
     public void holdPosition() {
-        if (hExtension.getCurrentPosition() > 50 && hExtension.getCurrentPosition()<120) {
+        if (target == targetMax && hExtension.getCurrentPosition()<120) {
             hExtension.setPower(0.2);
-        } else if (hExtension.getCurrentPosition() < 50 && hExtension.getCurrentPosition()>10){
+        } else if (target == targetMin && hExtension.getCurrentPosition()>10){
             hExtension.setPower(-0.3);
         } else {
             hExtension.setPower(0);
@@ -118,7 +118,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
     }
 
     public void resetTarget () {
-        target = hExtension.getCurrentPosition();
+        target = targetMin;
     }
 
     private double calculate() {
@@ -139,7 +139,11 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
 
     public void manual(double power) {
         hExtension.setPower(power);
-        target = hExtension.getCurrentPosition();
+        if (power>0) {
+            target = targetMax;
+        } else {
+            target = targetMin;
+        }
     }
 
     public States.IntakeExtension getCurrentIntExState() {
