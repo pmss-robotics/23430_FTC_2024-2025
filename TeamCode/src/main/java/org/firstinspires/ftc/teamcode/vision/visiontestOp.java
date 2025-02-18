@@ -39,7 +39,7 @@ public class visiontestOp extends LinearOpMode {
                 .setCamera(hardwareMap.get(WebcamName.class, "Logi C270 HD WebCam"))
                 .addProcessors(sampleDetection)
                 .setCameraResolution(new Size(640, 480))
-                //.setStreamFormat(VisionPortal.StreamFormat.MJPEG) // worse compression than the default but faster
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // worse compression than the default but faster
                 .build();
 
 
@@ -66,7 +66,7 @@ public class visiontestOp extends LinearOpMode {
             telemetry.addData("Sample: " + detections.indexOf(sample), " "+ sample.color);
             telemetry.addData("Sample: " + detections.indexOf(sample), " " + (180- sample.angle));
 
-            String x = Arrays.toString(sample.tvec.get(0,0));
+            String x = Arrays.stream(sample.tvec.get(0,0)).sum() +"";
             String y = Arrays.toString(sample.tvec.get(1,0));
             String z = Arrays.toString(sample.tvec.get(2,0));
 
