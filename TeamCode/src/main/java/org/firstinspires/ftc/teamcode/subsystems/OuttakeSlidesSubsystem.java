@@ -61,7 +61,6 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
             telemetry.addData("VExtension Target: ", target);
             telemetry.addData("VExtension Pos: ", leftExtension.getCurrentPosition());
             telemetry.addData("VExtension State: ", currentState);
-            telemetry.update();
         }
     }
 

@@ -71,12 +71,17 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         if (Objects.nonNull(hExtension.getCurrentPosition())) {
             telemetry.addData("HExtension Target: ", target);
             telemetry.addData("HExtension Pos: ", hExtension.getCurrentPosition());
-            telemetry.update();
         }
     }
 
     public void holdPosition() {
-        hExtension.setPower(calculate());
+        if (hExtension.getCurrentPosition() > 50 && hExtension.getCurrentPosition()<120) {
+            hExtension.setPower(0.2);
+        } else if (hExtension.getCurrentPosition() < 50 && hExtension.getCurrentPosition()>10){
+            hExtension.setPower(-0.3);
+        } else {
+            hExtension.setPower(0);
+        }
     }
 
     public void intakeExtension (double power) {

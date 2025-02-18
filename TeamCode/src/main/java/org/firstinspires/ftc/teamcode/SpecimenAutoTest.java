@@ -81,7 +81,7 @@ public class SpecimenAutoTest extends CommandOpMode {
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(4, -61.5, Math.PI/2)), telemetry);
+        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(7, -61.5, Math.PI/2)), telemetry);
 
         //auto pathing
         Action specimenTrajectoryAction = drive.actionBuilder(drive.getPose())
@@ -209,7 +209,7 @@ public class SpecimenAutoTest extends CommandOpMode {
         double numSide = 0;
         int numRotation = 0;
 
-        while (input) {
+        while (opModeInInit()) {
             if (driver1.getButton(GamepadKeys.Button.X)) {
                 getSample = true;
             }
@@ -239,9 +239,16 @@ public class SpecimenAutoTest extends CommandOpMode {
                 telemetry.update();
             }
             if (driver1.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-                input = false;
+                break;
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+
             }
         }
+        telemetry.addData("input ", "done");
+        telemetry.update();
         final int numEx = numExtension*24;
         final int numRot = numRotation*25;
         Action trajectorySample = drive.actionBuilder(new Pose2d(-2, -33, Math.PI/2))
@@ -267,7 +274,7 @@ public class SpecimenAutoTest extends CommandOpMode {
                     new InstantCommand(() -> intakeSlides.intakePosition(numEx)),
                     new InstantCommand(() -> intake.openIntakeClaw()),
                     new InstantCommand(() -> intake.setIntakeState(States.Intake.middle)),
-                    new InstantCommand(() -> intake.rotate(numRot)),
+                    new InstantCommand(() -> intake.rotate(numRot+110)),
                     new WaitCommand(outtakeTime),
                     //new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
                     //new InstantCommand(() -> outtake.openClaw()),
@@ -278,8 +285,8 @@ public class SpecimenAutoTest extends CommandOpMode {
                     new WaitCommand(100),
                     new InstantCommand(() -> intake.setIntakeState(States.Intake.middle)),
                     new InstantCommand(() -> intake.rotateCenter()),
+                    new InstantCommand(() -> intakeSlides.intakeIn()),
                     new WaitCommand(250),
-                    trajS1,
                     new InstantCommand(() -> intake.openIntakeClaw())/*,
                 traj1,
                 new InstantCommand(() -> outtake.closeClaw()),
