@@ -47,22 +47,22 @@ public class OuttakeSubsystem extends SubsystemBase {
         this.telemetry = telemetry;
         wrist = hardwareMap.get(ServoImplEx.class, "wrist");
         wrist.setPwmRange(new PwmControl.PwmRange(500, 2500));
-        wrist.setPosition(scale(cHome));
+        wrist.setPosition(scale(cSpecimen));
 
 
         arm = hardwareMap.get(ServoImplEx.class, "arm");
         arm.setPwmRange(new PwmControl.PwmRange(500, 2500));
-        arm.setPosition(scale5(aHome));
+        arm.setPosition(scale5(aSpecimen));
 
         claw = hardwareMap.get(ServoImplEx.class, "claw");
         claw.setPwmRange(new PwmControl.PwmRange(500, 2500));
         claw.setPosition(scale(cClosed));
 
-        cPosition = cHome;
-        aPosition = aHome;
+        cPosition = cSpecimen;
+        aPosition = aSpecimen;
         clawOpen = false;
 
-        currentOuttakeState = States.Outtake.home;
+        currentOuttakeState = States.Outtake.specimen;
     }
 
     public States.Outtake getCurrentOuttakeState() {

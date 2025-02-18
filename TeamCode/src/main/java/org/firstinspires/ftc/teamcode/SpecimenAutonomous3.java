@@ -244,6 +244,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.home)), // intake
                 new InstantCommand(outtake::openClaw),
                 // new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
+                /*
                 new ParallelCommandGroup(
                         trajSW1,
                         new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home),
@@ -267,6 +268,8 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 new InstantCommand(intake::putSweeperUp),
                 new InstantCommand(() -> intakeSlides.manual(-0.7)), // to retract
                 trajSW7,
+
+                 */
                 new InstantCommand(() -> intakeSlides.manual(-0.3))/*, // to hold
                 new InstantCommand(() -> outtake.closeClaw()),
                 new InstantCommand(() -> outtake.toggleOuttakeState()),
