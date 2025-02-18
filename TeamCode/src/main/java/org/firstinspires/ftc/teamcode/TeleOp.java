@@ -59,7 +59,7 @@ public class TeleOp extends CommandOpMode {
         telemetry.log().setCapacity(8);
         driver1 = new GamepadEx(gamepad1);
         driver2 = new GamepadEx(gamepad2);
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0, Math.PI)), telemetry);
+        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0, 0)), telemetry);
 
         DriveCommand driveCommand = new DriveCommand(drive,
                 () -> -driver1.getLeftX()*driveSpeed,
