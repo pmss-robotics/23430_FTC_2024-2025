@@ -235,39 +235,39 @@ public class SpecimenAutonomous3 extends CommandOpMode {
 
         Command auto = new SequentialCommandGroup(
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
-                new InstantCommand(() -> outtake.toggleOuttakeState()),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.specimen)), // outtake
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 trajStart,
                 new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen), // replaces the instant & wait commands
                 // new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
                 // new WaitCommand(300),
-                new InstantCommand(() -> outtake.toggleOuttakeState()),
-                new InstantCommand(() -> outtake.openClaw()),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.home)), // intake
+                new InstantCommand(outtake::openClaw),
                 // new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
                 new ParallelCommandGroup(
                         trajSW1,
                         new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home),
                         new SequentialCommandGroup(
                                 new WaitCommand(650),
-                                new InstantCommand(() -> intakeSlides.manual(0.7)),
-                                new InstantCommand(() -> intake.putSweeperDown()),
+                                new InstantCommand(() -> intakeSlides.manual(0.7)), // to extend
+                                new InstantCommand(intake::putSweeperDown),
                                 new WaitCommand(300),
-                                new InstantCommand(() -> intakeSlides.manual(0.2))
+                                new InstantCommand(() -> intakeSlides.manual(0.2)) // to hold
                         )
                 ),
                 trajSW2,
-                new InstantCommand(() -> intake.setSweeper()),
+                new InstantCommand(intake::setSweeper),
                 trajSW3,
-                new InstantCommand(() -> intake.putSweeperDown()),
+                new InstantCommand(intake::putSweeperDown),
                 trajSW4,
-                new InstantCommand(() -> intake.setSweeper()),
+                new InstantCommand(intake::setSweeper),
                 trajSW5,
-                new InstantCommand(() -> intake.putSweeperDown()),
+                new InstantCommand(intake::putSweeperDown),
                 trajSW6,
-                new InstantCommand(() -> intake.putSweeperUp()),
-                new InstantCommand(() -> intakeSlides.manual(-0.7)),
+                new InstantCommand(intake::putSweeperUp),
+                new InstantCommand(() -> intakeSlides.manual(-0.7)), // to retract
                 trajSW7,
-                new InstantCommand(() -> intakeSlides.manual(-0.3))/*,
+                new InstantCommand(() -> intakeSlides.manual(-0.3))/*, // to hold
                 new InstantCommand(() -> outtake.closeClaw()),
                 new InstantCommand(() -> outtake.toggleOuttakeState()),
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
