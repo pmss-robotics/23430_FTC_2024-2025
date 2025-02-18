@@ -28,7 +28,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     public static double kGrav = 0.017;
     public static double maxDescentPower = -1;
     // 3850 max
-    public static int pHome = 0, pSpecimen0 = 0, pSpecimen = 1150, pPostSpecimen = 2550, pPlayer = 0, pBucket = 3800, pStart = 0, pAscent0 = 0, pAscent = 0;
+    public static int pHome = 0, pSpecimen0 = 0, pSpecimen = 1350, pPostSpecimen = 2550, pPlayer = 0, pBucket = 3800, pStart = 0, pAscent0 = 0, pAscent = 0;
     public static int target = 0;
     // public static double resetPower = 0;
     public PIDController pidController;
