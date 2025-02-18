@@ -25,6 +25,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.commands.ActionCommand;
+import org.firstinspires.ftc.teamcode.commands.PIDMoveCommand;
 import org.firstinspires.ftc.teamcode.drive.Drawing;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive;
 
@@ -237,17 +238,19 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 new InstantCommand(() -> outtake.toggleOuttakeState()),
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 trajStart,
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
-                new WaitCommand(300),
+                new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen), // replaces the instant & wait commands
+                // new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
+                // new WaitCommand(300),
                 new InstantCommand(() -> outtake.toggleOuttakeState()),
                 new InstantCommand(() -> outtake.openClaw()),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
+                // new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
                 new ParallelCommandGroup(
                         trajSW1,
+                        new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home),
                         new SequentialCommandGroup(
                                 new WaitCommand(650),
                                 new InstantCommand(() -> intakeSlides.manual(0.7)),
-                                new InstantCommand(() -> intake.putSweeperDown(true)),
+                                new InstantCommand(() -> intake.putSweeperDown()),
                                 new WaitCommand(300),
                                 new InstantCommand(() -> intakeSlides.manual(0.2))
                         )
@@ -255,13 +258,13 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 trajSW2,
                 new InstantCommand(() -> intake.setSweeper()),
                 trajSW3,
-                new InstantCommand(() -> intake.putSweeperDown(true)),
+                new InstantCommand(() -> intake.putSweeperDown()),
                 trajSW4,
                 new InstantCommand(() -> intake.setSweeper()),
                 trajSW5,
-                new InstantCommand(() -> intake.putSweeperDown(true)),
+                new InstantCommand(() -> intake.putSweeperDown()),
                 trajSW6,
-                new InstantCommand(() -> intake.putSweeperDown(false)),
+                new InstantCommand(() -> intake.putSweeperUp()),
                 new InstantCommand(() -> intakeSlides.manual(-0.7)),
                 trajSW7,
                 new InstantCommand(() -> intakeSlides.manual(-0.3))/*,
@@ -312,8 +315,6 @@ public class SpecimenAutonomous3 extends CommandOpMode {
 
         );
         schedule(auto);
-        // TODO: create wrappers for trajectory following maybe possibly
-        // this RunCommand Loop might be useless
         schedule(new RunCommand(() -> {
             Pose2d pose = drive.getPose();
             telemetry.addData("x", pose.position.x);
