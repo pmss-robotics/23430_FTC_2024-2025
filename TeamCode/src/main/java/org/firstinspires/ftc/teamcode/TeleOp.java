@@ -59,7 +59,7 @@ public class TeleOp extends CommandOpMode {
         telemetry.log().setCapacity(8);
         driver1 = new GamepadEx(gamepad1);
         driver2 = new GamepadEx(gamepad2);
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0, Math.PI)), telemetry);
+        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(0, 0, 0)), telemetry);
 
         DriveCommand driveCommand = new DriveCommand(drive,
                 () -> -driver1.getLeftX()*driveSpeed,
@@ -99,18 +99,18 @@ public class TeleOp extends CommandOpMode {
         );
 
         // slower driving
-        new GamepadButton(driver1, GamepadKeys.Button.B)
-                .whenHeld(new InstantCommand(() -> driveSpeed = slow))
-                .whenReleased(new InstantCommand(() -> driveSpeed = fast));
+        new Trigger(() -> driver1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
+                .whileActiveContinuous(new InstantCommand(() -> driveSpeed = slow))
+                .whenInactive(new InstantCommand(() -> driveSpeed = fast));
 
         // intake claw rotation
         new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER)
                 .whenPressed(new InstantCommand(
-                        () -> intake.rotateLeft()
+                        () -> intake.rotateRight()
                 ));
         new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new InstantCommand(
-                        () -> intake.rotateRight()
+                        () -> intake.rotateLeft()
                 ));
 
 
@@ -155,17 +155,37 @@ public class TeleOp extends CommandOpMode {
                         new ConditionalCommand(
                                 new SequentialCommandGroup(
                                         new InstantCommand(() -> outtake.closeClaw()),
-                                        new InstantCommand(() -> outtake.toggleOuttakeState())
+                                        new WaitCommand(200),
+                                        new InstantCommand(() -> outtake.toggleOuttakeState()),
+                                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen))
                                 ),
                                 new SequentialCommandGroup(
+                                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
+                                        new WaitCommand(500),
                                         new InstantCommand(() -> outtake.toggleOuttakeState()),
-                                        new WaitCommand(200),
-                                        new InstantCommand(() -> outtake.openClaw())
+                                        new InstantCommand(() -> outtake.openClaw()),
+                                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home))
                                 ),
-                                () -> outtake.getCurrentOuttakeState() == States.Outtake.home
+                                () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
                         ),
                         new InstantCommand(() -> currentMode = States.Mode.sample),
                         () -> currentMode == States.Mode.specimen
+                )
+        );
+
+        new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(
+                new ConditionalCommand(
+                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
+                        new ConditionalCommand(
+                                new SequentialCommandGroup(
+                                        new InstantCommand(() -> outtake.toggleOuttakeState()),
+                                        new InstantCommand(() -> outtake.openClaw()),
+                                        new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home))
+                                ),
+                                new InstantCommand(),
+                                () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.post_specimen
+                        ),
+                        () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.specimen
                 )
         );
 
@@ -239,30 +259,13 @@ public class TeleOp extends CommandOpMode {
                 );
                 */
         new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1)
-                .whileActiveOnce(new SequentialCommandGroup(
-                        new InstantCommand(() -> intakeSlides.intakeIn()),
-                        new WaitCommand(500),
-                        new InstantCommand(() -> intakeSlides.resetEncoder()),
-                        new InstantCommand(() -> intakeSlides.resetTarget()),
-                        new InstantCommand(() -> intakeSlides.intakePosition(10))
-                ));
+                .whileActiveContinuous(
+                        new InstantCommand(() -> intakeSlides.manual(-driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)))
+                );
         new Trigger(() -> driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
-                .whileActiveOnce(new SequentialCommandGroup(
-                        new InstantCommand(() -> intakeSlides.intakeOut()),
-                        new WaitCommand(250),
-                        new InstantCommand(() -> intakeSlides.resetTarget())
-                ));
-        new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(
-                new SequentialCommandGroup(
-                        new InstantCommand(() -> intakeSlides.retract()),
-                        new WaitCommand(250),
-                        new InstantCommand(() -> intakeSlides.resetEncoder())
-                )
-        );
-
-        new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(
-                new InstantCommand(() -> intakeSlides.resetEncoder())
-        );
+                .whileActiveContinuous(
+                        new InstantCommand(() -> intakeSlides.manual(driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)))
+                );
 
         /* FIXME: This works for manual control but the exact control power needs to be tuned. (the motor is super loose ;-;)
         new Trigger(() -> driver2.getRightX() > Math.abs(0.1))

@@ -28,7 +28,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     public static double kGrav = 0.017;
     public static double maxDescentPower = -1;
     // 3850 max
-    public static int pHome = 0, pSpecimen0 = 1100, pSpecimen = 2600, pPostSpecimen = 1200, pPlayer = 450, pBucket = 4200, pStart = 0, pAscent0 = 0, pAscent = 0;
+    public static int pHome = 0, pSpecimen0 = 0, pSpecimen = 1150, pPostSpecimen = 2550, pPlayer = 0, pBucket = 3800, pStart = 0, pAscent0 = 0, pAscent = 0;
     public static int target = 0;
     // public static double resetPower = 0;
     public PIDController pidController;
@@ -61,7 +61,6 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
             telemetry.addData("VExtension Target: ", target);
             telemetry.addData("VExtension Pos: ", leftExtension.getCurrentPosition());
             telemetry.addData("VExtension State: ", currentState);
-            telemetry.update();
         }
     }
 

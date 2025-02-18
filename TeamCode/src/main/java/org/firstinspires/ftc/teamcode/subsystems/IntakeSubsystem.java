@@ -153,8 +153,8 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    public void setSweeper (int position) {
-        sweep.setPosition(scale(position));
+    public void setSweeper () {
+        sweep.setPosition(scale(sDown-30));
     }
 
     public void openIntakeClaw() {

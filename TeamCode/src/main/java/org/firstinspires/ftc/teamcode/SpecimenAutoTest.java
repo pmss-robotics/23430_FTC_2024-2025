@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 
 
 @Config
-@Autonomous(name="SpecimenAuto3", group="Auto")
+@Autonomous(name="SpecimenAutoTest", group="Auto")
 public class SpecimenAutoTest extends CommandOpMode {
 
     public final MecanumKinematics kinematics = new MecanumKinematics(
@@ -81,7 +81,7 @@ public class SpecimenAutoTest extends CommandOpMode {
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(4, -61.5, Math.PI/2)), telemetry);
+        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(7, -61.5, Math.PI/2)), telemetry);
 
         //auto pathing
         Action specimenTrajectoryAction = drive.actionBuilder(drive.getPose())
@@ -123,7 +123,6 @@ public class SpecimenAutoTest extends CommandOpMode {
         Command specimenTrajectory = new ActionCommand(specimenTrajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectoryStart = drive.actionBuilder(drive.getPose())
-                .waitSeconds(startWaitTime)
                 .strafeTo(new Vector2d(2, -35))
                 .build();
         Command trajStart = new ActionCommand(trajectoryStart, Stream.of(drive).collect(Collectors.toSet()));
@@ -210,7 +209,7 @@ public class SpecimenAutoTest extends CommandOpMode {
         double numSide = 0;
         int numRotation = 0;
 
-        while (input) {
+        while (opModeInInit()) {
             if (driver1.getButton(GamepadKeys.Button.X)) {
                 getSample = true;
             }
@@ -234,13 +233,22 @@ public class SpecimenAutoTest extends CommandOpMode {
                 telemetry.addData("autoExtension", numExtension);
                 telemetry.addData("autoMove", numSide);
                 telemetry.addData("autoRotation", numRotation);
+                telemetry.update();
             } else {
                 telemetry.addData("Sample from Sub: ", "false");
+                telemetry.update();
             }
             if (driver1.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-                input = false;
+                break;
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+
             }
         }
+        telemetry.addData("input ", "done");
+        telemetry.update();
         final int numEx = numExtension*24;
         final int numRot = numRotation*25;
         Action trajectorySample = drive.actionBuilder(new Pose2d(-2, -33, Math.PI/2))
@@ -259,17 +267,17 @@ public class SpecimenAutoTest extends CommandOpMode {
         //specimen cycle system
         if (getSample) {
             auto = new SequentialCommandGroup(
-                    new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
-                    new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.specimen)),
+                    /*new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
+                    new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.specimen)),*/
                     trajStart,
-                    new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
+                    //new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
                     new InstantCommand(() -> intakeSlides.intakePosition(numEx)),
                     new InstantCommand(() -> intake.openIntakeClaw()),
                     new InstantCommand(() -> intake.setIntakeState(States.Intake.middle)),
-                    new InstantCommand(() -> intake.rotate(numRot)),
+                    new InstantCommand(() -> intake.rotate(numRot+110)),
                     new WaitCommand(outtakeTime),
-                    new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
-                    new InstantCommand(() -> outtake.openClaw()),
+                    //new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
+                    //new InstantCommand(() -> outtake.openClaw()),
                     trajS,
                     new InstantCommand(() -> intake.toggleIntakeState()),
                     new WaitCommand(350),
@@ -277,8 +285,8 @@ public class SpecimenAutoTest extends CommandOpMode {
                     new WaitCommand(100),
                     new InstantCommand(() -> intake.setIntakeState(States.Intake.middle)),
                     new InstantCommand(() -> intake.rotateCenter()),
+                    new InstantCommand(() -> intakeSlides.intakeIn()),
                     new WaitCommand(250),
-                    trajS1,
                     new InstantCommand(() -> intake.openIntakeClaw())/*,
                 traj1,
                 new InstantCommand(() -> outtake.closeClaw()),
@@ -340,7 +348,7 @@ public class SpecimenAutoTest extends CommandOpMode {
             );
         } else {
             auto = new SequentialCommandGroup(
-                    new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
+                    /*new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
                     new InstantCommand(() -> outtake.toggleOuttakeState()),
                     trajStart,
                     new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
@@ -394,7 +402,7 @@ public class SpecimenAutoTest extends CommandOpMode {
                     new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.player)),
                     trajEnd,
                     new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home))
-
+*/
             );
         }
         schedule(auto);

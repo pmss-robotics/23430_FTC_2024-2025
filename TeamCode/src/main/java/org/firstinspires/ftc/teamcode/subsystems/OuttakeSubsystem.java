@@ -33,10 +33,11 @@ public class OuttakeSubsystem extends SubsystemBase {
     private States.Outtake currentOuttakeState;
 
     public static int pHome = 170, pStart = 0, pBucket = 240, pSpecimen = 233, pAscent = 300; // in degrees
-    public static int cHome = 0, cStart = 0, cBucket = 0, cSpecimen = 0, cTransfer = 0;
-    public static int aHome = 0, aStart = 0, aBucket = 0, aSpecimen = 0, aTransfer = 0;
-    public static int cOpen = 0, cClosed = 0;
+    public static int cHome = 40, cStart = 0, cBucket = 0, cSpecimen = 200, cTransfer = 0;
+    public static int aHome = 1090, aStart = 0, aBucket = 0, aSpecimen = 890, aTransfer = 0;
+    public static int cOpen = 25, cClosed = 120;
     public static int wMin = 0, wMax = 0;
+
     public static int cMin = 0, cMax = 300;
     public static int aMin = 0, aMax = 300;
     public static int dropTime = 1000;
@@ -46,19 +47,19 @@ public class OuttakeSubsystem extends SubsystemBase {
         this.telemetry = telemetry;
         wrist = hardwareMap.get(ServoImplEx.class, "wrist");
         wrist.setPwmRange(new PwmControl.PwmRange(500, 2500));
-        wrist.setPosition(scale(cStart));
+        wrist.setPosition(scale(cHome));
 
 
         arm = hardwareMap.get(ServoImplEx.class, "arm");
         arm.setPwmRange(new PwmControl.PwmRange(500, 2500));
-        arm.setPosition(scale(aStart));
+        arm.setPosition(scale5(aHome));
 
         claw = hardwareMap.get(ServoImplEx.class, "claw");
         claw.setPwmRange(new PwmControl.PwmRange(500, 2500));
         claw.setPosition(scale(cClosed));
 
-        cPosition = cStart;
-        aPosition = aStart;
+        cPosition = cHome;
+        aPosition = aHome;
         clawOpen = false;
 
         currentOuttakeState = States.Outtake.home;
@@ -73,14 +74,14 @@ public class OuttakeSubsystem extends SubsystemBase {
             case sample:
                 switch (currentOuttakeState) {
                     case home:
-                        setClawPosition(scale(cBucket));
-                        setArmPosition(scale(aBucket));
+                        setClawPosition(cBucket);
+                        setArmPosition(aBucket);
                         currentOuttakeState = States.Outtake.bucket;
                         break;
                     case specimen:
                     case bucket:
-                        setClawPosition(scale(cHome));
-                        setArmPosition(scale(aHome));
+                        setClawPosition(cHome);
+                        setArmPosition(aHome);
                         currentOuttakeState = States.Outtake.home;
                         break;
                 }
@@ -88,14 +89,14 @@ public class OuttakeSubsystem extends SubsystemBase {
             case specimen:
                 switch (currentOuttakeState) {
                     case home:
-                        setClawPosition(scale(cSpecimen));
-                        setArmPosition(scale(aSpecimen));
+                        setClawPosition(cSpecimen);
+                        setArmPosition(aSpecimen);
                         currentOuttakeState = States.Outtake.specimen;
                         break;
                     case bucket:
                     case specimen:
-                        setClawPosition(scale(cHome));
-                        setArmPosition(scale(aHome));
+                        setClawPosition(cHome);
+                        setArmPosition(aHome);
                         currentOuttakeState = States.Outtake.home;
                         break;
                 }
@@ -138,16 +139,16 @@ public class OuttakeSubsystem extends SubsystemBase {
         currentOuttakeState = state;
         switch (currentOuttakeState) {
             case home:
-                setClawPosition(scale(cHome));
-                setArmPosition(scale(aHome));
+                setClawPosition(cHome);
+                setArmPosition(aHome);
                 break;
             case bucket:
-                setClawPosition(scale(cBucket));
-                setArmPosition(scale(aBucket));
+                setClawPosition(cBucket);
+                setArmPosition(scale5(aBucket));
                 break;
             case specimen:
-                setClawPosition(scale(cSpecimen));
-                setArmPosition(scale(aSpecimen));
+                setClawPosition(cSpecimen);
+                setArmPosition(aSpecimen);
                 break;
         }
     }
@@ -178,16 +179,16 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void incrementArmPosition(double increment) {
         aPosition = MathUtils.clamp(aPosition + increment, aMin, aMax);
-        arm.setPosition(scale(aPosition));
+        arm.setPosition(scale5(aPosition));
     }
 
     public void setClawPosition(double position) {
-        wrist.setPosition(position);
+        wrist.setPosition(scale(position));
         cPosition = position;
     }
 
     public void setArmPosition(double position) {
-        arm.setPosition(position);
+        arm.setPosition(scale5(position));
         aPosition = position;
     }
 
