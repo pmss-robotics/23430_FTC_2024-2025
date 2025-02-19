@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.drive.MecanumDrive.PARAMS;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -64,8 +66,13 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                     new AngularVelConstraint(Math.PI)
             ));
 
-
-
+    public AccelConstraint preloadAccel  = (robotPose, _path, _disp) -> {
+        if(_path.length() - _disp < 15) {
+            return new MinMax(-30, 30);
+        } else {
+            return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
+        }
+    };
 
 
     public static double specimenIntakeTime = 0.2;
@@ -128,12 +135,13 @@ public class SpecimenAutonomous3 extends CommandOpMode {
         Command specimenTrajectory = new ActionCommand(specimenTrajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectoryStart = drive.actionBuilder(drive.getPose())
-                .strafeTo(new Vector2d(2, -32))
+                .strafeTo(new Vector2d(2, -29), null, preloadAccel) //-32
                 .build();
         Command trajStart = new ActionCommand(trajectoryStart, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectorySweep1 = drive.actionBuilder(new Pose2d (2, -33, Math.PI/2))
-                .splineToLinearHeading(new Pose2d(27.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
+                .splineToLinearHeading(new Pose2d(21, -49, Math.toRadians(90)), Math.toRadians(-24.5))
+                .splineToLinearHeading(new Pose2d(34.0, -40.0, Math.toRadians(57)), Math.toRadians(56.57))
                 .build();
         Command trajSW1 = new ActionCommand(trajectorySweep1, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -238,26 +246,32 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.specimen)), // outtake
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 trajStart,
+
                 new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen), // replaces the instant & wait commands
                 // new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
                 // new WaitCommand(300),
-                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.home)), // intake
                 new InstantCommand(outtake::openClaw),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.home)), // intake
                 // new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
-                /*
+
                 new ParallelCommandGroup(
                         trajSW1,
                         new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home),
                         new SequentialCommandGroup(
                                 new WaitCommand(650),
                                 new InstantCommand(() -> intakeSlides.manual(0.7)), // to extend
-                                new InstantCommand(intake::putSweeperDown),
                                 new WaitCommand(300),
                                 new InstantCommand(() -> intakeSlides.manual(0.2)) // to hold
                         )
                 ),
+                new InstantCommand(intake::putSweeperDown)
+
+                /*
                 trajSW2,
-                new InstantCommand(intake::setSweeper),
+                new InstantCommand(intake::setSweeper)
+
+                 */
+                /*
                 trajSW3,
                 new InstantCommand(intake::putSweeperDown),
                 trajSW4,
@@ -270,7 +284,9 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 trajSW7,
 
                  */
-                new InstantCommand(() -> intakeSlides.manual(-0.3))/*, // to hold
+
+                //new InstantCommand(() -> intakeSlides.manual(-0.3))
+                /*, // to hold
                 new InstantCommand(() -> outtake.closeClaw()),
                 new InstantCommand(() -> outtake.toggleOuttakeState()),
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
