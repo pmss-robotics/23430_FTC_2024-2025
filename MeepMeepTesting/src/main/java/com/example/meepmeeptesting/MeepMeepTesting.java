@@ -1,6 +1,7 @@
 package com.example.meepmeeptesting;
 
 
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.AngularVelConstraint;
 import com.acmerobotics.roadrunner.MecanumKinematics;
 import com.acmerobotics.roadrunner.MinVelConstraint;
@@ -12,6 +13,8 @@ import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MeepMeepTesting {
 
@@ -57,7 +60,7 @@ public class MeepMeepTesting {
                 //specimen auto pathing
 
                 .waitSeconds(0.35)
-                .strafeTo(new Vector2d(2, -35))
+                .strafeTo(new Vector2d(2, -33))
                 //.waitSeconds(1.2)
 
                 //.splineToLinearHeading(new Pose2d(21, -49, Math.toRadians(90)), Math.toRadians(-24.5))
@@ -80,36 +83,41 @@ public class MeepMeepTesting {
 
 
 
-                .strafeToLinearHeading(new Vector2d(25, -45), -Math.PI/4)
-                .splineToLinearHeading(new Pose2d(27.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
-                .splineToLinearHeading(new Pose2d(33.33, -45.16, Math.toRadians(-45)), Math.toRadians(-18.18))
-                .splineToLinearHeading(new Pose2d(35.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
-                .splineToLinearHeading(new Pose2d(37.33, -45.16, Math.toRadians(-45)), Math.toRadians(-18.18))
-                .splineToLinearHeading(new Pose2d(40.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
-                .splineToLinearHeading(new Pose2d(37, -49.16, Math.toRadians(-45)), Math.toRadians(-18.18))
+                //.strafeToLinearHeading(new Vector2d(25, -45), -Math.PI/4)
+                        .setTangent(0)
+                .splineToSplineHeading(new Pose2d(21, -39, Math.toRadians(75)), Math.toRadians(-24.5))
+                .splineToLinearHeading(new Pose2d(30.0, -44.0, Math.toRadians(62)), Math.toRadians(56.57))
+               // .splineToLinearHeading(new Pose2d(27.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
+                .splineToLinearHeading(new Pose2d(33.33, -45.16, Math.toRadians(-45)), Math.toRadians(-25))
+
+
+                .splineToLinearHeading(new Pose2d(44.00, -42.00, Math.toRadians(45)), Math.toRadians(-25.54))
+                .splineToLinearHeading(new Pose2d(37.33, -45.16, Math.toRadians(-38)), Math.toRadians(-18.18))
+                .splineToLinearHeading(new Pose2d(48.00, -42.00, Math.toRadians(45)), Math.toRadians(-25.54))
+                .splineToLinearHeading(new Pose2d(38, -49.16, Math.toRadians(-38)), Math.toRadians(-18.18))
                 .strafeToLinearHeading(new Vector2d(37, -60), Math.PI/2)
                 .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(12, -35))
+                .strafeTo(new Vector2d(4, -33))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), slowVelConstraint)
                 .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(10, -35))
+                .strafeTo(new Vector2d(4, -33))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), slowVelConstraint)
                 .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(8, -35))
+                .strafeTo(new Vector2d(4, -33))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), slowVelConstraint)
                 .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(6, -35))
+                .strafeTo(new Vector2d(4, -33))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), slowVelConstraint)
                 .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(4, -35))
+                .strafeTo(new Vector2d(4, -33))
                 .waitSeconds(specimenOuttakeTime)
                 .strafeToConstantHeading(new Vector2d(45, -59))
                 .build());

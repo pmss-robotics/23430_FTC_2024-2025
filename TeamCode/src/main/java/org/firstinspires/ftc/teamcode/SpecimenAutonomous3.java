@@ -68,7 +68,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
 
     public AccelConstraint preloadAccel  = (robotPose, _path, _disp) -> {
         if(_path.length() - _disp < 15) {
-            return new MinMax(-30, 30);
+            return new MinMax(-45, 45); //TODO test
         } else {
             return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
         }
@@ -79,16 +79,13 @@ public class SpecimenAutonomous3 extends CommandOpMode {
     public static double specimenOuttakeTime = 0.5;
     public static long endWaitTime = 300;
     public static double startWaitTime = 0.35;
-    public static double specimenY = -31;
-    public static double specimenY1 = -34;
-    public static double specimenY2 = -34;
-    public static double specimenY3 = -33;
-    public static double specimenX1 = 12;
-    public static double specimenX2 = 10;
-    public static double specimenX3 = 7;
-    public static double specimen1 = -64.5;
-    public static double specimen2 = -62;
-    public static double specimen3 = -63;
+    public static double specimenY = -30;
+    public static double specimenX1 = 2;
+    public static double specimenX2 = 4;
+    public static double specimenX3 = 4;
+    public static double specimenX4 = 4;
+    public static double specimenX5 = 4;
+    public static double specimenX6 = 4;
 
     @Override
     public void initialize() {
@@ -135,12 +132,12 @@ public class SpecimenAutonomous3 extends CommandOpMode {
         Command specimenTrajectory = new ActionCommand(specimenTrajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectoryStart = drive.actionBuilder(drive.getPose())
-                .strafeTo(new Vector2d(2, -29), null, preloadAccel) //-32
+                .strafeTo(new Vector2d(specimenX1, -29), null, preloadAccel) //-32
                 .build();
         Command trajStart = new ActionCommand(trajectoryStart, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep1 = drive.actionBuilder(new Pose2d (2, -33, Math.PI/2))
-                .splineToLinearHeading(new Pose2d(21, -49, Math.toRadians(90)), Math.toRadians(-24.5))
+        Action trajectorySweep1 = drive.actionBuilder(new Pose2d (specimenX1, -33, Math.PI/2))
+                .splineToSplineHeading(new Pose2d(21, -39, Math.toRadians(75)), Math.toRadians(-24.5))
                 .splineToLinearHeading(new Pose2d(30.0, -44.0, Math.toRadians(62)), Math.toRadians(56.57))
                 .build();
         Command trajSW1 = new ActionCommand(trajectorySweep1, Stream.of(drive).collect(Collectors.toSet()));
@@ -170,62 +167,62 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 .build();
         Command trajSW6 = new ActionCommand(trajectorySweep6, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep7 = drive.actionBuilder(new Pose2d(37, -49.16, Math.toRadians(-45)))
+        Action trajectorySweep7 = drive.actionBuilder(new Pose2d(38, -49.16, Math.toRadians(-38)))
                 .strafeToLinearHeading(new Vector2d(37, -60), Math.PI/2)
                 .build();
         Command trajSW7 = new ActionCommand(trajectorySweep7, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory2 = drive.actionBuilder(new Pose2d (37, -60, -Math.PI/2))
-                .strafeTo(new Vector2d(12, -35))
+                .strafeTo(new Vector2d(specimenX2, -30))
                 .build();
         Command traj2 = new ActionCommand(trajectory2, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory3 = drive.actionBuilder(new Pose2d (37, -60, -Math.PI/2))
-                .strafeTo(new Vector2d(10, -35))
+                .strafeTo(new Vector2d(specimenX3, -30))
                 .build();
         Command traj3 = new ActionCommand(trajectory3, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory4 = drive.actionBuilder(new Pose2d (37, -60, -Math.PI/2))
-                .strafeTo(new Vector2d(8, -35))
+                .strafeTo(new Vector2d(specimenX4, -30))
                 .build();
         Command traj4 = new ActionCommand(trajectory4, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory5 = drive.actionBuilder(new Pose2d (37, -60, -Math.PI/2))
-                .strafeTo(new Vector2d(6, -35))
+                .strafeTo(new Vector2d(specimenX5, -30))
                 .build();
         Command traj5 = new ActionCommand(trajectory5, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory6 = drive.actionBuilder(new Pose2d (37, -60, -Math.PI/2))
                 .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(4, -35))
+                .strafeTo(new Vector2d(specimenX6, -30))
                 .build();
         Command traj6 = new ActionCommand(trajectory6, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome = drive.actionBuilder(new Pose2d (12, -35, -Math.PI/2))
+        Action trajectoryHome = drive.actionBuilder(new Pose2d (specimenX2, -33, -Math.PI/2))
                 .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .build();
         Command trajHome = new ActionCommand(trajectoryHome, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome1 = drive.actionBuilder(new Pose2d (10, -35, -Math.PI/2))
+        Action trajectoryHome1 = drive.actionBuilder(new Pose2d (specimenX3, -33, -Math.PI/2))
                 .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .build();
         Command trajHome1 = new ActionCommand(trajectoryHome1, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome2 = drive.actionBuilder(new Pose2d (8, -35, -Math.PI/2))
+        Action trajectoryHome2 = drive.actionBuilder(new Pose2d (specimenX4, -33, -Math.PI/2))
                 .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .build();
         Command trajHome2 = new ActionCommand(trajectoryHome2, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome3 = drive.actionBuilder(new Pose2d (6, -35, -Math.PI/2))
+        Action trajectoryHome3 = drive.actionBuilder(new Pose2d (specimenX5, -33, -Math.PI/2))
                 .strafeTo(new Vector2d(37, -55))
                 .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
                 .build();
         Command trajHome3 = new ActionCommand(trajectoryHome3, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryEnd = drive.actionBuilder(new Pose2d (4, -35, -Math.PI/2))
+        Action trajectoryEnd = drive.actionBuilder(new Pose2d (specimenX6, -33, -Math.PI/2))
                 .strafeToConstantHeading(new Vector2d(45, -59))
                 .build();
         Command trajEnd = new ActionCommand(trajectoryEnd, Stream.of(drive).collect(Collectors.toSet()));
