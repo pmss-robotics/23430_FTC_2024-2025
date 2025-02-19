@@ -141,32 +141,32 @@ public class SpecimenAutonomous3 extends CommandOpMode {
 
         Action trajectorySweep1 = drive.actionBuilder(new Pose2d (2, -33, Math.PI/2))
                 .splineToLinearHeading(new Pose2d(21, -49, Math.toRadians(90)), Math.toRadians(-24.5))
-                .splineToLinearHeading(new Pose2d(34.0, -40.0, Math.toRadians(57)), Math.toRadians(56.57))
+                .splineToLinearHeading(new Pose2d(30.0, -44.0, Math.toRadians(62)), Math.toRadians(56.57))
                 .build();
         Command trajSW1 = new ActionCommand(trajectorySweep1, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep2 = drive.actionBuilder(new Pose2d(27.00, -43.00, Math.toRadians(45)))
-                .splineToLinearHeading(new Pose2d(33.33, -45.16, Math.toRadians(-45)), Math.toRadians(-18.18))
+        Action trajectorySweep2 = drive.actionBuilder(new Pose2d(30.00, -44.00, Math.toRadians(62)))
+                .splineToLinearHeading(new Pose2d(33.33, -45.16, Math.toRadians(-38)), Math.toRadians(-18.18))
                 .build();
         Command trajSW2 = new ActionCommand(trajectorySweep2, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep3 = drive.actionBuilder(new Pose2d(33.33, -45.16, Math.toRadians(-45)))
-                .splineToLinearHeading(new Pose2d(35.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
+        Action trajectorySweep3 = drive.actionBuilder(new Pose2d(33.33, -45.16, Math.toRadians(-38)))
+                .splineToLinearHeading(new Pose2d(44.00, -42.00, Math.toRadians(45)), Math.toRadians(-25.54))
                 .build();
         Command trajSW3 = new ActionCommand(trajectorySweep3, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep4 = drive.actionBuilder(new Pose2d(35.00, -43.00, Math.toRadians(45)))
-                .splineToLinearHeading(new Pose2d(37.33, -45.16, Math.toRadians(-45)), Math.toRadians(-18.18))
+        Action trajectorySweep4 = drive.actionBuilder(new Pose2d(44.00, -42.00, Math.toRadians(45)))
+                .splineToLinearHeading(new Pose2d(37.33, -45.16, Math.toRadians(-38)), Math.toRadians(-18.18))
                 .build();
         Command trajSW4 = new ActionCommand(trajectorySweep4, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep5 = drive.actionBuilder(new Pose2d(37.33, -45.16, Math.toRadians(-45)))
-                .splineToLinearHeading(new Pose2d(40.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
+        Action trajectorySweep5 = drive.actionBuilder(new Pose2d(37.33, -45.16, Math.toRadians(-38)))
+                .splineToLinearHeading(new Pose2d(48.00, -42.00, Math.toRadians(45)), Math.toRadians(-25.54))
                 .build();
         Command trajSW5 = new ActionCommand(trajectorySweep5, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep6 = drive.actionBuilder(new Pose2d(40.00, -43.00, Math.toRadians(45)))
-                .splineToLinearHeading(new Pose2d(37, -49.16, Math.toRadians(-45)), Math.toRadians(-18.18))
+        Action trajectorySweep6 = drive.actionBuilder(new Pose2d(48.00, -42.00, Math.toRadians(45)))
+                .splineToLinearHeading(new Pose2d(38, -49.16, Math.toRadians(-38)), Math.toRadians(-18.18))
                 .build();
         Command trajSW6 = new ActionCommand(trajectorySweep6, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -258,20 +258,15 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                         trajSW1,
                         new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home),
                         new SequentialCommandGroup(
-                                new WaitCommand(650),
+                                new WaitCommand(800),
                                 new InstantCommand(() -> intakeSlides.manual(0.7)), // to extend
-                                new WaitCommand(300),
+                                new InstantCommand(intake::putSweeperDown),
+                                new WaitCommand(100),
                                 new InstantCommand(() -> intakeSlides.manual(0.2)) // to hold
                         )
                 ),
-                new InstantCommand(intake::putSweeperDown)
-
-                /*
                 trajSW2,
-                new InstantCommand(intake::setSweeper)
-
-                 */
-                /*
+                new InstantCommand(intake::setSweeper),
                 trajSW3,
                 new InstantCommand(intake::putSweeperDown),
                 trajSW4,
@@ -280,10 +275,10 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 new InstantCommand(intake::putSweeperDown),
                 trajSW6,
                 new InstantCommand(intake::putSweeperUp),
-                new InstantCommand(() -> intakeSlides.manual(-0.7)), // to retract
-                trajSW7,
+                new InstantCommand(() -> intakeSlides.manual(-0.7)) // to retract
+                //trajSW7,
 
-                 */
+
 
                 //new InstantCommand(() -> intakeSlides.manual(-0.3))
                 /*, // to hold

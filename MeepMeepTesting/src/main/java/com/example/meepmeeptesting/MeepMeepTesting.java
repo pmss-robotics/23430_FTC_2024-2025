@@ -58,11 +58,11 @@ public class MeepMeepTesting {
 
                 .waitSeconds(0.35)
                 .strafeTo(new Vector2d(2, -35))
-                .waitSeconds(1.2)
-                        .setTangent(Math.toRadians(-90))
-                .splineToLinearHeading(new Pose2d(21, -49, Math.toRadians(90)), Math.toRadians(-24.5))
-                .splineToLinearHeading(new Pose2d(29.5, -40.0, Math.toRadians(54)), Math.toRadians(56.57))
-                /*
+                //.waitSeconds(1.2)
+
+                //.splineToLinearHeading(new Pose2d(21, -49, Math.toRadians(90)), Math.toRadians(-24.5))
+                //.splineToLinearHeading(new Pose2d(29.5, -40.0, Math.toRadians(54)), Math.toRadians(56.57))
+/*
                 .setTangent(Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(29.14, -34.63), Math.toRadians(0.00))
                 .splineToConstantHeading(new Vector2d(39.97, -13.72), Math.toRadians(0.00))
@@ -76,10 +76,10 @@ public class MeepMeepTesting {
                 .splineToConstantHeading(new Vector2d(63.50, -54.00), Math.toRadians(-90))
                 .setTangent(90)
                 .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
+*/
 
-                 */
 
-/*
+
                 .strafeToLinearHeading(new Vector2d(25, -45), -Math.PI/4)
                 .splineToLinearHeading(new Pose2d(27.00, -43.00, Math.toRadians(45)), Math.toRadians(-25.54))
                 .splineToLinearHeading(new Pose2d(33.33, -45.16, Math.toRadians(-45)), Math.toRadians(-18.18))
@@ -111,7 +111,7 @@ public class MeepMeepTesting {
                 .waitSeconds(specimenIntakeTime)
                 .strafeTo(new Vector2d(4, -35))
                 .waitSeconds(specimenOuttakeTime)
-                .strafeToConstantHeading(new Vector2d(45, -59))*/
+                .strafeToConstantHeading(new Vector2d(45, -59))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
