@@ -68,32 +68,32 @@ public class SpecimenAutonomous3 extends CommandOpMode {
             ));
 
     public AccelConstraint preloadAccel  = (robotPose, _path, _disp) -> {
-        if(_path.length() - _disp < 20) {
-            return new MinMax(-35, 35);
+        if(_path.length() - _disp < 15) {
+            return new MinMax(-45, 45);
         } else {
             return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
         }
     };
 
     public AccelConstraint intakeAccel = (robotPose, _path, _disp) -> {
-        if(_path.length() - _disp < 15) {
-            return new MinMax(-25, 25);
+        if(_path.length() - _disp < 10) {
+            return new MinMax(-35, 35);
         } else {
             return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
         }
     };
 
     public VelConstraint intakeVel = (robotPose, _path, _disp) -> {
-        if(_path.length() - _disp < 15) {
-            return 15;
+        if(_path.length() - _disp < 10) {
+            return 25;
         } else {
             return PARAMS.maxWheelVel;
         }
     };
 
     public AccelConstraint sweepAccel  = (robotPose, _path, _disp) -> {
-        if(_path.length() - _disp < 15) {
-            return new MinMax(-35, 35); //TODO increase these maybe
+        if(_path.length() - _disp < 10) {
+            return new MinMax(-45, 45); //TODO increase these maybe
         } else {
             return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
         }
@@ -304,6 +304,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 intakeSpecimen(),
                 new ParallelCommandGroup(
                         new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.specimen),
+
                         traj2
                 ),
                 new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen),
@@ -317,6 +318,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 intakeSpecimen(),
                 new ParallelCommandGroup(
                         new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.specimen),
+
                         traj3
                 ),
                 new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen),
@@ -330,6 +332,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 intakeSpecimen(),
                 new ParallelCommandGroup(
                         new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.specimen),
+
                         traj4
                 ),
                 new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen),
@@ -343,7 +346,9 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 intakeSpecimen(),
                 new ParallelCommandGroup(
                         new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.specimen),
+
                         traj5
+
                 ),
                 new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen),
                 new InstantCommand(() -> outtake.toggleOuttakeState()),
@@ -370,8 +375,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
 
     public Command trajHome(Pose2d start) {
         Action traj = drive.actionBuilder(start)
-                .setTangent(Math.toRadians(-90))
-                .splineToConstantHeading(new Vector2d(37, -61.5), Math.toRadians(-90), intakeVel, intakeAccel)
+                .strafeTo(new Vector2d(37, -61.5), intakeVel, intakeAccel)
                 .build();
         return new ActionCommand(traj, Stream.of(drive).collect(Collectors.toSet()));
     }

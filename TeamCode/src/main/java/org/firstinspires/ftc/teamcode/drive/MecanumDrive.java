@@ -88,7 +88,7 @@ public class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 9;
+        public double axialGain = 7; //9
         public double lateralGain = 11; // reduce?
         public double headingGain = 15; // shared with turn
 
@@ -318,7 +318,7 @@ public class MecanumDrive {
             if(extraCorrection) {
                 if ((t >= timeTrajectory.duration && error.position.norm() < 2
                         && robotVelRobot.linearVel.norm() < 0.5)
-                        || t >= timeTrajectory.duration + 0.5) {
+                        || t >= timeTrajectory.duration + 0.10) {
                     leftFront.setPower(0);
                     leftBack.setPower(0);
                     rightBack.setPower(0);

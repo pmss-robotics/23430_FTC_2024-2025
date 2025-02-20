@@ -37,7 +37,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     private States.OuttakeExtension currentState;
     public static int resetWait = 5000;
 
-    public static int tolerance = 40;
+    public static int tolerance = 100; // this can be like 100
 
     public OuttakeSlidesSubsystem(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
