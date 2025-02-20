@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.drive.MecanumDrive.PARAMS;
+import static org.firstinspires.ftc.teamcode.util.Methods.*;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -67,8 +68,32 @@ public class SpecimenAutonomous3 extends CommandOpMode {
             ));
 
     public AccelConstraint preloadAccel  = (robotPose, _path, _disp) -> {
+        if(_path.length() - _disp < 20) {
+            return new MinMax(-35, 35);
+        } else {
+            return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
+        }
+    };
+
+    public AccelConstraint intakeAccel = (robotPose, _path, _disp) -> {
         if(_path.length() - _disp < 15) {
-            return new MinMax(-45, 45);
+            return new MinMax(-25, 25);
+        } else {
+            return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
+        }
+    };
+
+    public VelConstraint intakeVel = (robotPose, _path, _disp) -> {
+        if(_path.length() - _disp < 15) {
+            return 15;
+        } else {
+            return PARAMS.maxWheelVel;
+        }
+    };
+
+    public AccelConstraint sweepAccel  = (robotPose, _path, _disp) -> {
+        if(_path.length() - _disp < 15) {
+            return new MinMax(-25, 25);
         } else {
             return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
         }
@@ -88,159 +113,140 @@ public class SpecimenAutonomous3 extends CommandOpMode {
     public static long endWaitTime = 300;
     public static double startWaitTime = 0.35;
     public static double specimenY = -30;
-    public static double specimenX1 = 2;
+    public static double specimenX1 = 3;
     public static double specimenX2 = 4;
-    public static double specimenX3 = 4;
-    public static double specimenX4 = 4;
-    public static double specimenX5 = 4;
-    public static double specimenX6 = 4;
+    public static double specimenX3 = 5;
+    public static double specimenX4 = 6;
+    public static double specimenX5 = 7;
+    public static double specimenX6 = 8;
+
+
+    OuttakeSlidesSubsystem outtakeSlides;
+    IntakeSlidesSubsystem intakeSlides;
+    IntakeSubsystem intake;
+    OuttakeSubsystem outtake;
+    DriveSubsystem drive;
+
 
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(7, -61.5, Math.PI/2)), telemetry);
-
-        //auto pathing
-        Action specimenTrajectoryAction = drive.actionBuilder(drive.getPose())
-                .waitSeconds(startWaitTime)
-                .strafeTo(new Vector2d(10, -35))
-                .waitSeconds(specimenOuttakeTime)
-                .strafeTo(new Vector2d(35, -35))
-                .strafeTo(new Vector2d(35, -13))
-                .splineToConstantHeading(new Vector2d( 48, -13), -Math.PI/2)
-                .strafeTo(new Vector2d(48, -48))
-                .strafeTo(new Vector2d(48, -13))
-                .splineToConstantHeading(new Vector2d( 57, -13), -Math.PI/2)
-                .strafeTo(new Vector2d(57, -48))
-                .strafeTo(new Vector2d(57, -13))
-                .splineToConstantHeading(new Vector2d( 62, -13), -Math.PI/2)
-                .strafeTo(new Vector2d(62, -48))
-                .splineToConstantHeading(new Vector2d(37, -55), -Math.PI/2)
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
-                .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(13, -35))
-                .waitSeconds(specimenOuttakeTime)
-                .strafeTo(new Vector2d(37, -55))
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
-                .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(7, -35))
-                .waitSeconds(specimenOuttakeTime)
-                .strafeTo(new Vector2d(37, -55))
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
-                .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(4, -35))
-                .waitSeconds(specimenOuttakeTime)
-                .strafeTo(new Vector2d(37, -55))
-                .strafeTo(new Vector2d(37, -60), defaultVelConstraint)
-                .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(1, -35))
-                .waitSeconds(specimenOuttakeTime)
-
-                .build();
-        Command specimenTrajectory = new ActionCommand(specimenTrajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
+        drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(7, -61.5, Math.PI/2)), telemetry);
 
         Action trajectoryStart = drive.actionBuilder(drive.getPose())
                 .strafeTo(new Vector2d(specimenX1, -29), null, preloadAccel) //-32
                 .build();
         Command trajStart = new ActionCommand(trajectoryStart, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep1 = drive.actionBuilder(new Pose2d (specimenX1, -33, Math.PI/2))
+        // first prepare to sweep
+        Action trajectorySweep1 = drive.actionBuilder(new Pose2d (specimenX1, -29, Math.PI/2))
+                .setTangent(0)
                 .splineToSplineHeading(new Pose2d(21, -39, Math.toRadians(75)), Math.toRadians(-24.5))
-                .splineToLinearHeading(new Pose2d(30.0, -36.0, Math.toRadians(62)), Math.toRadians(56.57), velConstraint)
+                .splineToLinearHeading(new Pose2d(30.0, -36.0, Math.toRadians(62)), Math.toRadians(56.57), velConstraint, sweepAccel)
                 .build();
         Command trajSW1 = new ActionCommand(trajectorySweep1, Stream.of(drive).collect(Collectors.toSet()));
 
+        // first rotate
         Action trajectorySweep2 = drive.actionBuilder(new Pose2d(30.00, -36.00, Math.toRadians(62)))
-                .splineToLinearHeading(new Pose2d(33.33, -45.16, Math.toRadians(-38)), Math.toRadians(-18.18), velConstraint)
+                .splineToLinearHeading(new Pose2d(35, -45.16, Math.toRadians(-38)), Math.toRadians(-18.18), velConstraint)
                 .build();
         Command trajSW2 = new ActionCommand(trajectorySweep2, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep3 = drive.actionBuilder(new Pose2d(33.33, -45.16, Math.toRadians(-38)))
-                .splineToLinearHeading(new Pose2d(38.00, -39.00, Math.toRadians(45)), Math.toRadians(-25.54), velConstraint)
+        // second preprare to sweep
+        Action trajectorySweep3 = drive.actionBuilder(new Pose2d(35, -45.16, Math.toRadians(-38)))
+                .splineToLinearHeading(new Pose2d(38, -37.50, Math.toRadians(45)), Math.toRadians(-25.54), velConstraint, sweepAccel)
                 .build();
         Command trajSW3 = new ActionCommand(trajectorySweep3, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep4 = drive.actionBuilder(new Pose2d(38.00, -39.00, Math.toRadians(45)))
-                .splineToLinearHeading(new Pose2d(39, -45.16, Math.toRadians(-34)), Math.toRadians(-18.18), velConstraint)
+        // second sweep
+        Action trajectorySweep4 = drive.actionBuilder(new Pose2d(38.00, -37.0, Math.toRadians(45)))
+                .splineToLinearHeading(new Pose2d(40, -45.16, Math.toRadians(-34)), Math.toRadians(-18.18), velConstraint)
                 .build();
         Command trajSW4 = new ActionCommand(trajectorySweep4, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep5 = drive.actionBuilder(new Pose2d(39, -45.16, Math.toRadians(-34)))
-                .splineToLinearHeading(new Pose2d(48.00, -40.00, Math.toRadians(49)), Math.toRadians(-25.54), velConstraint)
+        // third prepare to sweep
+        Action trajectorySweep5 = drive.actionBuilder(new Pose2d(40, -45.16, Math.toRadians(-34)))
+                .splineToLinearHeading(new Pose2d(49, -39.00, Math.toRadians(52)), Math.toRadians(-25.54), velConstraint, sweepAccel)
                 .build();
         Command trajSW5 = new ActionCommand(trajectorySweep5, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectorySweep6 = drive.actionBuilder(new Pose2d(48.00, -40.00, Math.toRadians(49)))
+        // third sweep
+        Action trajectorySweep6 = drive.actionBuilder(new Pose2d(49, -39.00, Math.toRadians(52)))
                 .splineToLinearHeading(new Pose2d(42, -49.16, Math.toRadians(-38)), Math.toRadians(-18.18), velConstraint)
                 .build();
         Command trajSW6 = new ActionCommand(trajectorySweep6, Stream.of(drive).collect(Collectors.toSet()));
-
+        // drive to intake
         Action trajectorySweep7 = drive.actionBuilder(new Pose2d(42, -49.16, Math.toRadians(-38)))
-                .strafeToLinearHeading(new Vector2d(34, -60), Math.PI/2)
+                .strafeToLinearHeading(new Vector2d(36, -61), Math.PI/2, intakeVel, intakeAccel)
                 .build();
         Command trajSW7 = new ActionCommand(trajectorySweep7, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory2 = drive.actionBuilder(new Pose2d (34, -60, Math.PI/2))
+        Action trajectory2 = drive.actionBuilder(new Pose2d (36, -61.5, Math.PI/2))
                 .strafeTo(new Vector2d(specimenX2, -29), null, preloadAccel)
                 .build();
         Command traj2 = new ActionCommand(trajectory2, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory3 = drive.actionBuilder(new Pose2d (34, -60, Math.PI/2))
-                .strafeTo(new Vector2d(specimenX3, -30))
+        Action trajectory3 = drive.actionBuilder(new Pose2d (37, -61.5, Math.PI/2))
+                .strafeTo(new Vector2d(specimenX3, -29), null, preloadAccel)
                 .build();
         Command traj3 = new ActionCommand(trajectory3, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory4 = drive.actionBuilder(new Pose2d (34, -60, Math.PI/2))
-                .strafeTo(new Vector2d(specimenX4, -30))
+        Action trajectory4 = drive.actionBuilder(new Pose2d (37, -61.5, Math.PI/2))
+                .strafeTo(new Vector2d(specimenX4, -29), null, preloadAccel)
                 .build();
         Command traj4 = new ActionCommand(trajectory4, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory5 = drive.actionBuilder(new Pose2d (34, -60, Math.PI/2))
-                .strafeTo(new Vector2d(specimenX5, -30))
+        Action trajectory5 = drive.actionBuilder(new Pose2d (37, -61.5, Math.PI/2))
+                .strafeTo(new Vector2d(specimenX5, -29), null, preloadAccel)
                 .build();
         Command traj5 = new ActionCommand(trajectory5, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory6 = drive.actionBuilder(new Pose2d (34, -60, Math.PI/2))
+        Action trajectory6 = drive.actionBuilder(new Pose2d (37, -61.5, Math.PI/2))
                 .waitSeconds(specimenIntakeTime)
-                .strafeTo(new Vector2d(specimenX6, -30))
+                .strafeTo(new Vector2d(specimenX6, -29), null, preloadAccel)
                 .build();
         Command traj6 = new ActionCommand(trajectory6, Stream.of(drive).collect(Collectors.toSet()));
-
-        Action trajectoryHome = drive.actionBuilder(new Pose2d (specimenX2, -33, Math.PI/2))
+        /*
+        Action trajectoryHome = drive.actionBuilder(new Pose2d (specimenX2, -29, Math.PI/2))
                 .strafeTo(new Vector2d(34, -55))
-                .strafeTo(new Vector2d(34, -60), defaultVelConstraint)
+                .strafeTo(new Vector2d(34, -60), intakeVel, intakeAccel)
                 .build();
         Command trajHome = new ActionCommand(trajectoryHome, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome1 = drive.actionBuilder(new Pose2d (specimenX3, -33, Math.PI/2))
+        Action trajectoryHome1 = drive.actionBuilder(new Pose2d (specimenX3, -29, Math.PI/2))
                 .strafeTo(new Vector2d(34, -55))
                 .strafeTo(new Vector2d(34, -60), defaultVelConstraint)
                 .build();
         Command trajHome1 = new ActionCommand(trajectoryHome1, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome2 = drive.actionBuilder(new Pose2d (specimenX4, -33, Math.PI/2))
+        Action trajectoryHome2 = drive.actionBuilder(new Pose2d (specimenX4, -29, Math.PI/2))
                 .strafeTo(new Vector2d(34, -55))
                 .strafeTo(new Vector2d(34, -60), defaultVelConstraint)
                 .build();
         Command trajHome2 = new ActionCommand(trajectoryHome2, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryHome3 = drive.actionBuilder(new Pose2d (specimenX5, -33, Math.PI/2))
+        Action trajectoryHome3 = drive.actionBuilder(new Pose2d (specimenX5, -29, Math.PI/2))
                 .strafeTo(new Vector2d(34, -55))
                 .strafeTo(new Vector2d(34, -60), defaultVelConstraint)
                 .build();
         Command trajHome3 = new ActionCommand(trajectoryHome3, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectoryEnd = drive.actionBuilder(new Pose2d (specimenX6, -33, Math.PI/2))
+         */
+
+        Action trajectoryEnd = drive.actionBuilder(new Pose2d (specimenX6, -29, Math.PI/2))
                 .strafeToConstantHeading(new Vector2d(45, -59))
                 .build();
         Command trajEnd = new ActionCommand(trajectoryEnd, Stream.of(drive).collect(Collectors.toSet()));
 
-        OuttakeSlidesSubsystem outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
+
+
+        outtakeSlides = new OuttakeSlidesSubsystem(hardwareMap, telemetry);
         outtakeSlides.setDefaultCommand(new RunCommand(outtakeSlides::holdPosition, outtakeSlides));
-        IntakeSlidesSubsystem intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
-        IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, telemetry);
-        OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap, telemetry);
+        intakeSlides = new IntakeSlidesSubsystem(hardwareMap, telemetry);
+        intake = new IntakeSubsystem(hardwareMap, telemetry);
+        outtake = new OuttakeSubsystem(hardwareMap, telemetry);
         TeleOp.currentMode = States.Mode.specimen;
+
 
         waitForStart();
 
@@ -251,7 +257,6 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.specimen)), // outtake
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
                 trajStart,
-
                 new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen), // replaces the instant & wait commands
                 // new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
                 // new WaitCommand(300),
@@ -259,77 +264,91 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.home)), // intake
                 // new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
 
+                //sweep 1
                 new ParallelCommandGroup(
                         trajSW1,
                         new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home),
                         new SequentialCommandGroup(
                                 new WaitCommand(1200),
                                 new InstantCommand(() -> intakeSlides.manual(0.7)), // to extend
-
                                 new WaitCommand(150),
                                 new InstantCommand(() -> intakeSlides.manual(0.2)) // to hold
                         )
                 ),
                 new InstantCommand(intake::putSweeperDown),
-                new WaitCommand(200),
+                disableCorrection(),
+                //new WaitCommand(100),
                 trajSW2,
+                enableCorrection(),
                 new InstantCommand(intake::setSweeper),
+                // sweep 2
                 trajSW3,
                 new InstantCommand(intake::putSweeperDown),
+                disableCorrection(),
+                //new WaitCommand(100),
                 trajSW4,
+                enableCorrection(),
                 new InstantCommand(intake::setSweeper),
+                // sweep 3
                 trajSW5,
                 new InstantCommand(intake::putSweeperDown),
+                disableCorrection(),
+                //new WaitCommand(100),
                 trajSW6,
+                enableCorrection(),
                 new InstantCommand(intake::putSweeperUp),
                 new InstantCommand(() -> intakeSlides.manual(-0.7)), // to retract
+                // 2nd spec
                 trajSW7,
                 new InstantCommand(() -> intakeSlides.manual(-0.3)), // to hold
-                new InstantCommand(() -> outtake.closeClaw()),
-                new InstantCommand(() -> outtake.toggleOuttakeState()),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
-                new WaitCommand(150),
-                traj2,
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
-                new WaitCommand(500),
-                new InstantCommand(() -> outtake.toggleOuttakeState()),
-                new InstantCommand(() -> outtake.openClaw()),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home))/*,
-                trajHome,
-                new InstantCommand(() -> outtake.closeClaw()),
-                new InstantCommand(() -> outtake.toggleOuttakeState()),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
-                new WaitCommand(150),
-                traj3,
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
-                new WaitCommand(500),
+                intakeSpecimen(),
+                new ParallelCommandGroup(
+                        new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.specimen),
+                        traj2
+                ),
+                new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen),
                 new InstantCommand(() -> outtake.toggleOuttakeState()),
                 new InstantCommand(() -> outtake.openClaw()),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
-                trajHome1,
-                new InstantCommand(() -> outtake.closeClaw()),
-                new InstantCommand(() -> outtake.toggleOuttakeState()),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
-                new WaitCommand(150),
-                traj4,
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
-                new WaitCommand(500),
-                new InstantCommand(() -> outtake.toggleOuttakeState()),
-                new InstantCommand(() -> outtake.openClaw()),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
-                trajHome2,
-                new InstantCommand(() -> outtake.closeClaw()),
-                new InstantCommand(() -> outtake.toggleOuttakeState()),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
-                new WaitCommand(150),
-                traj5,
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
-                new WaitCommand(500),
+                // 3rd spec
+                new ParallelCommandGroup(
+                        new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home),
+                        trajHome(new Pose2d(specimenX2, -29, Math.PI/2))
+                ),
+                intakeSpecimen(),
+                new ParallelCommandGroup(
+                        new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.specimen),
+                        traj3
+                ),
+                new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen),
                 new InstantCommand(() -> outtake.toggleOuttakeState()),
                 new InstantCommand(() -> outtake.openClaw()),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.home)),
-                trajEnd*/
-
+                // 4rd spec
+                new ParallelCommandGroup(
+                        new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home),
+                        trajHome(new Pose2d(specimenX3, -29, Math.PI/2))
+                ),
+                intakeSpecimen(),
+                new ParallelCommandGroup(
+                        new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.specimen),
+                        traj4
+                ),
+                new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen),
+                new InstantCommand(() -> outtake.toggleOuttakeState()),
+                new InstantCommand(() -> outtake.openClaw()),
+                // 5th spec
+                new ParallelCommandGroup(
+                        new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home),
+                        trajHome(new Pose2d(specimenX4, -29, Math.PI/2))
+                ),
+                intakeSpecimen(),
+                new ParallelCommandGroup(
+                        new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.specimen),
+                        traj5
+                ),
+                new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen),
+                new InstantCommand(() -> outtake.toggleOuttakeState()),
+                new InstantCommand(() -> outtake.openClaw()),
+                new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home)
         );
         schedule(auto);
         schedule(new RunCommand(() -> {
@@ -339,5 +358,21 @@ public class SpecimenAutonomous3 extends CommandOpMode {
             telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
             telemetry.update();
         }));
+    }
+
+    public SequentialCommandGroup intakeSpecimen() {
+        return new SequentialCommandGroup(
+                new InstantCommand(outtake::closeClaw),
+                new WaitCommand(100), // for intaking
+                new InstantCommand(outtake::toggleOuttakeState)
+        );
+    }
+
+    public Command trajHome(Pose2d start) {
+        Action traj = drive.actionBuilder(start)
+                .setTangent(Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(37, -61.5), Math.toRadians(-90), intakeVel, intakeAccel)
+                .build();
+        return new ActionCommand(traj, Stream.of(drive).collect(Collectors.toSet()));
     }
 }

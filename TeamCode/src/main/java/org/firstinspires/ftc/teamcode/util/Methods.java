@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import static org.firstinspires.ftc.teamcode.drive.MecanumDrive.extraCorrection;
+
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -44,4 +46,12 @@ public class Methods {
                 )
         );
     }
+
+    public static InstantCommand enableCorrection() {
+        return new InstantCommand(() -> extraCorrection = true);
+    }
+    public static InstantCommand disableCorrection() {
+        return new InstantCommand(() -> extraCorrection = false);
+    }
+
 }
