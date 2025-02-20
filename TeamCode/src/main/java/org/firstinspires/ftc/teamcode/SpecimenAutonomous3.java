@@ -93,7 +93,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
 
     public AccelConstraint sweepAccel  = (robotPose, _path, _disp) -> {
         if(_path.length() - _disp < 15) {
-            return new MinMax(-25, 25);
+            return new MinMax(-35, 35); //TODO increase these maybe
         } else {
             return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
         }
@@ -141,13 +141,13 @@ public class SpecimenAutonomous3 extends CommandOpMode {
         // first prepare to sweep
         Action trajectorySweep1 = drive.actionBuilder(new Pose2d (specimenX1, -29, Math.PI/2))
                 .setTangent(0)
-                .splineToSplineHeading(new Pose2d(21, -39, Math.toRadians(75)), Math.toRadians(-24.5))
-                .splineToLinearHeading(new Pose2d(30.0, -36.0, Math.toRadians(62)), Math.toRadians(56.57), velConstraint, sweepAccel)
+                .splineToSplineHeading(new Pose2d(21, -40, Math.toRadians(75)), Math.toRadians(-24.5))
+                .splineToLinearHeading(new Pose2d(29.0, -36.0, Math.toRadians(62)), Math.toRadians(56.57), velConstraint, sweepAccel)
                 .build();
         Command trajSW1 = new ActionCommand(trajectorySweep1, Stream.of(drive).collect(Collectors.toSet()));
 
         // first rotate
-        Action trajectorySweep2 = drive.actionBuilder(new Pose2d(30.00, -36.00, Math.toRadians(62)))
+        Action trajectorySweep2 = drive.actionBuilder(new Pose2d(29.00, -36.00, Math.toRadians(62)))
                 .splineToLinearHeading(new Pose2d(35, -45.16, Math.toRadians(-38)), Math.toRadians(-18.18), velConstraint)
                 .build();
         Command trajSW2 = new ActionCommand(trajectorySweep2, Stream.of(drive).collect(Collectors.toSet()));
