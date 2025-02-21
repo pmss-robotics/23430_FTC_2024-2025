@@ -92,8 +92,8 @@ public class SpecimenAutonomous3 extends CommandOpMode {
     };
 
     public VelConstraint outtakeVel = (robotPose, _path, _disp) -> {
-        if(_path.length() - _disp < 10) {
-            return 45;
+        if(_path.length() - _disp < 15) {
+            return 35;
         } else {
             return PARAMS.maxWheelVel;
         }
@@ -118,7 +118,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
 
     public static double specimenIntakeTime = 0.2;
     public static double specimenOuttakeTime = 0.5;
-    public static long outtakeWaitTime = 1650;
+    public static long outtakeWaitTime = 1850; //TODO get the specimen on the bar
     public static double startWaitTime = 0.35;
     public static double specimenY = -29;
     public static double specimenX1 = 3;
@@ -150,12 +150,12 @@ public class SpecimenAutonomous3 extends CommandOpMode {
         Action trajectorySweep1 = drive.actionBuilder(new Pose2d (specimenX1, -29, Math.PI/2))
                 .setTangent(0)
                 .splineToSplineHeading(new Pose2d(21, -40, Math.toRadians(75)), Math.toRadians(-24.5))
-                .splineToLinearHeading(new Pose2d(29.5, -36.0, Math.toRadians(62)), Math.toRadians(56.57), velConstraint, sweepAccel)
+                .splineToLinearHeading(new Pose2d(28.5, -36.0, Math.toRadians(62)), Math.toRadians(56.57), velConstraint, sweepAccel)
                 .build();
         Command trajSW1 = new ActionCommand(trajectorySweep1, Stream.of(drive).collect(Collectors.toSet()));
 
         // first rotate
-        Action trajectorySweep2 = drive.actionBuilder(new Pose2d(29.5, -36.00, Math.toRadians(62)))
+        Action trajectorySweep2 = drive.actionBuilder(new Pose2d(28.5, -36.00, Math.toRadians(62)))
                 .splineToLinearHeading(new Pose2d(35, -45.16, Math.toRadians(-38)), Math.toRadians(-18.18), velConstraint)
                 .build();
         Command trajSW2 = new ActionCommand(trajectorySweep2, Stream.of(drive).collect(Collectors.toSet()));
@@ -185,7 +185,7 @@ public class SpecimenAutonomous3 extends CommandOpMode {
         Command trajSW6 = new ActionCommand(trajectorySweep6, Stream.of(drive).collect(Collectors.toSet()));
         // drive to intake
         Action trajectorySweep7 = drive.actionBuilder(new Pose2d(42, -49.16, Math.toRadians(-38)))
-                .strafeToLinearHeading(new Vector2d(36, -61), Math.PI/2, intakeVel, intakeAccel)
+                .strafeToLinearHeading(new Vector2d(36, -61.5), Math.PI/2, intakeVel, intakeAccel)
                 .build();
         Command trajSW7 = new ActionCommand(trajectorySweep7, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -264,8 +264,13 @@ public class SpecimenAutonomous3 extends CommandOpMode {
                 new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.specimen)),
                 new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.specimen)), // outtake
                 new InstantCommand(() -> intakeSlides.manual(-0.3)),
-                trajStart,
-                new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen), // replaces the instant & wait commands
+                new ParallelCommandGroup(
+                        trajStart,
+                        new SequentialCommandGroup(
+                                new WaitCommand(1850),
+                                new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.post_specimen) // replaces the instant & wait commands
+                        )
+                ),
                 // new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.post_specimen)),
                 // new WaitCommand(300),
                 new InstantCommand(outtake::openClaw),
