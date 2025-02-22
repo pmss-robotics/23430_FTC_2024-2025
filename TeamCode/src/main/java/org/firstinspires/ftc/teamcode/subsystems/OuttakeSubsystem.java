@@ -33,8 +33,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     private States.Outtake currentOuttakeState;
 
     public static int pHome = 170, pStart = 0, pBucket = 240, pSpecimen = 233, pAscent = 300; // in degrees
-    public static int cHome = 40, cStart = 0, cBucket = 0, cSpecimen = 200, cTransfer = 0;
-    public static int aHome = 1150, aStart = 0, aBucket = 0, aSpecimen = 930, aTransfer = 0;
+    public static int cHome = 40, cStart = 0, cBucket = 50, cPreBucket = 200, cSpecimen = 200, cTransfer = 300, cPreTransfer = 300;
+    public static int aHome = 1150, aStart = 0, aBucket = 1070, aPreBucket = 970, aSpecimen = 930, aTransfer = 870, aPreTransfer = 940;
     public static int cOpen = 105, cClosed = 187;
     public static int wMin = 0, wMax = 0;
 
@@ -73,6 +73,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         switch (TeleOp.currentMode) {
             case sample:
                 switch (currentOuttakeState) {
+                    case transfer:
                     case home:
                         setClawPosition(cBucket);
                         setArmPosition(aBucket);
@@ -144,11 +145,23 @@ public class OuttakeSubsystem extends SubsystemBase {
                 break;
             case bucket:
                 setClawPosition(cBucket);
-                setArmPosition(scale5(aBucket));
+                setArmPosition(aBucket);
+                break;
+            case preBucket:
+                setClawPosition(cPreBucket);
+                setArmPosition(aPreBucket);
                 break;
             case specimen:
                 setClawPosition(cSpecimen);
                 setArmPosition(aSpecimen);
+                break;
+            case transfer:
+                setClawPosition(cTransfer);
+                setArmPosition(aTransfer);
+                break;
+            case preTransfer:
+                setClawPosition(cPreTransfer);
+                setArmPosition(aPreTransfer);
                 break;
         }
     }
@@ -170,6 +183,10 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void closeClaw() {
         claw.setPosition(scale(cClosed));
         clawOpen = false;
+    }
+
+    public boolean isClawOpen () {
+        return clawOpen;
     }
 
     public void incrementClawPosition(double increment) {

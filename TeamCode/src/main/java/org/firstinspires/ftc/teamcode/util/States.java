@@ -45,9 +45,11 @@ public class States {
         start,
         home,
         bucket,
+        preBucket,
         specimen,
         ascent,
-        transfer
+        transfer,
+        preTransfer
     }
 
     public enum Ascent {
