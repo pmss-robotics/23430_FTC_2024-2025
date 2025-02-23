@@ -13,6 +13,7 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
@@ -61,65 +62,65 @@ public class BucketAutonomous extends CommandOpMode {
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(-33, -61.5, Math.PI/2)), telemetry);
+        DriveSubsystem drive = new DriveSubsystem(new PinpointDrive(hardwareMap, new Pose2d(-40, -61.5, Math.PI/2)), telemetry);
 
         Action trajectoryAction = drive.actionBuilder(drive.getPose())
-                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), -Math.PI/2)
+                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45))
                 .waitSeconds(outtakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-52, -52, Math.toRadians(80)), Math.PI)
+                .strafeToLinearHeading(new Vector2d(-48.5, -42), Math.toRadians(90))
                 .waitSeconds(intakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), Math.PI)
+                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45))
                 .waitSeconds(outtakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-52, -52, Math.toRadians(105)), Math.PI)
+                .strafeToLinearHeading(new Vector2d(-58, -42), Math.toRadians(90))
                 .waitSeconds(intakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), Math.PI)
+                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45))
                 .waitSeconds(outtakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-53, -51, Math.toRadians(110)), Math.PI)
+                .strafeToLinearHeading(new Vector2d(-54, -26), Math.toRadians(180))
                 .waitSeconds(intakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-53, -53, Math.toRadians(45)), Math.PI)
+                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45))
                 .waitSeconds(outtakeWaitTime)
-                .splineToLinearHeading(new Pose2d(-33, -61.5, Math.PI/2), -Math.toRadians(45))
+                .splineToLinearHeading(new Pose2d(-24, -10, Math.PI), Math.toRadians(0))
 //                .strafeToLinearHeading(new Vector2d(-35, 60), 0)
                 .build();
         Command trajectory = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory1 = drive.actionBuilder(drive.getPose())
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(35), velConstraint)
+                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45))
                 .build();
         Command traj1 = new ActionCommand(trajectory1, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory2 = drive.actionBuilder(new Pose2d(-55, -55, Math.toRadians(35)))
-                .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(sampleAngle1), velConstraint)
+        Action trajectory2 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
+                .strafeToLinearHeading(new Vector2d(-48.5, -42), Math.toRadians(90))
                 .build();
         Command traj2 = new ActionCommand(trajectory2, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory3 = drive.actionBuilder(new Pose2d(-52, -52, Math.toRadians(sampleAngle1)))
-                .strafeToLinearHeading(new Vector2d(-55, -55), Math.toRadians(45), velConstraint)
+        Action trajectory3 = drive.actionBuilder(new Pose2d(-48.5, -42, Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45))
                 .build();
         Command traj3 = new ActionCommand(trajectory3, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory4 = drive.actionBuilder(new Pose2d(-55, -55, Math.toRadians(45)))
-                .strafeToLinearHeading(new Vector2d(-52, -50), Math.toRadians(sampleAngle2), velConstraint)
+        Action trajectory4 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
+                .strafeToLinearHeading(new Vector2d(-58, -42), Math.toRadians(90))
                 .build();
         Command traj4 = new ActionCommand(trajectory4, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory5 = drive.actionBuilder(new Pose2d(-52, -50, Math.toRadians(sampleAngle2)))
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45), velConstraint)
+        Action trajectory5 = drive.actionBuilder(new Pose2d(-58, -42, Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45))
                 .build();
         Command traj5 = new ActionCommand(trajectory5, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory6 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
-                .strafeToLinearHeading(new Vector2d(-53, -44), Math.toRadians(sampleAngle3), velConstraint)
+                .strafeToLinearHeading(new Vector2d(-54, -26), Math.toRadians(180))
                 .build();
         Command traj6 = new ActionCommand(trajectory6, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory7 = drive.actionBuilder(new Pose2d(-53, -44, Math.toRadians(sampleAngle3)))
+        Action trajectory7 = drive.actionBuilder(new Pose2d(-54, -26, Math.toRadians(180)))
                 .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45), velConstraint)
                 .build();
         Command traj7 = new ActionCommand(trajectory7, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory8 = drive.actionBuilder(new Pose2d(-53, -50, Math.toRadians(sampleAngle3)))
-                .turnTo(Math.toRadians(90))
+        Action trajectory8 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
+                .splineToLinearHeading(new Pose2d(-24, -10, Math.PI), Math.toRadians(0))
                 .build();
         Command traj8 = new ActionCommand(trajectory8, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -159,10 +160,23 @@ public class BucketAutonomous extends CommandOpMode {
                 new InstantCommand(() -> intake.openIntakeClaw()),
                 new WaitCommand(100),
                 new InstantCommand(() -> intake.setIntakeState(States.Intake.intake)),
-                new WaitCommand(350),
+                new WaitCommand(750),
                 new InstantCommand(() -> intake.closeIntakeClaw()),
                 new WaitCommand(100),
                 new InstantCommand(() -> intake.setIntakeState(States.Intake.middle))
+        );
+
+        Command transfer = new SequentialCommandGroup(
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
+                new InstantCommand(() -> outtake.openClaw()),
+                new InstantCommand(() -> intakeSlides.manual(-0.7)),
+                new WaitCommand(600),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.transfer)),
+                new WaitCommand(50),
+                new InstantCommand(() -> outtake.closeClaw()),
+                new WaitCommand(150),
+                new InstantCommand(() -> intake.openIntakeClaw()),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.preTransfer))
         );
 
         Command intakeSample = new SequentialCommandGroup(
@@ -186,68 +200,32 @@ public class BucketAutonomous extends CommandOpMode {
 
 
         Command auto = new SequentialCommandGroup(
-                new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
-                new InstantCommand(() -> outtakeSlides.toggleBucket()),
-                traj1,
-                new WaitCommand(100),
-                bucket,
-                new InstantCommand(() -> intake.setIntakeState(States.Intake.intake)),
-                new InstantCommand(() -> intakeSlides.manual(-0.3)),
+                new ParallelCommandGroup(
+                        traj1,
+                        bucket
+                ),
                 traj2,
-                new WaitCommand(750),
-                //new InstantCommand(() -> intake.setPower(1)),
-                intakeSample,
-                //new InstantCommand(() -> intake.setPower(0.5)),
-                new InstantCommand(() -> intake.setIntakeState(States.Intake.home)),
-                new InstantCommand(() -> intakeSlides.manual(-0.8)),
-                traj3,
-                new WaitCommand(450),
-                //new InstantCommand(() -> intake.setPower(0)),
-                new InstantCommand(() -> intakeSlides.manual(-0.3)),
-                new WaitCommand(500),
-                new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
-                //new InstantCommand(() -> intake.setPower(0.5)),
-                new WaitCommand(1500),
-                bucket,
-                new InstantCommand(() -> intake.setIntakeState(States.Intake.intake)),
-                new InstantCommand(() -> intakeSlides.manual(-0.3)),
+                getSample,
+                transfer,
+                new ParallelCommandGroup(
+                        traj3,
+                        bucket
+                ),
                 traj4,
-                new WaitCommand(750),
-                //new InstantCommand(() -> intake.setPower(1)),
-                intakeSample2,
-                //new InstantCommand(() -> intake.setPower(0.5)),
-                new InstantCommand(() -> intake.setIntakeState(States.Intake.home)),
-                new InstantCommand(() -> intakeSlides.manual(-0.8)),
-                traj5,
-                new WaitCommand(450),
-                //new InstantCommand(() -> intake.setPower(0)),
-                new InstantCommand(() -> intakeSlides.manual(-0.3)),
-                new WaitCommand(500),
-                new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
-                //new InstantCommand(() -> intake.setPower(0.5)),
-                new WaitCommand(1500),
-                bucket,
-                new InstantCommand(() -> intake.setIntakeState(States.Intake.intake)),
-                new InstantCommand(() -> intakeSlides.manual(-0.3)),
+                getSample,
+                transfer,
+                new ParallelCommandGroup(
+                        traj5,
+                        bucket
+                ),
                 traj6,
-                new WaitCommand(750),
-                //new InstantCommand(() -> intake.setPower(1)),
-                intakeSample3,
-                //new InstantCommand(() -> intake.setPower(0.5)),
-                new InstantCommand(() -> intake.setIntakeState(States.Intake.home)),
-                new InstantCommand(() -> intakeSlides.manual(-0.8)),
-                traj7,
-                new WaitCommand(450),
-                //new InstantCommand(() -> intake.setPower(0)),
-                new InstantCommand(() -> intakeSlides.manual(-0.3)),
-                new WaitCommand(500),
-                new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
-                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
-                //new InstantCommand(() -> intake.setPower(0.5)),
-                new WaitCommand(1500),
-                bucket
+                getSample,
+                transfer,
+                new ParallelCommandGroup(
+                        traj7,
+                        bucket
+                ),
+                traj8
 
         );
 
