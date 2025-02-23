@@ -318,7 +318,7 @@ public class MecanumDrive {
             if(extraCorrection) {
                 if ((t >= timeTrajectory.duration && error.position.norm() < 2
                         && robotVelRobot.linearVel.norm() < 0.5)
-                        || t >= timeTrajectory.duration + 0.20) {
+                        || t >= timeTrajectory.duration + 0.35) {
                     leftFront.setPower(0);
                     leftBack.setPower(0);
                     rightBack.setPower(0);

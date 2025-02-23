@@ -34,8 +34,8 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public static int pHome = 170, pStart = 0, pBucket = 240, pSpecimen = 233, pAscent = 300; // in degrees
     public static int cHome = 40, cStart = 0, cBucket = 50, cPreBucket = 200, cSpecimen = 200, cTransfer = 300, cPreTransfer = 300;
-    public static int aHome = 1150, aStart = 0, aBucket = 1070, aPreBucket = 970, aSpecimen = 930, aTransfer = 870, aPreTransfer = 940;
-    public static int cOpen = 105, cClosed = 187;
+    public static int aHome = 1190, aStart = 0, aBucket = 1110, aPreBucket = 1010, aSpecimen = 970, aTransfer = 910, aPreTransfer = 980;
+    public static int cOpen = 105, cClosed = 177;
     public static int wMin = 0, wMax = 0;
 
     public static int cMin = 0, cMax = 300;

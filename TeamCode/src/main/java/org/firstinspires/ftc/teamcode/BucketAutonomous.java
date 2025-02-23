@@ -48,7 +48,8 @@ public class BucketAutonomous extends CommandOpMode {
     public static double outtakeWaitTime = 2.0;
     public static double specimenWaitTime = 0.5;
     public static int intakeWaitMili = 3000;
-    public static int outtakeWaitmili = 2000;
+    public static int outtakeWaitmili = 4000;
+    public static int outtakeDropTime = 1500;
     public static double sampleAngle1 = 85;
     public static double sampleAngle2 = 109;
     public static double sampleAngle3 = 135;
@@ -144,9 +145,13 @@ public class BucketAutonomous extends CommandOpMode {
 
 
         Command bucket = new SequentialCommandGroup(
+                new InstantCommand(() -> outtakeSlides.setState(States.OuttakeExtension.bucket)),
+                new WaitCommand(outtakeWaitmili),
                 new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.bucket)),
-                new WaitCommand(OuttakeSubsystem.dropTime),
-                new InstantCommand(() -> outtake.toggleOuttakeState()),
+                new WaitCommand(outtakeDropTime),
+                new InstantCommand(() -> outtake.openClaw()),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.preTransfer)),
+                new WaitCommand(500),
                 new InstantCommand(() -> outtakeSlides.toggleBucket())
         );
 

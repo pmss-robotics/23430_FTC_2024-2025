@@ -242,7 +242,11 @@ public class TeleOp extends CommandOpMode {
         // switching between sample and specimen
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).toggleWhenPressed(
                 new InstantCommand(() -> currentMode = States.Mode.sample),
-                new InstantCommand(() -> currentMode = States.Mode.specimen)
+                new SequentialCommandGroup(
+                        new InstantCommand(() -> currentMode = States.Mode.specimen),
+                        new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.home)),
+                        new InstantCommand(() -> outtake.openClaw())
+                )
         );
 
         // horizontal extension
