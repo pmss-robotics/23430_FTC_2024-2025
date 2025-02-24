@@ -33,8 +33,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     private States.Outtake currentOuttakeState;
 
     public static int pHome = 170, pStart = 0, pBucket = 240, pSpecimen = 233, pAscent = 300; // in degrees
-    public static int cHome = 40, cStart = 0, cBucket = 50, cPreBucket = 200, cSpecimen = 200, cTransfer = 300, cPreTransfer = 300;
-    public static int aHome = 1190, aStart = 0, aBucket = 1110, aPreBucket = 1010, aSpecimen = 970, aTransfer = 910, aPreTransfer = 980;
+    public static int cHome = 40, cStart = 0, cBucket = 50, cPreBucket = 200, cSpecimen = 180, cTransfer = 300, cPreTransfer = 300;
+    public static int aHome = 1260, aStart = 0, aBucket = 1140, aPreBucket = 1080, aSpecimen = 1040, aTransfer = 980, aPreTransfer = 1050;
     public static int cOpen = 105, cClosed = 177;
     public static int wMin = 0, wMax = 0;
 

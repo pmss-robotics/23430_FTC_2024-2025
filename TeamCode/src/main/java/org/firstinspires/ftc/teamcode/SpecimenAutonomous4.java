@@ -71,7 +71,7 @@ public class SpecimenAutonomous4 extends CommandOpMode {
     };
 
     public AccelConstraint intakeAccel = (robotPose, _path, _disp) -> {
-        if(_path.length() - _disp < 10) {
+        if(_path.length() - _disp < 15) {
             return new MinMax(-35, 35);
         } else {
             return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
@@ -79,8 +79,8 @@ public class SpecimenAutonomous4 extends CommandOpMode {
     };
 
     public VelConstraint intakeVel = (robotPose, _path, _disp) -> {
-        if(_path.length() - _disp < 10) {
-            return 25;
+        if(_path.length() - _disp < 20) {
+            return 15;
         } else {
             return PARAMS.maxWheelVel;
         }
@@ -144,19 +144,19 @@ public class SpecimenAutonomous4 extends CommandOpMode {
         // first prepare to sweep
         Action trajectorySweep1 = drive.actionBuilder(new Pose2d (specimenX1, -29, Math.PI/2))
                 .setTangent(0)
-                .splineToSplineHeading(new Pose2d(21, -40, Math.toRadians(75)), Math.toRadians(-24.5))
-                .splineToLinearHeading(new Pose2d(28.5, -36.0, Math.toRadians(62)), Math.toRadians(56.57), velConstraint, sweepAccel)
+                .splineToSplineHeading(new Pose2d(21, -44, Math.toRadians(75)), Math.toRadians(-24.5))
+                .splineToLinearHeading(new Pose2d(29, -36.0, Math.toRadians(62)), Math.toRadians(56.57), velConstraint, sweepAccel)
                 .build();
         Command trajSW1 = new ActionCommand(trajectorySweep1, Stream.of(drive).collect(Collectors.toSet()));
 
         // first rotate
-        Action trajectorySweep2 = drive.actionBuilder(new Pose2d(28.5, -36.00, Math.toRadians(62)))
-                .splineToLinearHeading(new Pose2d(35, -45.16, Math.toRadians(-38)), Math.toRadians(-18.18), velConstraint)
+        Action trajectorySweep2 = drive.actionBuilder(new Pose2d(29, -36.00, Math.toRadians(62)))
+                .splineToLinearHeading(new Pose2d(29, -55.16, Math.toRadians(-10)), Math.toRadians(-18.18), velConstraint)
                 .build();
         Command trajSW2 = new ActionCommand(trajectorySweep2, Stream.of(drive).collect(Collectors.toSet()));
 
         // second preprare to sweep
-        Action trajectorySweep3 = drive.actionBuilder(new Pose2d(35, -45.16, Math.toRadians(-38)))
+        Action trajectorySweep3 = drive.actionBuilder(new Pose2d(29, -55.16, Math.toRadians(-10)))
                 .splineToLinearHeading(new Pose2d(37, -36, Math.toRadians(45)), Math.toRadians(-25.54), velConstraint, sweepAccel)
                 .build();
         Command trajSW3 = new ActionCommand(trajectorySweep3, Stream.of(drive).collect(Collectors.toSet()));
@@ -169,12 +169,12 @@ public class SpecimenAutonomous4 extends CommandOpMode {
 
         // third prepare to sweep
         Action trajectorySweep5 = drive.actionBuilder(new Pose2d(42, -45.16, Math.toRadians(-34)))
-                .splineToLinearHeading(new Pose2d(49, -39.00, Math.toRadians(52)), Math.toRadians(-25.54), velConstraint, sweepAccel)
+                .splineToLinearHeading(new Pose2d(49.5, -39.00, Math.toRadians(52)), Math.toRadians(-25.54), velConstraint, sweepAccel)
                 .build();
         Command trajSW5 = new ActionCommand(trajectorySweep5, Stream.of(drive).collect(Collectors.toSet()));
 
         // third sweep
-        Action trajectorySweep6 = drive.actionBuilder(new Pose2d(49, -39.00, Math.toRadians(52)))
+        Action trajectorySweep6 = drive.actionBuilder(new Pose2d(49.5, -39.00, Math.toRadians(52)))
                 .splineToLinearHeading(new Pose2d(42, -49.16, Math.toRadians(-38)), Math.toRadians(-18.18), velConstraint)
                 .build();
         Command trajSW6 = new ActionCommand(trajectorySweep6, Stream.of(drive).collect(Collectors.toSet()));
@@ -355,8 +355,8 @@ public class SpecimenAutonomous4 extends CommandOpMode {
                 new InstantCommand(() -> outtake.openClaw()),
                 // 5th spec
                 new ParallelCommandGroup(
-                        new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home),
-                        trajHome(new Pose2d(specimenX4, specimenY, Math.PI/2))
+                        new PIDMoveCommand(outtakeSlides, States.OuttakeExtension.home)
+                        //trajHome(new Pose2d(specimenX4, specimenY, Math.PI/2))
                 )/*,
                 intakeSpecimen(),
                 new ParallelCommandGroup(
@@ -392,7 +392,9 @@ public class SpecimenAutonomous4 extends CommandOpMode {
 
     public Command trajHome(Pose2d start) {
         Action traj = drive.actionBuilder(start)
-                .strafeTo(new Vector2d(37, -61.5), intakeVel, intakeAccel)
+                .setTangent(Math.toRadians(-70))
+                .splineToConstantHeading(new Vector2d(37, -55), Math.toRadians(-15))
+                .strafeTo(new Vector2d(37, -61.5), secondVelConstraint, intakeAccel)
                 .build();
         return new ActionCommand(traj, Stream.of(drive).collect(Collectors.toSet()));
     }

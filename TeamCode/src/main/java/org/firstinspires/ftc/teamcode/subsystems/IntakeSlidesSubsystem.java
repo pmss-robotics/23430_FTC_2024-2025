@@ -141,7 +141,7 @@ public class IntakeSlidesSubsystem extends SubsystemBase {
         hExtension.setPower(power);
         if (power>0) {
             target = targetMax;
-        } else {
+        } else if (power<0){
             target = targetMin;
         }
     }

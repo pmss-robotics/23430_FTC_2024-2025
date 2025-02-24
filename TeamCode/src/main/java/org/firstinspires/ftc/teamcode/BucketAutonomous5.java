@@ -34,8 +34,8 @@ import java.util.stream.Stream;
 
 
 @Config
-@Autonomous(name="BucketAuto", group="Auto")
-public class BucketAutonomous extends CommandOpMode {
+@Autonomous(name="BucketAuto5", group="Auto")
+public class BucketAutonomous5 extends CommandOpMode {
 
     final static MecanumKinematics kinematics = new MecanumKinematics(
             15.984252, 0.8);
@@ -296,6 +296,19 @@ public class BucketAutonomous extends CommandOpMode {
                 new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.preTransfer))
         );
 
+        Command transfer4 = new SequentialCommandGroup(
+                new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
+                new InstantCommand(() -> outtake.openClaw()),
+                new InstantCommand(() -> intakeSlides.manual(-0.7)),
+                new WaitCommand(600),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.transfer)),
+                new WaitCommand(50),
+                new InstantCommand(() -> outtake.closeClaw()),
+                new WaitCommand(150),
+                new InstantCommand(() -> intake.openIntakeClaw()),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.preTransfer))
+        );
+
 
         Command auto = new SequentialCommandGroup(
                 new ParallelCommandGroup(
@@ -322,10 +335,16 @@ public class BucketAutonomous extends CommandOpMode {
                 new ParallelCommandGroup(
                         traj7,
                         bucket4
+                ),
+                traj8,
+                getSample4,
+                transfer4,
+                new ParallelCommandGroup(
+                        traj9,
+                        bucket5
                 )
-                //, traj8
 
-        );
+                );
 
         schedule(auto);
         // TODO: create wrappers for trajectory following maybe possibly

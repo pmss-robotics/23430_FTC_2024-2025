@@ -133,16 +133,18 @@ public class TeleOp extends CommandOpMode {
         new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(
                 new ConditionalCommand (
                         new ConditionalCommand(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(() -> outtakeSlides.toggleBucket()),
-                                        new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.bucket))
-                                ),
+                                new InstantCommand(() -> outtakeSlides.toggleBucket()),
                                 new ConditionalCommand(
-                                        new InstantCommand(() -> outtake.openClaw()),
                                         new SequentialCommandGroup(
-                                                new InstantCommand(() -> outtake.toggleClaw()),
+                                                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.bucket)),
+                                                new WaitCommand(450),
+                                                new InstantCommand(() -> outtake.openClaw())
+                                                ),
+                                        new SequentialCommandGroup(
                                                 new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.preTransfer)),
-                                                new InstantCommand(() -> outtakeSlides.toggleBucket())),
+                                                new WaitCommand(750),
+                                                new InstantCommand(() -> outtakeSlides.toggleBucket())
+                                                ),
                                         () -> !outtake.isClawOpen()
                                 ),
                                 () -> outtakeSlides.getCurrentOutExState() == States.OuttakeExtension.home
@@ -200,8 +202,11 @@ public class TeleOp extends CommandOpMode {
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> intake.setIntakeState(States.Intake.transfer)),
                                 new InstantCommand(() -> outtake.openClaw()),
-                                new InstantCommand(() -> intakeSlides.manual(-0.7)),
-                                new WaitCommand(600),
+                                new SequentialCommandGroup(
+                                        new InstantCommand(() -> intakeSlides.manual(-0.7), intakeSlides),
+                                        new WaitCommand(600),
+                                        new InstantCommand(() -> intakeSlides.manual(0))
+                                ),
                                 new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.transfer)),
                                 new WaitCommand(50),
                                 new InstantCommand(() -> outtake.closeClaw()),
