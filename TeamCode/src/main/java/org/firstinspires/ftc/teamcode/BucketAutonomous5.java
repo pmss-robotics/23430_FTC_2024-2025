@@ -125,7 +125,7 @@ public class BucketAutonomous5 extends CommandOpMode {
         Command traj7 = new ActionCommand(trajectory7, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory8 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
-                .strafeToLinearHeading(new Vector2d(-16, -58), Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-16, -58), Math.toRadians(0), defaultVelConstraint)
                 .build();
         Command traj8 = new ActionCommand(trajectory8, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -309,7 +309,26 @@ public class BucketAutonomous5 extends CommandOpMode {
                 new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.preTransfer))
         );
 
-
+        Command pathing = new SequentialCommandGroup(
+                traj1,
+                new WaitCommand(500),
+                traj2,
+                new WaitCommand(500),
+                traj3,
+                new WaitCommand(500),
+                traj4,
+                new WaitCommand(500),
+                traj5,
+                new WaitCommand(500),
+                traj6,
+                new WaitCommand(500),
+                traj7,
+                new WaitCommand(500),
+                traj8,
+                new WaitCommand(500),
+                traj9
+        );
+/*
         Command auto = new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         traj1,
@@ -344,9 +363,10 @@ public class BucketAutonomous5 extends CommandOpMode {
                         bucket5
                 )
 
-                );
 
-        schedule(auto);
+                );*/
+
+        schedule(pathing);
         // TODO: create wrappers for trajectory following maybe possibly
         // this RunCommand Loop might be useless
         schedule(new RunCommand(() -> {
