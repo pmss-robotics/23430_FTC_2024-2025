@@ -90,47 +90,47 @@ public class BucketAutonomous extends CommandOpMode {
         Command trajectory = new ActionCommand(trajectoryAction, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory1 = drive.actionBuilder(drive.getPose())
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45), defaultVelConstraint)
+                .strafeToLinearHeading(new Vector2d(-57, -57), Math.toRadians(45), defaultVelConstraint)
                 .build();
         Command traj1 = new ActionCommand(trajectory1, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory2 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
+        Action trajectory2 = drive.actionBuilder(new Pose2d(-57, -57, Math.toRadians(45)))
                 .strafeToLinearHeading(new Vector2d(-48.5, -35), Math.toRadians(90), defaultVelConstraint)
                 .build();
         Command traj2 = new ActionCommand(trajectory2, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory3 = drive.actionBuilder(new Pose2d(-48.5, -35, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45), defaultVelConstraint)
+                .strafeToLinearHeading(new Vector2d(-56, -56), Math.toRadians(45), defaultVelConstraint)
                 .build();
         Command traj3 = new ActionCommand(trajectory3, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory4 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
-                .strafeToLinearHeading(new Vector2d(-58, -35), Math.toRadians(90), defaultVelConstraint)
+        Action trajectory4 = drive.actionBuilder(new Pose2d(-56, -56, Math.toRadians(45)))
+                .strafeToLinearHeading(new Vector2d(-58, -36), Math.toRadians(90), defaultVelConstraint)
                 .build();
         Command traj4 = new ActionCommand(trajectory4, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory5 = drive.actionBuilder(new Pose2d(-58, -35, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45), defaultVelConstraint)
+        Action trajectory5 = drive.actionBuilder(new Pose2d(-58, -36, Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(-56, -56), Math.toRadians(45), defaultVelConstraint)
                 .build();
         Command traj5 = new ActionCommand(trajectory5, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory6 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
-                .strafeToLinearHeading(new Vector2d(-54, -26), Math.toRadians(180), defaultVelConstraint)
+        Action trajectory6 = drive.actionBuilder(new Pose2d(-56, -56, Math.toRadians(45)))
+                .strafeToLinearHeading(new Vector2d(-55, -26), Math.toRadians(180), defaultVelConstraint)
                 .build();
         Command traj6 = new ActionCommand(trajectory6, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory7 = drive.actionBuilder(new Pose2d(-54, -26, Math.toRadians(180)))
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45), defaultVelConstraint)
+        Action trajectory7 = drive.actionBuilder(new Pose2d(-55, -26, Math.toRadians(180)))
+                .strafeToLinearHeading(new Vector2d(-56, -56), Math.toRadians(45), defaultVelConstraint)
                 .build();
         Command traj7 = new ActionCommand(trajectory7, Stream.of(drive).collect(Collectors.toSet()));
 
-        Action trajectory8 = drive.actionBuilder(new Pose2d(-54, -54, Math.toRadians(45)))
+        Action trajectory8 = drive.actionBuilder(new Pose2d(-56, -56, Math.toRadians(45)))
                 .strafeToLinearHeading(new Vector2d(-16, -58), Math.toRadians(0))
                 .build();
         Command traj8 = new ActionCommand(trajectory8, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory9 = drive.actionBuilder(new Pose2d(-16, -58, Math.toRadians(0)))
-                .strafeToLinearHeading(new Vector2d(-54, -54), Math.toRadians(45), defaultVelConstraint)
+                .strafeToLinearHeading(new Vector2d(-56, -56), Math.toRadians(45), defaultVelConstraint)
                 .build();
         Command traj9 = new ActionCommand(trajectory9, Stream.of(drive).collect(Collectors.toSet()));
 
@@ -322,7 +322,8 @@ public class BucketAutonomous extends CommandOpMode {
                 new ParallelCommandGroup(
                         traj7,
                         bucket4
-                )
+                ),
+                new InstantCommand(() -> outtake.setOuttakeState(States.Outtake.home))
                 //, traj8
 
         );

@@ -58,7 +58,7 @@ public class SpecimenAutonomous4 extends CommandOpMode {
             ));
     public final VelConstraint velConstraint =
             new MinVelConstraint(Arrays.asList(
-                    kinematics.new WheelVelConstraint(50),
+                    kinematics.new WheelVelConstraint(55),
                     new AngularVelConstraint(Math.PI)
             ));
 
@@ -96,7 +96,7 @@ public class SpecimenAutonomous4 extends CommandOpMode {
 
     public AccelConstraint sweepAccel  = (robotPose, _path, _disp) -> {
         if(_path.length() - _disp < 10) {
-            return new MinMax(-45, 45); //TODO increase these maybe
+            return new MinMax(-50, 50); //TODO increase these maybe
         } else {
             return new MinMax(PARAMS.minProfileAccel, PARAMS.maxProfileAccel);
         }
@@ -195,7 +195,7 @@ public class SpecimenAutonomous4 extends CommandOpMode {
         Command traj3 = new ActionCommand(trajectory3, Stream.of(drive).collect(Collectors.toSet()));
 
         Action trajectory4 = drive.actionBuilder(new Pose2d (37, -61.5, Math.PI/2))
-                .strafeTo(new Vector2d(specimenX4, specimenY), outtakeVel, preloadAccel)
+                .strafeTo(new Vector2d(specimenX4, -28.5), outtakeVel, preloadAccel)
                 .build();
         Command traj4 = new ActionCommand(trajectory4, Stream.of(drive).collect(Collectors.toSet()));
 

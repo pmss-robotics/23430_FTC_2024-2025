@@ -27,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public static int wMin = 0, wMax = 200;
 
-    public static int wHome = 25, wTransfer = 25, wIntake = 200, wMiddle = 115;
+    public static int wHome = 35, wTransfer = 25, wIntake = 200, wMiddle = 115;
     public static int cOpen = 110, cClosed = 175;
     public static double wPosition = 25, wRotation = 155;
     public static boolean intakeOpen = false;

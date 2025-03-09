@@ -30,7 +30,7 @@ public class OuttakeSlidesSubsystem extends SubsystemBase {
     // 3850 max
     // change pPost Spec to 2550
     public static int pHome = 0, pSpecimen0 = 0, pSpecimen = 1525
-            , pPostSpecimen = 2425, pPlayer = 0, pBucket = 3800, pStart = 0, pAscent0 = 0, pAscent = 0;
+            , pPostSpecimen = 2470, pPlayer = 0, pBucket = 3800, pStart = 0, pAscent0 = 0, pAscent = 0;
     public static int target = 0;
     // public static double resetPower = 0;
     public PIDController pidController;
